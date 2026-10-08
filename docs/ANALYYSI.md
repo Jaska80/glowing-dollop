@@ -71,7 +71,63 @@ päällä molemmissa (perus-X7:llä ei ole protection-määrittelyjä, joten lip
 Ikkunat valittu tarkoituksella pahimmiksi: 2022-05→11 (LUNA, kesäkuun crash, FTT), 2024 H1 ja H2
 (nousu + chop), 2025-01→05 (helmi–huhtikuun lasku, OM-romahdus).
 
-TULOKSET_TAULUKKO
+Luvut: tuotto % alkupääomasta. "sulj." = vain suljetut kaupat, "yht." = suljetut + lopussa auki
+olleet positiot markkinahintaan (= todellinen tilin arvo). DD = max drawdown, wallet-pohjainen
+sisältää avoimet positiot. BTC = BTC/USDT muutos samalla ajalla.
+
+| Ikkuna | Strategia | Kauppoja | Win % | Tuotto sulj. | Tuotto yht. | Auki lopussa | Avoimet P/L | DD wallet | Pahin kauppa | BTC | Hard-exitit |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2022-05→11 | X7 | 135 | 97,0 | +52,5 % | **+34,3 %** | 5 | −18,3 % | 10,6 % | −4,2 % | −58,9 % | – |
+| 2022-05→11 | Hardened | 118 | 94,1 | +23,8 % | **+21,2 %** | 1 | −2,6 % | **8,2 %** | −17,6 % | −58,9 % | 4 stop, 1 time |
+| 2024 H1 | X7 | 76 | 96,1 | +26,9 % | **+16,2 %** | 3 | −10,7 % | **12,6 %** | −13,5 % | +16,9 % | – |
+| 2024 H1 | Hardened | 86 | 94,2 | +14,4 % | **+14,4 %** | 0 | 0 | 14,5 % | −16,2 % | +16,9 % | 3 stop, 2 time |
+| 2024 H2 | X7 | 93 | 98,9 | +29,5 % | **+28,3 %** | 1 | −1,1 % | 4,7 % | −1,8 % | +55,8 % | – |
+| 2024 H2 | Hardened | 94 | 96,8 | +25,7 % | **+25,7 %** | 0 | 0 | 4,7 % | −13,1 % | +55,8 % | 3 stop |
+| 2025-01→05 | X7 | 95 | 98,9 | +35,3 % | **+35,7 %** | 2 | +0,4 % | 6,2 % | −6,8 % | −30,7 % | – |
+| 2025-01→05 | Hardened | 90 | 98,9 | +33,0 % | **+33,4 %** | 2 | +0,4 % | 6,2 % | −6,8 % | −30,7 % | – |
+| **Summa 4 ikkunaa** | X7 | 399 | | | **+114,5 %** | 11 | −29,6 % | max 12,6 % | | | |
+| **Summa 4 ikkunaa** | Hardened | 388 | | | **+94,7 %** | 3 | −2,2 % | max 14,5 % | | | 10 stop, 3 time |
+
+Täydet kuukausierittelyt, avoimet positiot ja hard-exitien ajankohdat: `docs/backtest-results/*.md`,
+koneluettava yhteenveto `docs/backtest-results/summary.json`.
+
+### Mitä taulukko kertoo (rehellisesti)
+
+1. **Perus-X7 tienasi enemmän kaikissa neljässä ikkunassa.** Ero yhteensä ~20 %-yksikköä
+   (114,5 % vs 94,7 %). Kovennus ei tee strategiasta parempaa tuotoltaan. Se oli odotettavissa:
+   NFI:n grind-logiikka toimi näissä ikkunoissa, ja hard stop realisoi tappioita, jotka
+   grindaamalla olisi (tässä datassa) voitettu takaisin.
+2. **Perus-X7:n tulos piilottaa bagit.** 2022: suljettujen kauppojen tuotto +52,5 %, mutta viisi
+   positiota oli lopussa auki −18,3 %:ssa, mm. NEAR 202 päivää auki, 327 tilausta, ja AVAX 103
+   päivää. 2024 H1: kolme bagia −10,7 %. Kovennetulla lopussa oli auki 3 positiota yhteensä
+   −2,2 %. Tämä on se riski, jonka takia koventaminen tehtiin: pääoma ei jää kuukausiksi kiinni.
+3. **Drawdown ei parantunut selvästi.** 2022: 10,6 % → 8,2 % (parempi). 2024 H1: 12,6 % → 14,5 %
+   (huonompi, koska hard stop realisoi INJ:n ja GALA:n tappiot pohjalla). H2 ja 2025 samat.
+   Wallet-DD on jo perusversiolla kohtuullinen; ongelma on avoimien positioiden *kesto*, ei
+   hetkellinen syvyys.
+4. **Pahin yksittäinen kauppa kasvoi** (−4 % → −17,6 %), koska hard stop sulkee grindatun,
+   alkuperäistä isomman position −25 %:n kohdalla alkupanoksesta. Perusversiolla pahin kauppa
+   näyttää pieneltä vain siksi, että tappiolliset kaupat eivät sulkeudu.
+5. **BTC-crash-guard maksoi 2025:ssä** 3 estettyä entryä (−2,3 %-yks.) eikä estänyt yhtään
+   tappiota. Helmikuun 2025 pudotus ei ollut tarpeeksi nopea (−8 %/24 h) laukaistakseen suojaa
+   oikeaan aikaan. Vaihtoehto: `hard_btc_crash_guard_enable: false` ja luottaa knife-guardiin.
+6. **OM:n romahdus (13.4.2025) ei osunut kumpaankaan** – ei positiota auki. Survivorship-testi
+   jäi siltä osin tyhjäksi; LUNA 5/2022 ja FTT 11/2022 kyllä osuivat ja hard stop sulki ne
+   2024 H2:ssa (LUNA 30.9., FTT 13.10.).
+7. Parametreja (−25 %, 30 pv, −8 %/24 h) **ei ole optimoitu näihin ikkunoihin**. Ne ovat
+   järkeviä oletuksia. Jos niitä säätää näiden samojen ikkunoiden perusteella, tulos on
+   ylisovitettu eikä kerro mitään tulevasta.
+
+### Johtopäätös
+
+- Jos sietokyky kattaa sen, että 20–30 % pääomasta voi olla kuukausia kiinni tappiollisissa
+  positioissa ja odotat niiden palautuvan: perus-X7 tuotti enemmän. Se on veto siihen, että
+  jokainen kolikko palautuu. LUNA, FTT ja OM muistuttavat, ettei näin ole.
+- Jos haluat, että pahin tapaus on rajattu ja pääoma kiertää: kovennettu. Hinta oli tässä
+  datassa ~5 %-yksikköä per puoli vuotta.
+- Molemmilla kannattaa odottaa livessä selvästi backtestiä heikompaa tulosta (limit-täytöt,
+  slippage, delistaukset).
+
 
 Huomioita tulkintaan:
 
@@ -103,9 +159,9 @@ Mitä sitten voi verrata? Riskikorjattuja mittareita, jotka eivät riipu vivusta
 
 | Mittari | Leaderboard-huiput (julkiset väitteet) | NFI X7 upstream-CI | Tämä repo (tavoite) |
 |---|---|---|---|
-| Max drawdown | Harvoin julkaistu; kun on, 30–60 % | ≤15 % closed-trades (CI-raja), 37,7 % kun romahtaneet mukana | ≤15 % wallet-pohjaisesti myös romahtaneilla |
-| Voittoprosentti | 60–80 % | 85–97 % | 80–95 % (hard stop lisää pieniä tappioita) |
-| Kuukausituotto | 10–100 %+ vivulla | 1–10 % spot | 1–8 % spot, vähemmän hajontaa |
+| Max drawdown | Harvoin julkaistu; kun on, 30–60 % | ≤15 % closed-trades (CI-raja), 37,7 % kun romahtaneet mukana | 4,7–14,5 % wallet-pohjaisesti, romahtaneet mukana (mitattu) |
+| Voittoprosentti | 60–80 % | 85–97 % | 94–99 % (mitattu) |
+| Kuukausituotto | 10–100 %+ vivulla | 1–10 % spot | 2,4–6,7 %/kk spot (mitattu, 4 ikkunaa) |
 | Elinikä | Viikkoja–kuukausia listalla | 2021– | – |
 
 Johtopäätös: leaderboard-ROI ei ole tavoite vaan varoitus. Jos haluat verrata botin tuloksia
@@ -114,6 +170,8 @@ max-drawdown-sietoosi.
 
 ## 6. Mitä tekisin tällä käytännössä (Jaakko)
 
+0. Hyväksy ensin, että backtestien +95…+115 % / 2 vuotta on yläraja, ei odotusarvo. Livessä
+   NFI-käyttäjät raportoivat tyypillisesti murto-osan backtest-tuotosta.
 1. Dry-run 2–4 viikkoa Binance spotilla, `max_open_trades 6`, `stake unlimited`, kovennettu versio.
 2. Oikealla rahalla aloita summalla, jonka −20 % ei haittaa. Spot, ei futures. Futures-tilassa
    NFI:n derisk-portaat + likvidaatio ovat edelleen paljon riskialttiimmat kuin spot.
