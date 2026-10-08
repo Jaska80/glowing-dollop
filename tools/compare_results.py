@@ -57,9 +57,14 @@ def summarise(result_dir: Path) -> dict | None:
     return None
   strat_name, res, wallet_df = loaded
   trades = pd.DataFrame(res.get("trades", []))
-  open_trades = trades[trades["is_open"]] if not trades.empty and "is_open" in trades else pd.DataFrame()
-  closed_profit_abs = float(res["profit_total_abs"])
+  # Positions still open at the end are exported as force_exit at the last candle.
+  if not trades.empty and "exit_reason" in trades:
+    open_trades = trades[(trades["exit_reason"] == "force_exit") | (trades.get("is_open", False) == True)]  # noqa: E712
+  else:
+    open_trades = pd.DataFrame()
+  total_profit_abs = float(res["profit_total_abs"])  # freqtrade includes force-exited open trades
   open_profit_abs = float(open_trades["profit_abs"].sum()) if not open_trades.empty else 0.0
+  closed_profit_abs = total_profit_abs - open_profit_abs
   start = float(res["starting_balance"])
   hard_exits = {}
   if not trades.empty and "exit_reason" in trades:
