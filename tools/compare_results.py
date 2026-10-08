@@ -40,20 +40,12 @@ def load_result(result_dir: Path):
 
 
 def wallet_drawdown(wallet_df: pd.DataFrame | None, starting_balance: float):
-  """Max drawdown of total wallet value (closed + unrealised)."""
-  if wallet_df is None or wallet_df.empty:
+  """Max drawdown of total wallet value (closed + unrealised).
+  The wallet feather has one row per (date, currency); total_quote is each holding valued in
+  stake currency, so the wallet value is the per-date sum."""
+  if wallet_df is None or wallet_df.empty or "total_quote" not in wallet_df.columns:
     return None
-  col = None
-  for candidate in ("total_quote", "total", "balance", "wallet_total", "equity"):
-    if candidate in wallet_df.columns:
-      col = candidate
-      break
-  if col is None:
-    numeric = [c for c in wallet_df.columns if pd.api.types.is_numeric_dtype(wallet_df[c]) and c != "date"]
-    if not numeric:
-      return None
-    col = numeric[-1]
-  series = wallet_df[col].astype(float)
+  series = wallet_df.groupby("date")["total_quote"].sum().astype(float)
   peak = series.cummax()
   dd = (series - peak) / peak
   return float(-dd.min())
