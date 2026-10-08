@@ -1,0 +1,2362 @@
+{
+ "AAVE/USDT": {
+  "id": "AAVEUSDT",
+  "symbol": "AAVE/USDT",
+  "base": "AAVE",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "AAVE",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.0001,
+   "price": 0.0001,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.0001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 0.0001,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ADA/USDT": {
+  "id": "ADAUSDT",
+  "symbol": "ADA/USDT",
+  "base": "ADA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ADA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ALGO/USDT": {
+  "id": "ALGOUSDT",
+  "symbol": "ALGO/USDT",
+  "base": "ALGO",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ALGO",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ALPACA/USDT": {
+  "id": "ALPACAUSDT",
+  "symbol": "ALPACA/USDT",
+  "base": "ALPACA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ALPACA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1.0,
+   "price": 1e-08,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1.0,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-08,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "APT/USDT": {
+  "id": "APTUSDT",
+  "symbol": "APT/USDT",
+  "base": "APT",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "APT",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ARB/USDT": {
+  "id": "ARBUSDT",
+  "symbol": "ARB/USDT",
+  "base": "ARB",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ARB",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ATOM/USDT": {
+  "id": "ATOMUSDT",
+  "symbol": "ATOM/USDT",
+  "base": "ATOM",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ATOM",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "AVAX/USDT": {
+  "id": "AVAXUSDT",
+  "symbol": "AVAX/USDT",
+  "base": "AVAX",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "AVAX",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-05,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-05,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "BAKE/USDT": {
+  "id": "BAKEUSDT",
+  "symbol": "BAKE/USDT",
+  "base": "BAKE",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "BAKE",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "BNB/USDT": {
+  "id": "BNBUSDT",
+  "symbol": "BNB/USDT",
+  "base": "BNB",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "BNB",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1e-05,
+   "price": 0.0001,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1e-05,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 0.0001,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "BTC/USDT": {
+  "id": "BTCUSDT",
+  "symbol": "BTC/USDT",
+  "base": "BTC",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "BTC",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1e-07,
+   "price": 0.1,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1e-07,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 0.1,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "CELR/USDT": {
+  "id": "CELRUSDT",
+  "symbol": "CELR/USDT",
+  "base": "CELR",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "CELR",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1.0,
+   "price": 1e-09,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1.0,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-09,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "CHZ/USDT": {
+  "id": "CHZUSDT",
+  "symbol": "CHZ/USDT",
+  "base": "CHZ",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "CHZ",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1.0,
+   "price": 1e-08,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1.0,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-08,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "DOGE/USDT": {
+  "id": "DOGEUSDT",
+  "symbol": "DOGE/USDT",
+  "base": "DOGE",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "DOGE",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "DOT/USDT": {
+  "id": "DOTUSDT",
+  "symbol": "DOT/USDT",
+  "base": "DOT",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "DOT",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "EGLD/USDT": {
+  "id": "EGLDUSDT",
+  "symbol": "EGLD/USDT",
+  "base": "EGLD",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "EGLD",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-05,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-05,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ENJ/USDT": {
+  "id": "ENJUSDT",
+  "symbol": "ENJ/USDT",
+  "base": "ENJ",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ENJ",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-08,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-08,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "ETH/USDT": {
+  "id": "ETHUSDT",
+  "symbol": "ETH/USDT",
+  "base": "ETH",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "ETH",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1e-05,
+   "price": 0.001,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1e-05,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 0.001,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "FET/USDT": {
+  "id": "FETUSDT",
+  "symbol": "FET/USDT",
+  "base": "FET",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "FET",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "FIL/USDT": {
+  "id": "FILUSDT",
+  "symbol": "FIL/USDT",
+  "base": "FIL",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "FIL",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "FTM/USDT": {
+  "id": "FTMUSDT",
+  "symbol": "FTM/USDT",
+  "base": "FTM",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "FTM",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "FTT/USDT": {
+  "id": "FTTUSDT",
+  "symbol": "FTT/USDT",
+  "base": "FTT",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "FTT",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "GALA/USDT": {
+  "id": "GALAUSDT",
+  "symbol": "GALA/USDT",
+  "base": "GALA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "GALA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1.0,
+   "price": 1e-08,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1.0,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-08,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "INJ/USDT": {
+  "id": "INJUSDT",
+  "symbol": "INJ/USDT",
+  "base": "INJ",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "INJ",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-05,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-05,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "LINK/USDT": {
+  "id": "LINKUSDT",
+  "symbol": "LINK/USDT",
+  "base": "LINK",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "LINK",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-05,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-05,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "LTC/USDT": {
+  "id": "LTCUSDT",
+  "symbol": "LTC/USDT",
+  "base": "LTC",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "LTC",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.0001,
+   "price": 1e-05,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.0001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-05,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "LUNA/USDT": {
+  "id": "LUNAUSDT",
+  "symbol": "LUNA/USDT",
+  "base": "LUNA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "LUNA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "MANA/USDT": {
+  "id": "MANAUSDT",
+  "symbol": "MANA/USDT",
+  "base": "MANA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "MANA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "NEAR/USDT": {
+  "id": "NEARUSDT",
+  "symbol": "NEAR/USDT",
+  "base": "NEAR",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "NEAR",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "OM/USDT": {
+  "id": "OMUSDT",
+  "symbol": "OM/USDT",
+  "base": "OM",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "OM",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "OP/USDT": {
+  "id": "OPUSDT",
+  "symbol": "OP/USDT",
+  "base": "OP",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "OP",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "PEPE/USDT": {
+  "id": "PEPEUSDT",
+  "symbol": "PEPE/USDT",
+  "base": "PEPE",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "PEPE",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 1000.0,
+   "price": 1e-11,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 1000.0,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-11,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "RUNE/USDT": {
+  "id": "RUNEUSDT",
+  "symbol": "RUNE/USDT",
+  "base": "RUNE",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "RUNE",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "SAND/USDT": {
+  "id": "SANDUSDT",
+  "symbol": "SAND/USDT",
+  "base": "SAND",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "SAND",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.1,
+   "price": 1e-07,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.1,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-07,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "SOL/USDT": {
+  "id": "SOLUSDT",
+  "symbol": "SOL/USDT",
+  "base": "SOL",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "SOL",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.0001,
+   "price": 0.0001,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.0001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 0.0001,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "SUI/USDT": {
+  "id": "SUIUSDT",
+  "symbol": "SUI/USDT",
+  "base": "SUI",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "SUI",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "TIA/USDT": {
+  "id": "TIAUSDT",
+  "symbol": "TIA/USDT",
+  "base": "TIA",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "TIA",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "UNI/USDT": {
+  "id": "UNIUSDT",
+  "symbol": "UNI/USDT",
+  "base": "UNI",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "UNI",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.001,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.001,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "WAVES/USDT": {
+  "id": "WAVESUSDT",
+  "symbol": "WAVES/USDT",
+  "base": "WAVES",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "WAVES",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ },
+ "XRP/USDT": {
+  "id": "XRPUSDT",
+  "symbol": "XRP/USDT",
+  "base": "XRP",
+  "quote": "USDT",
+  "settle": null,
+  "baseId": "XRP",
+  "quoteId": "USDT",
+  "settleId": null,
+  "type": "spot",
+  "spot": true,
+  "margin": false,
+  "swap": false,
+  "future": false,
+  "option": false,
+  "active": true,
+  "contract": false,
+  "linear": null,
+  "inverse": null,
+  "contractSize": null,
+  "expiry": null,
+  "expiryDatetime": null,
+  "strike": null,
+  "optionType": null,
+  "taker": 0.001,
+  "maker": 0.001,
+  "percentage": true,
+  "tierBased": false,
+  "feeSide": "get",
+  "precision": {
+   "amount": 0.01,
+   "price": 1e-06,
+   "base": 1e-08,
+   "quote": 1e-08
+  },
+  "limits": {
+   "amount": {
+    "min": 0.01,
+    "max": 9000000000.0
+   },
+   "price": {
+    "min": 1e-06,
+    "max": 1000000000.0
+   },
+   "cost": {
+    "min": 5.0,
+    "max": 9000000000.0
+   },
+   "leverage": {
+    "min": null,
+    "max": null
+   },
+   "market": {
+    "min": null,
+    "max": null
+   }
+  },
+  "info": {}
+ }
+}

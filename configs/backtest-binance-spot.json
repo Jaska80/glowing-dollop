@@ -1,0 +1,40 @@
+{
+  "// note": "Offline backtest config. 40 Binance spot USDT pairs incl. collapsed coins (OM, LUNA, FTT, ALPACA, WAVES) that upstream blacklists.",
+  "bot_name": "nfix7-bt",
+  "max_open_trades": 6,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "timeframe": "5m",
+  "fee": 0.001,
+  "trading_mode": "spot",
+  "margin_mode": "",
+  "dataformat_ohlcv": "feather",
+  "enable_protections": false,
+  "use_exit_signal": true,
+  "exit_profit_only": false,
+  "ignore_roi_if_entry_signal": true,
+  "position_adjustment_enable": true,
+  "unfilledtimeout": {"entry": 3, "exit": 2, "exit_timeout_count": 0, "unit": "minutes"},
+  "order_types": {
+    "entry": "limit", "exit": "limit", "emergency_exit": "limit", "force_entry": "limit", "force_exit": "limit",
+    "stoploss": "limit", "stoploss_on_exchange": false
+  },
+  "entry_pricing": {"price_side": "other", "use_order_book": false, "order_book_top": 1, "price_last_balance": 0,
+                    "check_depth_of_market": {"enabled": false, "bids_to_ask_delta": 1}},
+  "exit_pricing": {"price_side": "other", "use_order_book": false, "order_book_top": 1, "price_last_balance": 0},
+  "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
+    "skip_pair_validation": true,
+    "pair_whitelist": ["BTC/USDT","ETH/USDT","BNB/USDT","SOL/USDT","XRP/USDT","ADA/USDT","DOGE/USDT","DOT/USDT","LINK/USDT","AVAX/USDT","LTC/USDT","ATOM/USDT","NEAR/USDT","FIL/USDT","UNI/USDT","AAVE/USDT","SAND/USDT","MANA/USDT","GALA/USDT","FTM/USDT","ALGO/USDT","CHZ/USDT","ENJ/USDT","EGLD/USDT","RUNE/USDT","INJ/USDT","FET/USDT","OM/USDT","ALPACA/USDT","LUNA/USDT","FTT/USDT","WAVES/USDT","CELR/USDT","BAKE/USDT","PEPE/USDT","SUI/USDT","APT/USDT","ARB/USDT","OP/USDT","TIA/USDT"],
+    "pair_blacklist": []
+  },
+  "pairlists": [{"method": "StaticPairList"}],
+  "initial_state": "running",
+  "internals": {"process_throttle_secs": 5}
+}

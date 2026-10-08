@@ -1,0 +1,51 @@
+{
+  "// 1": "Example config for running the hardened strategy live/dry. Copy to user_data/config.json.",
+  "// 2": "Upstream NFI rules still apply: timeframe 5m, use_exit_signal true, exit_profit_only false,",
+  "// 3": "ignore_roi_if_entry_signal true, stake_amount unlimited, 6-12 slots, volume pairlist.",
+  "strategy": "NostalgiaForInfinityX7Hardened",
+  "add_config_files": [
+    "../configs/trading_mode-spot.json",
+    "../configs/pairlist-volume-binance-usdt.json",
+    "../configs/blacklist-binance.json",
+    "../configs/exampleconfig.json",
+    "../configs/exampleconfig_secret.json"
+  ],
+  "max_open_trades": 6,
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "// 4": "Every hard_* attribute of the strategy can be overridden here. Shown values are the defaults.",
+  "hardened_parameters": {
+    "hard_stop_enable": true,
+    "hard_stop_init_ratio_spot": -0.25,
+    "hard_stop_init_ratio_futures": -0.18,
+    "hard_liq_guard_enable": true,
+    "hard_liq_guard_band": 0.10,
+    "hard_time_stop_enable": true,
+    "hard_time_stop_days": 30,
+    "hard_time_stop_init_ratio": -0.03,
+    "hard_grind_cooldown_after_derisk_minutes": 60,
+    "hard_btc_crash_guard_enable": true,
+    "hard_btc_crash_24h": -0.08,
+    "hard_btc_crash_72h": -0.15,
+    "hard_block_grind_buys_in_crash": true,
+    "hard_pair_knife_guard_enable": true,
+    "hard_pair_knife_roc_288_pct": -15.0,
+    "hard_scale_futures_thresholds_to_leverage": true,
+    "hard_fix_grind_mode_stop_threshold": true,
+    "hard_protections_enable": true,
+    "hard_protection_cooldown_candles": 6,
+    "hard_protection_max_drawdown": 0.15,
+    "hard_protection_max_drawdown_lookback_candles": 576,
+    "hard_protection_max_drawdown_trade_limit": 4,
+    "hard_protection_max_drawdown_stop_candles": 288,
+    "hard_protection_low_profit_lookback_candles": 1440,
+    "hard_protection_low_profit_trade_limit": 3,
+    "hard_protection_low_profit_stop_candles": 288,
+    "hard_max_slippage": 0.01,
+    "hard_enable_bad_trade_controller": true
+  },
+  "// 5": "Upstream NFI parameters still work through nfi_parameters, e.g. futures leverage:",
+  "nfi_parameters": {
+    "futures_mode_leverage": 3.0
+  }
+}
