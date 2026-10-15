@@ -96,12 +96,12 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px}
 </header>
 <main>
   <form id="form" class="search" autocomplete="off">
-    <input id="q" name="q" placeholder="ABC-123  tai  5YJSA7E24JF123456" spellcheck="false" aria-label="Rekisteritunnus tai VIN">
+    <input id="q" name="q" placeholder="ABC-123, 5YJSA7E24JF123456 tai Tesla Model S 2018" spellcheck="false" aria-label="Rekisteritunnus, VIN tai merkki malli vuosi">
     <button class="btn" type="submit">Röntgenkuvaa</button>
     <button class="btn secondary" type="button" id="clear">Tyhjennä</button>
   </form>
   <div id="demobanner" class="flag warn" hidden></div>
-  <p class="hint">Kokeile: <code data-example="tesla" role="button">Tesla Model S 75D 2018</code> · <code data-example="fiat" role="button">Fiat 500e 2016 (USA-tuonti)</code> · <code data-example="passat" role="button">Passat 2.0 TDI DSG 2012 (Ruotsi)</code> · <code data-example="plate" role="button">rekisteritunnus</code>. VIN löytyy rekisteriotteesta, tuulilasin vasemmasta alakulmasta tai kuljettajan oven pielestä.</p>
+  <p class="hint">Kokeile: <code data-example="tesla" role="button">Tesla Model S 75D 2018</code> · <code data-example="fiat" role="button">Fiat 500e 2016 (USA-tuonti)</code> · <code data-example="passat" role="button">Passat 2.0 TDI DSG 2012 (Ruotsi)</code> · <code data-example="plate" role="button">rekisteritunnus</code>. Ilman VIN:iä voit kirjoittaa myös <code>Merkki Malli Vuosi</code>. VIN löytyy rekisteriotteesta, tuulilasin vasemmasta alakulmasta tai kuljettajan oven pielestä.</p>
 
   <div class="tabs">
     <span class="tab active" data-tab="report">Raportti</span>
@@ -924,12 +924,19 @@ window.DEMO = {
   async function run(q) {
     q = (q || '').trim(); if (!q) return;
     state.q = q; state.type = VINLIB.detectType(q);
-    Object.assign(state, { vin: null, plate: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, nhtsaErr: null, recallsErr: null, complaintsErr: null, ratingsErr: null, regErr: null, peerErr: null, probeErr: null });
+    Object.assign(state, { vin: null, plate: null, plateInfo: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, nhtsaErr: null, recallsErr: null, complaintsErr: null, ratingsErr: null, regErr: null, peerErr: null, probeErr: null });
     try { history.replaceState(null, '', '?q=' + enc(q)); } catch { }
     $('#results').hidden = false; $('#intro').hidden = true;
     if (state.type === 'vin' || state.type === 'vin-partial') { state.vin = VINLIB.clean(q); state.local = VINLIB.decodeVin(state.vin); }
     else if (state.type === 'plate') { state.plateInfo = VINLIB.parsePlate(q); state.plate = state.plateInfo.plate; }
-    else state.plateInfo = { ok: false, errors: ['Syöte ei ole VIN (17 merkkiä) eikä rekisteritunnus (ABC-123).'] };
+    else {
+      // Vapaa teksti "Merkki Malli Vuosi" (esim. "Tesla Model S 2018") → täytetään käsin syötetyt kentät ja haetaan NHTSA-tiedot niillä
+      const yr = q.match(/\b(19[5-9]\d|20[0-4]\d)\b/); const words = q.replace(yr ? yr[0] : '', ' ').trim().split(/\s+/).filter(Boolean);
+      if (yr && words.length >= 2) {
+        state.type = 'mmy'; state.manual = { ...state.manual, make: words[0], model: words.slice(1).join(' '), year: yr[1] };
+        try { localStorage.setItem(LS_KEY, JSON.stringify(state.manual)); } catch { }
+      } else state.plateInfo = { ok: false, errors: ['Syöte ei ole VIN (17 merkkiä), rekisteritunnus (ABC-123) eikä muotoa "Merkki Malli Vuosi" (esim. Tesla Model S 2018).'] };
+    }
     renderAll();
     const jobs = [];
     if (state.vin) { jobs.push(fetchNhtsaDecode().then(() => { renderAll(); return fetchExtras(); })); jobs.push(fetchProbe()); }
@@ -958,7 +965,18 @@ window.DEMO = {
     }
     await Promise.allSettled([
       getJSON('https://api.nhtsa.gov/recalls/recallsByVehicle?' + q, '/api/recalls?' + q).then(d => state.recalls = d.results || []).catch(e => state.recallsErr = String(e.message || e)),
-      getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?' + q, '/api/complaints?' + q).then(d => state.complaints = d.results || []).catch(e => state.complaintsErr = String(e.message || e)),
+      (async () => {
+        let d = await getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?' + q, '/api/complaints?' + q);
+        if (!d.count && !(await hasProxy())) { // selainhaku ilman palvelinta: yhdistä versiot ("MODEL S 75D", ...) kuten server.js tekee
+          const list = await getJSON('https://api.nhtsa.gov/products/vehicle/models?modelYear=' + enc(c.year) + '&make=' + enc(c.make) + '&issueType=c');
+          const variants = [...new Set((list.results || []).map(x => String(x.model || '')).filter(m => up(m).startsWith(up(c.model) + ' ')))].slice(0, 10);
+          const parts = await Promise.allSettled(variants.map(m => getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?make=' + enc(c.make) + '&model=' + enc(m) + '&modelYear=' + enc(c.year))));
+          const seen = new Set(), results = [];
+          for (const r of parts) if (r.status === 'fulfilled') for (const x of r.value.results || []) if (!seen.has(x.odiNumber)) { seen.add(x.odiNumber); results.push(x); }
+          d = { count: results.length, results };
+        }
+        state.complaints = d.results || [];
+      })().catch(e => state.complaintsErr = String(e.message || e)),
       (async () => {
         let l = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(c.model), '/api/ratings?' + q);
         if (!l.Count && !(await hasProxy())) { // NHTSA nimeää mallit versioittain ("MODEL S 75D") → ensimmäinen samalla alkava

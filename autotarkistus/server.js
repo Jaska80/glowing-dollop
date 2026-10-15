@@ -111,7 +111,18 @@ async function api(req, res, u) {
   }
   const make = SAFE_Q(u.searchParams.get('make')), model = SAFE_Q(u.searchParams.get('model')), year = SAFE_Q(u.searchParams.get('modelYear'));
   if (p === '/api/recalls') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/recalls/recallsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
-  if (p === '/api/complaints') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
+  if (p === '/api/complaints') {
+    const d = await fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${model}&modelYear=${year}`);
+    if (d.count || !model) return send(res, 200, d);
+    // Kuten ratings: valitukset on kirjattu versioittain ("MODEL S 75D") → yhdistetään kaikkien samalla alkavien versioiden valitukset
+    const list = await fetchJSON(`https://api.nhtsa.gov/products/vehicle/models?modelYear=${year}&make=${make}&issueType=c`);
+    const want = decodeURIComponent(model).toUpperCase();
+    const variants = [...new Set((list.results || []).map((x) => String(x.model || '')).filter((m) => m.toUpperCase().startsWith(want + ' ')))].slice(0, 10);
+    const parts = await Promise.allSettled(variants.map((m) => fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${SAFE_Q(m)}&modelYear=${year}`)));
+    const seen = new Set(), results = [];
+    for (const r of parts) if (r.status === 'fulfilled') for (const x of r.value.results || []) if (!seen.has(x.odiNumber)) { seen.add(x.odiNumber); results.push(x); }
+    return send(res, 200, { count: results.length, message: variants.length ? 'Yhdistetty versioista: ' + variants.join(', ') : d.message, results });
+  }
   if (p === '/api/ratings') {
     const d = await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${model}`);
     if (d.Count || !model) return send(res, 200, d);
