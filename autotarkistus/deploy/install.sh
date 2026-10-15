@@ -23,6 +23,7 @@ ENV_FILE=/etc/autorontgen.env
   echo "PORT=$PORT"
   echo "HOST=0.0.0.0"
   [ -n "$AUTH" ] && echo "BASIC_AUTH=$AUTH"
+  echo "# REGCHECK_USER=kayttajatunnus   # rekisterinumeroapi.com / regcheck.org.uk – rekkarihaku (maksullinen)"
 } > "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 

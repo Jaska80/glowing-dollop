@@ -131,7 +131,12 @@ Rakennusympäristön verkko oli rajoitettu, joten **rajapintoja ei ajettu oikeaa
   ilmoittaa CORS-virheen, käytä `server.js`:ää – se tekee pyynnöt palvelinpuolella.
 - Rekisteritunnushaku: Biltema (`biltema.fi/auton-varaosahaku/<REKKARI>/`) on Akamai-botsuojauksen takana, palvelimelta
   haku saa 403, eikä sitä kierretä. Sivu näyttää suorat linkit Biltemaan ja Traficomiin valmiiksi rekkarilla, ja käyttäjä
-  täydentää merkin, mallin, vuoden ja moottorikoodin käsin. `REG_ADAPTERS` on tyhjä paikka mahdolliselle avoimelle rajapinnalle.
+  täydentää merkin, mallin, vuoden ja moottorikoodin käsin.
+- Maksullinen vaihtoehto: RegCheck (rekisterinumeroapi.com / regcheck.org.uk, `CheckFinland`) palauttaa merkin, mallin, vuoden,
+  VIN:n, moottorikoodin, tehon ja vaihteiston. 10 ilmaista hakua rekisteröitymällä, sitten ~0,20 €/haku (100 kpl erissä).
+  Aktivointi: `REGCHECK_USER=tunnus` tiedostoon `/etc/autorontgen.env` ja `sudo systemctl restart autorontgen`. Jos vastaus
+  sisältää VIN:n, sivu jatkaa automaattisesti VIN-dekoodaukseen ja NHTSA-hakuihin. Adapterin kenttänimet on arvattu
+  RegCheckin muiden maiden dokumentaatiosta – `raw`-kenttä näyttää koko vastauksen, korjaa `map()` sen mukaan.
 - Traficomin avoimen datan sarakenimet (`merkkiSelvakielinen`, `kaupallinenNimi`, `ensirekisterointipvm`, `matkamittarilukema`,
   `omamassa`, `Co2`, `vari`, `kunta`, `kayttovoima`) ovat version 5.x mukaiset; skripti etsii ne otsikkoriviltä ja kertoo jos puuttuvat.
 - Verotaulukon luvut ovat 1.1.2026 voimaan tulleet (sähkö 1,5→1,9 c; perusvero min 53,29→106,21 €/v). Polttomoottoriauton

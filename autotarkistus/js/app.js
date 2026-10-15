@@ -199,7 +199,14 @@
   }
   async function fetchReg() {
     if (!(await hasProxy())) return;
-    try { const d = await getJSON(null, '/api/reg/' + enc(state.plate)); if (d && d.ok) state.reg = d.vehicle; else state.regErr = (d && d.error) || 'ei tulosta'; }
+    try {
+      const d = await getJSON(null, '/api/reg/' + enc(state.plate));
+      if (d && d.ok) {
+        state.reg = d.vehicle;
+        const v = VINLIB.clean(d.vehicle.vin || '');
+        if (VINLIB.detectType(v) === 'vin') { state.vin = v; state.local = VINLIB.decodeVin(v); await fetchNhtsaDecode(); fetchProbe(); }
+      } else state.regErr = (d && d.error) || 'ei tulosta';
+    }
     catch (e) { state.regErr = String(e.message || e); }
   }
   async function fetchProbe() {

@@ -25,7 +25,33 @@ const UA = 'Autorontgen/1.0 (+henkilokohtainen autotarkistus; ei massahakuja)';
    palvelimelta tehty haku saa 403. Sitä ei kierretä. Lista on jätetty tyhjäksi; jos joskus löytyy avoin rajapinta,
    adapteri on {name, url(plate), headers, map(json) → {make, model, year, engine, ...}}. Sivu näyttää sen sijaan
    suorat linkit Bilteman ja Traficomin hakuihin, ja käyttäjä täydentää merkin/mallin/vuoden itse. */
+/* RegCheck (regcheck.org.uk / rekisterinumeroapi.com): kaupallinen, 10 ilmaista hakua rekisteröitymällä, sitten ~0,20 €/haku.
+   Aktivoituu vain kun REGCHECK_USER on asetettu (esim. /etc/autorontgen.env). ASMX-palvelu vastaa XML:nä, jonka sisällä
+   <vehicleJson> on JSON-merkkijono. Kenttänimet ovat RegCheckin omia ja vaihtelevat maittain → map() poimii väljästi. */
+const REGCHECK_USER = process.env.REGCHECK_USER || '';
 const REG_ADAPTERS = [];
+if (REGCHECK_USER) REG_ADAPTERS.push({
+  name: 'regcheck',
+  url: (plate) => `https://www.regcheck.org.uk/api/reg.asmx/CheckFinland?RegistrationNumber=${encodeURIComponent(plate.replace('-', ''))}&username=${encodeURIComponent(REGCHECK_USER)}`,
+  headers: { Accept: 'text/xml,application/json,*/*' },
+  raw: true, // vastaus ei ole JSON vaan XML
+  map: (text) => {
+    const m = String(text).match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/);
+    let v = null;
+    try { v = m ? JSON.parse(m[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')) : JSON.parse(text); } catch { return null; }
+    if (!v || typeof v !== 'object') return null;
+    const txt = (x) => (x && typeof x === 'object' && 'CurrentTextValue' in x) ? x.CurrentTextValue : x;
+    const pick = (...ks) => { for (const k of ks) { const val = txt(deepGet(v, k)); if (val != null && val !== '') return val; } return null; };
+    const make = pick('CarMake', 'Make', 'make');
+    if (!make) return null;
+    return { make, model: pick('CarModel', 'Model', 'model'), year: pick('RegistrationYear', 'ModelYear', 'Year'),
+      vin: pick('VechileIdentificationNumber', 'VehicleIdentificationNumber', 'VIN', 'Vin'), engine: pick('EngineCode', 'Engine'),
+      disp: pick('EngineSize', 'Displacement'), power_kw: pick('PowerKW', 'Power', 'kW'), fuel: pick('FuelType', 'Fuel'),
+      trans: pick('Transmission', 'Gearbox'), body: pick('BodyStyle', 'Body'), color: pick('Colour', 'Color'),
+      firstReg: pick('RegistrationDate', 'FirstRegistration', 'DateFirstRegistered'), mass: pick('GrossWeight', 'TotalWeight'), curb: pick('KerbWeight', 'Weight'),
+      co2: pick('Co2', 'CO2'), insurer: pick('InsuranceCompany', 'Insurer'), description: pick('Description'), raw: v };
+  },
+});
 function deepGet(o, k) { if (o == null) return undefined; if (k in o) return o[k]; for (const key of Object.keys(o)) if (o[key] && typeof o[key] === 'object') { const r = deepGet(o[key], k); if (r !== undefined) return r; } return undefined; }
 
 async function fetchJSON(url, headers = {}) {
@@ -76,6 +102,18 @@ async function probeVin(vin) {
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }
 
+async function fetchText(url, headers = {}) {
+  const key = 'text:' + url; const hit = cache.get(key);
+  if (hit && hit.t > Date.now()) return hit.v;
+  const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 30000);
+  try {
+    const r = await fetch(url, { headers: { 'User-Agent': UA, ...headers }, signal: ctrl.signal });
+    const text = await r.text();
+    if (!r.ok) throw Object.assign(new Error(`upstream ${r.status}`), { status: r.status, body: text.slice(0, 300) });
+    cache.set(key, { v: text, t: Date.now() + CACHE_TTL_MS });
+    return text;
+  } finally { clearTimeout(to); }
+}
 function send(res, code, body, type = 'application/json; charset=utf-8') {
   res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' });
   res.end(typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body));
@@ -88,7 +126,7 @@ const SAFE_Q = (q) => encodeURIComponent(String(q || '').slice(0, 60));
 
 async function api(req, res, u) {
   const p = u.pathname;
-  if (p === '/api/health') return send(res, 200, { ok: true, cache: cache.size, adapters: REG_ADAPTERS.map(a => a.name), probes: PROBES.map(p => p.name) });
+  if (p === '/api/health') return send(res, 200, { ok: true, cache: cache.size, adapters: REG_ADAPTERS.map(a => a.name), regcheck: !!REGCHECK_USER, probes: PROBES.map(p => p.name) });
   if (p.startsWith('/api/vin/')) {
     const vin = decodeURIComponent(p.slice(9)).toUpperCase();
     if (!VIN_RE.test(vin)) return send(res, 400, { error: 'virheellinen VIN' });
@@ -129,7 +167,7 @@ async function api(req, res, u) {
     const errors = [];
     for (const a of REG_ADAPTERS) {
       try {
-        const d = await fetchJSON(a.url(plate), a.headers);
+        const d = a.raw ? await fetchText(a.url(plate), a.headers) : await fetchJSON(a.url(plate), a.headers);
         const v = a.map(d);
         if (v) return send(res, 200, { ok: true, vehicle: { ...v, source: a.name } });
         errors.push(`${a.name}: ei tunnistettavaa ajoneuvoa vastauksessa`);
