@@ -262,10 +262,11 @@ node server.js --port 80  # muu portti</pre><p style="font-size:14px">Ei riippuv
 
   function detectType(raw) {
     const s = clean(raw);
+    const hasSpaces = /\s/.test(String(raw || '').trim());
     if (/^[A-HJ-NPR-Z0-9]{17}$/.test(s)) return 'vin';
     if (/^[A-ZÅÄÖ]{1,3}\d{1,3}$/.test(s)) return 'plate';
-    if (s.length >= 11 && /^[A-Z0-9]+$/.test(s)) return 'vin-partial';
-    return 'unknown';
+    if (!hasSpaces && s.length >= 11 && s.length <= 17 && /^[A-Z0-9]+$/.test(s)) return 'vin-partial';
+    return 'unknown'; // esim. "Tesla Model S 2018" → app.js tulkitsee merkki/malli/vuosi
   }
 
   function checkDigit(vin) {
@@ -321,7 +322,7 @@ node server.js --port 80  # muu portti</pre><p style="font-size:14px">Ei riippuv
 
   function decodeVin(raw) {
     const vin = clean(raw);
-    const res = { vin, ok: vin.length === 17, fields: [], warnings: [], errors: [] };
+    const res = { vin, ok: vin.length === 17, fields: [], warnings: [], errors: [], brandFields: [], modelYears: [] };
     if (!res.ok) { res.errors.push('VIN on ' + vin.length + ' merkkiä, pitää olla 17.'); return res; }
     if (/[IOQ]/.test(vin)) res.errors.push('Sisältää kirjaimen I, O tai Q – ne eivät kuulu VIN-koodiin. Luku- tai kirjoitusvirhe?');
 
