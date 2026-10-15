@@ -25,6 +25,26 @@ autotarkistus/
 Live-haut eivät toimi demossa; muille VIN-koodeille toimivat VIN-tulkki, riskiprofiili, verolaskuri ja linkit.
 Rakennetaan uudelleen komennolla `python3 tools/build_demo.py`.
 
+## Asennus omalle palvelimelle
+
+**Linux (Raspberry Pi, Ubuntu, Debian, NAS jossa Debian-pohja):**
+```bash
+git clone <repo> && cd glowing-dollop/autotarkistus
+sudo bash deploy/install.sh                       # portti 8787, vain lähiverkko
+sudo bash deploy/install.sh 8787 jaakko:salasana  # salasanasuojattu (pakollinen jos avaat internetiin)
+```
+Skripti asentaa Node 22:n tarvittaessa, luo systemd-palvelun (käynnistyy bootissa) ja tulostaa osoitteen.
+Lokit `journalctl -u autorontgen -f`, päivitys `git pull && sudo systemctl restart autorontgen`, poisto `deploy/uninstall.sh`.
+
+**Docker (Synology/QNAP/Unraid/mikä tahansa):** `docker compose up -d` → portti 8787. Salasana `docker-compose.yml`:n `BASIC_AUTH`-riville.
+
+**Windows-kone:** asenna Node.js LTS (nodejs.org), tuplaklikkaa `deploy/run-windows.bat`. Selain aukeaa itsestään.
+
+**HTTPS omalla verkkotunnuksella:** `deploy/Caddyfile` (Caddy hakee varmenteen automaattisesti).
+
+Palvelin kuuntelee oletuksena kaikissa verkkoliitännöissä (`HOST=0.0.0.0`), joten se näkyy lähiverkon muille laitteille
+ja puhelimelle. Jos ohjaat portin reitittimestä ulos, aseta `BASIC_AUTH` – muuten proxy on avoin kaikille.
+
 ## Käyttö
 
 ```bash

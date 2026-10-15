@@ -1,0 +1,11 @@
+# docker compose up -d   → http://<palvelin>:8787
+services:
+  autorontgen:
+    build: .
+    restart: unless-stopped
+    ports: ["8787:8787"]
+    environment:
+      - PORT=8787
+      # - BASIC_AUTH=kayttaja:salasana   # pakollinen jos portti näkyy internetiin
+    volumes:
+      - ./data:/app/data   # peer_stats.json / fingerprints.json päivittyvät ilman uudelleenrakennusta

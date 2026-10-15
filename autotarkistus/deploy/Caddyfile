@@ -1,0 +1,7 @@
+# Valinnainen: HTTPS omalla verkkotunnuksella (Caddy hakee Let's Encrypt -varmenteen itse).
+# 1) ohjaa reitittimestä portit 80 ja 443 tälle koneelle  2) sudo apt install caddy  3) kopioi tämä /etc/caddy/Caddyfile
+autorontgen.esimerkki.fi {
+    reverse_proxy 127.0.0.1:8787
+    # Vaihtoehto server.js:n BASIC_AUTH:lle – salasanahash: caddy hash-password
+    # basicauth { jaakko <hash> }
+}

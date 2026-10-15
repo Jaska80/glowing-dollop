@@ -12,6 +12,10 @@ const path = require('path');
 
 const args = process.argv.slice(2);
 const PORT = Number(process.env.PORT || (args.includes('--port') ? args[args.indexOf('--port') + 1] : 8787));
+const HOST = process.env.HOST || (args.includes('--host') ? args[args.indexOf('--host') + 1] : '0.0.0.0');
+/* Valinnainen salasanasuojaus: BASIC_AUTH="kayttaja:salasana" ympäristömuuttujana tai --auth kayttaja:salasana.
+   Pakollinen jos avaat palvelimen internetiin (reititin/portinohjaus) – muuten kuka tahansa voi käyttää proxya. */
+const BASIC_AUTH = process.env.BASIC_AUTH || (args.includes('--auth') ? args[args.indexOf('--auth') + 1] : '');
 const ROOT = __dirname;
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const cache = new Map();
@@ -137,12 +141,27 @@ function serveStatic(req, res, u) {
   });
 }
 
+function authorized(req) {
+  if (!BASIC_AUTH) return true;
+  const h = req.headers.authorization || '';
+  if (!h.startsWith('Basic ')) return false;
+  try { return Buffer.from(h.slice(6), 'base64').toString('utf8') === BASIC_AUTH; } catch { return false; }
+}
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  if (!authorized(req)) { res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="Autorontgen", charset="UTF-8"', 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Kirjaudu'); }
   try {
     if (u.pathname.startsWith('/api/')) await api(req, res, u); else serveStatic(req, res, u);
   } catch (e) {
     send(res, e.status && e.status >= 400 && e.status < 600 ? 502 : 500, { error: e.message, upstream: e.body });
   }
 });
-server.listen(PORT, () => console.log(`Autoröntgen → http://localhost:${PORT}  (Ctrl+C lopettaa)`));
+server.listen(PORT, HOST, () => {
+  const os = require('os'); const ips = [];
+  for (const list of Object.values(os.networkInterfaces())) for (const i of list || []) if (i.family === 'IPv4' && !i.internal) ips.push(i.address);
+  console.log(`Autoröntgen käynnissä (Node ${process.version})`);
+  console.log(`  tällä koneella:   http://localhost:${PORT}`);
+  ips.forEach(ip => console.log(`  lähiverkosta:     http://${ip}:${PORT}`));
+  console.log(BASIC_AUTH ? '  salasanasuojaus:  päällä' : '  salasanasuojaus:  POIS – älä avaa internetiin ilman BASIC_AUTH-asetusta');
+  console.log('  Ctrl+C lopettaa');
+});
