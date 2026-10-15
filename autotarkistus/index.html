@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Autoröntgen</title>
-<meta name="description" content="Rekisteritunnus- ja VIN-pohjainen autotarkistus: VIN-dekoodaus, takaisinkutsut, omistajavalitukset, vertaisryhmätilasto ja verolaskuri.">
+<meta name="description" content="Rekisteritunnus- ja VIN-pohjainen autotarkistus: yksilöllinen riskiprofiili (moottorikoodi, vaihteisto, akku, varusteet), onnettomuus- ja huutokauppa-arkistohaut, katsastushistoria, NHTSA-data, vertaisryhmätilasto ja verolaskuri.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2336d1ff'/><text x='50' y='68' font-size='54' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%2306131a'>Rx</text></svg>">
 </head>
@@ -43,21 +43,24 @@
       </div>
       <div class="grid">
         <div class="card span2" id="risk"></div>
+        <div class="card span2" id="profile"></div>
         <div class="card" id="local"></div>
         <div class="card" id="nhtsa"></div>
         <div class="card" id="reg"></div>
-        <div class="card" id="manual"></div>
+        <div class="card span2" id="manual"></div>
+        <div class="card span2" id="accident"></div>
+        <div class="card" id="inspection"></div>
+        <div class="card" id="fingerprint"></div>
         <div class="card" id="recalls"></div>
         <div class="card" id="complaints"></div>
         <div class="card" id="peer"></div>
         <div class="card" id="tax"></div>
         <div class="card" id="ratings"></div>
-        <div class="card" id="issues"></div>
         <div class="card span2" id="links"></div>
       </div>
     </div>
     <div id="intro" class="grid" style="margin-top:4px">
-      <div class="card"><h2>Mitä tämä tekee</h2><p style="font-size:14px;margin:0">Yhdistää ilmaiset lähteet yhdeksi raportiksi: paikallinen VIN-tulkki (tarkistusnumero, valmistaja, tehdas, Tesla/Fiat-erikoisdekooderit), NHTSA:n live-rajapinnat (dekoodaus, takaisinkutsut, omistajavalitukset, törmäystestit), Traficomin avoimesta datasta laskettu suomalainen vertaisryhmä (mittarilukemat), ajoneuvoverolaskuri 2026 ja syvälinkit kaikkiin virallisiin ja kaupallisiin lähteisiin.</p></div>
+      <div class="card"><h2>Mitä tämä tekee</h2><p style="font-size:14px;margin:0">Yhdistää ilmaiset lähteet yhdeksi raportiksi ja – tässä ero muihin – rakentaa <b>yksilöllisen riskiprofiilin</b>: moottorikoodi, vaihteisto, akku, varusteet ja alkuperä täsmäytetään 115 komponenttitason tyyppivikasääntöön. Lisäksi: paikallinen VIN-tulkki (tarkistusnumero, valmistaja, tehdas, Tesla/Fiat-erikoisdekooderit), NHTSA:n live-rajapinnat (dekoodaus, takaisinkutsut, omistajavalitukset, törmäystestit), Traficomin avoimesta datasta laskettu suomalainen vertaisryhmä (mittarilukemat), ajoneuvoverolaskuri 2026 ja syvälinkit kaikkiin virallisiin ja kaupallisiin lähteisiin.</p></div>
       <div class="card"><h2>Mitä tämä ei tee</h2><p style="font-size:14px;margin:0">Ei hae omistajaa, mittarilukemahistoriaa tai vahinkohistoriaa rekkarilla – Suomessa niitä ei saa ilman tunnistautumista tai maksua. Sen sijaan sivu kertoo täsmälleen, mistä ne saa ja mitä se maksaa (Lähdekartta).</p></div>
     </div>
   </section>
@@ -84,6 +87,7 @@ node server.js --port 80  # muu portti</pre><p style="font-size:14px">Ei riippuv
 <footer>Autoröntgen · Tiedot koostetaan kolmansien osapuolten lähteistä, eikä mitään taata. NHTSA-tiedot koskevat USA-markkinaa. Tarkista aina Traficomista ennen kauppaa.</footer>
 <script src="js/vin.js"></script>
 <script src="js/sources.js"></script>
+<script src="js/issues_db.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

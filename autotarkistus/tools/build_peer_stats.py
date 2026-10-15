@@ -60,9 +60,14 @@ def main():
     ap.add_argument('--classes', default='M1,M1G', help='ajoneuvoluokat, pilkuilla (oletus M1,M1G = henkilöautot)')
     ap.add_argument('--encoding', default='latin-1')
     ap.add_argument('--as-of', default='', help='aineiston päivämäärä metatiedoksi, esim. 2026-03-31')
+    ap.add_argument('--fingerprint', default='', help='pilkuilla eroteltu lista MERKKI|MALLI -avaimia, joista kirjoitetaan yksilötason sormenjälkitiedosto (data/fingerprints.json), esim. "TESLA|MODEL S,FIAT|500E"')
+    ap.add_argument('--fingerprint-out', default='data/fingerprints.json')
     a = ap.parse_args()
     classes = {c.strip().upper() for c in a.classes.split(',') if c.strip()}
 
+    fp_keys = {k.strip().upper() for k in a.fingerprint.split(',') if k.strip()}
+    fingerprints = defaultdict(list)
+    c_kayt = None
     groups = defaultdict(lambda: {'km': [], 'mass': [], 'co2': [], 'color': Counter(), 'kunta': Counter(), 'fuel': Counter()})
     t0 = time.time(); rows = 0; used = 0
     with open(a.csv, encoding=a.encoding, newline='') as f:
@@ -71,7 +76,7 @@ def main():
         c_cls = find_col(header, 'ajoneuvoluokka'); c_make = find_col(header, 'merkkiSelvakielinen', 'merkki')
         c_model = find_col(header, 'kaupallinenNimi', 'mallimerkinta'); c_date = find_col(header, 'ensirekisterointipvm', 'ensirekisterointipaiva')
         c_km = find_col(header, 'matkamittarilukema'); c_mass = find_col(header, 'omamassa'); c_co2 = find_col(header, 'Co2', 'co2')
-        c_color = find_col(header, 'vari'); c_kunta = find_col(header, 'kunta'); c_fuel = find_col(header, 'kayttovoima')
+        c_color = find_col(header, 'vari'); c_kunta = find_col(header, 'kunta'); c_fuel = find_col(header, 'kayttovoima'); c_kayt = find_col(header, 'kayttoonottopvm', 'kayttoonotto')
         missing = [n for n, c in [('ajoneuvoluokka', c_cls), ('merkkiSelvakielinen', c_make), ('kaupallinenNimi', c_model), ('ensirekisterointipvm', c_date), ('matkamittarilukema', c_km)] if c is None]
         if missing:
             sys.exit(f'Puuttuvat sarakkeet: {missing}. Otsikkorivi: {header[:40]}')
@@ -100,8 +105,15 @@ def main():
                     g['color'][COLOR.get(r[c_color].strip(), r[c_color].strip())] += 1
                 if c_kunta is not None and r[c_kunta].strip():
                     k = r[c_kunta].strip().zfill(3); g['kunta'][KUNTA.get(k, 'kunta ' + k)] += 1
-                if c_fuel is not None and r[c_fuel].strip():
-                    g['fuel'][FUEL.get(r[c_fuel].strip(), r[c_fuel].strip())] += 1
+                fuel_name = FUEL.get(r[c_fuel].strip(), r[c_fuel].strip()) if c_fuel is not None and r[c_fuel].strip() else ''
+                if fuel_name:
+                    g['fuel'][fuel_name] += 1
+                mm_key = f'{make}|{model}'
+                if mm_key in fp_keys:
+                    color_name = COLOR.get(r[c_color].strip(), r[c_color].strip()) if c_color is not None else ''
+                    kunta_code = r[c_kunta].strip().zfill(3) if c_kunta is not None and r[c_kunta].strip() else ''
+                    fingerprints[mm_key].append([r[c_date].strip()[:10], r[c_kayt].strip() if c_kayt is not None else '', color_name,
+                                                 KUNTA.get(kunta_code, 'kunta ' + kunta_code) if kunta_code else '', km, m, co2, fuel_name])
                 used += 1
             except IndexError:
                 continue
@@ -123,6 +135,12 @@ def main():
         }
     with open(a.out, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, separators=(',', ':'))
+    if fp_keys:
+        for k in fp_keys:
+            fingerprints[k].sort(key=lambda x: (x[0], x[4] or 0))
+        with open(a.fingerprint_out, 'w', encoding='utf-8') as f:
+            json.dump({k: fingerprints[k] for k in fp_keys}, f, ensure_ascii=False, separators=(',', ':'))
+        print(f'Sormenjäljet: ' + ', '.join(f'{k}: {len(fingerprints[k])}' for k in fp_keys) + f' → {a.fingerprint_out}')
     print(f'Luettu {rows:,} riviä, käytetty {used:,}, ryhmiä {len(out):,} (min n={a.min_n}) → {a.out} ({time.time() - t0:.0f} s)')
 
 if __name__ == '__main__':

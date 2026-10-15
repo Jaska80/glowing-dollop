@@ -10,10 +10,12 @@ autotarkistus/
 ├── css/style.css
 ├── js/vin.js                  paikallinen VIN-tulkki: ISO 3779 tarkistusnumero, WMI-taulukko, mallivuosi, Tesla- ja Fiat-dekooderit
 ├── js/sources.js              lähderekisteri ("kaikki kolot") – ajaa sekä lähdekartan että syvälinkit
+├── js/issues_db.js            116 komponenttitason tyyppivikasääntöä (moottorikoodit, vaihteistot, akut, varusteet, alkuperä)
 ├── js/app.js                  raportti, riskipisteet, NHTSA-haut, verolaskuri, vertaisryhmä, export
-├── server.js                  Node 18+ -palvelin: staattiset tiedostot, NHTSA-proxy + välimuisti, rekkariadapteri
+├── server.js                  Node 18+ -palvelin: staattiset tiedostot, NHTSA-proxy + välimuisti, rekkariadapteri, huutokauppa-arkistoluotaimet
 ├── tools/build_peer_stats.py  Traficomin avoin data (CSV) → data/peer_stats.json
-└── data/peer_stats.json       (generoitu, ei repossa)
+├── data/peer_stats.json       (generoitu, ei repossa)
+└── data/fingerprints.json     (generoitu, ei repossa)
 ```
 
 ## Käyttö
@@ -33,6 +35,9 @@ Vertaisryhmätilasto (mittarilukemat Suomessa samalle merkki/malli/vuosi-ryhmäl
 # 2)
 python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv --as-of 2026-03-31
 #    → data/peer_stats.json  (ryhmät joissa ≥20 autoa; --min-n muuttaa)
+# yksilötason sormenjäljet haluamillesi malleille (pieni tiedosto):
+python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv --fingerprint "TESLA|MODEL S,FIAT|500E"
+#    → data/fingerprints.json
 ```
 
 ## Mitä raportti sisältää
@@ -40,13 +45,16 @@ python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv --as-of 2026-0
 | Kortti | Lähde | Verkko |
 |---|---|---|
 | Punaiset liput + riskipisteet | kaikki alla olevat yhdistettynä | – |
+| **Yksilöllinen riskiprofiili** | 116 sääntöä täsmäytetään tämän auton kokoonpanoon: moottorikoodi (CAYC, N47, OM651…), vaihteistotyyppi (DQ200, Jatco CVT, PowerShift…), iskutilavuus, veto, akun koko (Tesla 85/90/75/100), VIN-positiot (Tesla LFP), varusteet (ilmajousitus, panoraama, matrix…), alkuperä (USA-tuonti), ajomäärä/v ja ikä. Jokainen osuma kertoo mitä tarkistaa ja mitä korjaus maksaa, ja *miksi* sääntö osui. | ei |
+| **Onnettomuudet, lunastukset, kuvat** | palvelimen luotaimet hakevat VIN:n Copart/IAAI/bidfax/poctra/stat.vin -arkistoista; kuvahaut (Google/Yandex/Bing) VIN:llä ja rekkarilla; NMVTIS/Carfax/AutoCheck/carVertical/autoDNA; AVK ja vanhat suomalaiset ilmoitukset; kolarikorjauksen tunnistaminen paikan päällä | proxy + linkit |
+| **Katsastushistoria** | ohjattu polku: Traficom ilmainen vs. maksullinen historia, "rekisteröintikatsastus kesken elinkaaren" -tulkinta, tuontimaan ilmainen katsastusrekisteri (SE/NO/DK/UK/EE/NL) suoraan vanhalla rekkarilla, odotettu km-lukema iän mukaan | linkit |
+| **Avoimen datan sormenjälki** | merkki + malli + ensirekisteröintipäivä + väri + kunta rajaavat Traficomin avoimen datan usein yhteen riviin → yksilön viimeisin katsastuskilometri ilmaiseksi; hälyttää jos ilmoitettu lukema on pienempi | paikallinen JSON |
 | VIN-tulkinta | paikallinen: tarkistusnumero, WMI/maa, mallivuosi (30 v kierto), Tesla Part 565 -koodit (malli, kori, akku, moottorit, tehdas), Fiat 500e USA-tunnistus | ei |
 | NHTSA vPIC | 100+ kenttää: malli, akku kWh, moottorit, tehdas, turvavarusteet | live/proxy |
 | Takaisinkutsut, omistajavalitukset, törmäystähdet | NHTSA (USA) – täysin relevantti Teslalle ja USA-tuontiautoille (esim. Fiat 500e 2013–19) | live/proxy |
 | Rekisteritunnushaku | server.js-adapteri (kokeellinen) → muuten Traficom-linkki | proxy |
 | Vertaisryhmä Suomessa | Traficomin avoin data: mediaani- ja kvartiilikilometrit, massa, CO2, väri, kunta | paikallinen JSON |
 | Ajoneuvovero 2026 | Traficomin taulukko: sähkö perusvero 106,21 €/v (0 g), käyttövoimavero 1,9 c/pv/alkava 100 kg (diesel 5,5, kaasu 3,1) | ei |
-| Tunnetut mallikohtaiset ongelmat | kuratoitu muistilista (Tesla S/3/X/Y, Fiat 500e) | ei |
 | Syvälinkit | 25 lähdettä, URL täytetään tunnistetulla autolla | – |
 
 Lisäksi: tulostus/PDF, JSON-vienti, jaettava linkki (`?q=VIN`), käsin täydennys (tallentuu selaimeen) jolloin
@@ -71,6 +79,23 @@ kaikki kortit toimivat pelkällä rekkarilla kun merkki/malli/vuosi on katsottu 
 hakukone `"ABC-123"` lainausmerkeissä (vanhat ilmoitukset, kolariautot), carVertical/rekkari.fi/tekstiviestihaut (maksullisia).
 KKV varoittaa "ilmaisista hinta-arvioista" – lue hinta ennen tunnuksen syöttöä.
 
+## Miten riskiprofiili toimii (js/issues_db.js)
+
+Jokaisella säännöllä on `match`-ehto, jonka kaikkien osien pitää täyttyä. Profiili kootaan VIN-tulkinnasta, NHTSA:sta,
+rekkarihausta ja käsin syötetystä. Esimerkkejä:
+
+```js
+{ engine: ['CAY', 'CFFB', 'EA189'] }                       // moottorikoodin alku tai perhe (käsin: "EA189" riittää)
+{ make: ['VOLKSWAGEN'], trans: 'kaksois|DSG', disp: [0.9, 1.6], years: [2008, 2020] }   // kuiva DQ200
+{ make: ['TESLA'], model: 'MODEL (S|X)', kwh: [84, 86] }    // 85 kWh akku
+{ make: ['TESLA'], tesla: { battery: ['F'] } }              // VIN pos 7 = F → LFP
+{ fuel: ['diesel'], years: [2014, 2030] }                   // AdBlue/SCR
+{ feat: ['ilmajousitus'] }  { origin: ['USA'], anyOf: ['importFlag'] }  { kmPerYear: [0, 8000] }  { ageMin: 8 }
+```
+
+Uuden säännön lisääminen on yksi objekti taulukkoon. Kun moottorikoodi puuttuu, raportti kertoo montako sääntöä jäi
+tarkistamatta – koodi löytyy moottorin tarrasta, osasta rekisteröintitodistuksia tai Biltema/Motonet-rekkarihausta.
+
 ## Rehellinen tila
 
 Rakennusympäristön verkko oli rajoitettu, joten **rajapintoja ei ajettu oikeaa dataa vastaan**. Mitä tämä tarkoittaa:
@@ -85,8 +110,15 @@ Rakennusympäristön verkko oli rajoitettu, joten **rajapintoja ei ajettu oikeaa
 - Verotaulukon luvut ovat 1.1.2026 voimaan tulleet (sähkö 1,5→1,9 c; perusvero min 53,29→106,21 €/v). Polttomoottoriauton
   perusvero CO2:n mukaan katsotaan Traficomin taulukosta – sitä ei ole kopioitu tähän, koska sitä ei saatu varmistettua.
 - Tesla-VIN-koodit (akku/moottori) vaihtelevat mallivuosittain; dekooderi kertoo yleisimmän tulkinnan, NHTSA vPIC on auktoriteetti.
+- Huutokauppa-arkistoluotaimet (`PROBES` server.js:ssä) ovat kokeellisia: sivustot vaihtavat osoitteita ja osa estää botit.
+  Tulos "ei tarkistettu" tarkoittaa että avaat linkin itse. Osuma on vahva signaali, "ei osumaa" ei todista mitään.
+- Tyyppivikasäännöt ovat yleistyksiä laajasti dokumentoiduista vioista, eivät väite yksittäisen auton kunnosta. Vuosirajat
+  ja moottorikoodilistat on koottu muistinvaraisesti – jos tiedät paremmin, korjaa sääntö ja kerro.
 
 ## Ideoita jatkoon
+
+- Sääntökannan laajennus: käyttäjien omat havainnot (lomake → JSON), Traficomin vikatilaston automaattinen linkitys ikäluokkaan.
+- OCR rekisteröintitodistuksesta → profiili täyttyy kuvasta.
 
 - Rekisterikilven kirjainsarja → rekisteröintivuoden arvio (vaatii sarjataulukon 2010-luvulta; ei löytynyt luotettavaa lähdettä).
 - Traficomin katsastuksen vikatilaston (Excel) jauhaminen JSONiksi samaan tapaan kuin mittarilukemat → "hylkäys-% tälle mallille/iälle".

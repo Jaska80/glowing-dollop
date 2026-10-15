@@ -53,6 +53,35 @@ async function fetchJSON(url, headers = {}) {
   } finally { clearTimeout(to); }
 }
 
+
+/* Vauriohuutokauppa-arkistojen luotaimet (kokeellinen). Haetaan julkinen hakusivu ja katsotaan, esiintyykö VIN tuloksissa.
+   Sivustot muuttuvat ja osa estää botit → tulos on "hit" / "none" / "unknown", ei koskaan varma. Lisää/korjaa tähän. */
+const PROBES = [
+  { name: 'Copart (USA)', url: (v) => `https://www.copart.com/lotSearchResults/?free=true&query=${v}`, none: /no (results|lots) found|0 results/i },
+  { name: 'IAAI (USA)', url: (v) => `https://www.iaai.com/Search?Keyword=${v}`, none: /no results|0 results|did not match/i },
+  { name: 'bidfax.info', url: (v) => `https://bidfax.info/?do=search&subaction=search&story=${v}`, none: /nothing found|no results|ничего не найдено/i },
+  { name: 'poctra.com', url: (v) => `https://poctra.com/search/ap/${v}`, none: /no results|nothing found|0 results/i },
+  { name: 'stat.vin', url: (v) => `https://stat.vin/cars/${v}`, none: /not found|no results|404/i },
+];
+async function probeVin(vin) {
+  const out = [];
+  await Promise.all(PROBES.map(async (p) => {
+    const url = p.url(vin); const key = 'probe:' + url; const hit = cache.get(key);
+    if (hit && hit.t > Date.now()) return out.push(hit.v);
+    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 12000);
+    let r = { name: p.name, url, status: 'unknown' };
+    try {
+      const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36', Accept: 'text/html,*/*', 'Accept-Language': 'en-US,en;q=0.8' }, signal: ctrl.signal, redirect: 'follow' });
+      const html = await res.text();
+      if (!res.ok) r.note = 'HTTP ' + res.status;
+      else if (/captcha|access denied|cf-chl|just a moment|are you a human/i.test(html)) r.note = 'botsuojaus – avaa linkki itse';
+      else { const n = (html.toUpperCase().match(new RegExp(vin, 'g')) || []).length; const none = p.none.test(html); r.status = n >= 2 && !none ? 'hit' : 'none'; r.note = n ? 'VIN esiintyy ' + n + ' kertaa' : ''; }
+    } catch (e) { r.note = e.name === 'AbortError' ? 'aikakatkaisu' : e.message; }
+    clearTimeout(to); cache.set(key, { v: r, t: Date.now() + CACHE_TTL_MS }); out.push(r);
+  }));
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function send(res, code, body, type = 'application/json; charset=utf-8') {
   res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' });
   res.end(typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body));
@@ -65,7 +94,7 @@ const SAFE_Q = (q) => encodeURIComponent(String(q || '').slice(0, 60));
 
 async function api(req, res, u) {
   const p = u.pathname;
-  if (p === '/api/health') return send(res, 200, { ok: true, cache: cache.size, adapters: REG_ADAPTERS.map(a => a.name) });
+  if (p === '/api/health') return send(res, 200, { ok: true, cache: cache.size, adapters: REG_ADAPTERS.map(a => a.name), probes: PROBES.map(p => p.name) });
   if (p.startsWith('/api/vin/')) {
     const vin = decodeURIComponent(p.slice(9)).toUpperCase();
     if (!VIN_RE.test(vin)) return send(res, 400, { error: 'virheellinen VIN' });
@@ -76,6 +105,11 @@ async function api(req, res, u) {
   if (p === '/api/complaints') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
   if (p === '/api/ratings') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${model}`));
   if (p.startsWith('/api/ratings/')) { const id = p.slice(13); if (!/^\d{1,8}$/.test(id)) return send(res, 400, { error: 'id' }); return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/VehicleId/${id}`)); }
+  if (p === '/api/probe') {
+    const vin = String(u.searchParams.get('vin') || '').toUpperCase();
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) return send(res, 400, { error: 'virheellinen VIN' });
+    return send(res, 200, await probeVin(vin));
+  }
   if (p.startsWith('/api/reg/')) {
     const plate = decodeURIComponent(p.slice(9)).toUpperCase().trim();
     if (!PLATE_RE.test(plate)) return send(res, 400, { ok: false, error: 'virheellinen rekisteritunnus' });
