@@ -1,0 +1,114 @@
+#!/usr/bin/env node
+/* Autoröntgen – kevyt palvelin ilman riippuvuuksia (Node 18+).
+   - Jakaa staattiset tiedostot
+   - Proxyttaa NHTSA-rajapinnat (kiertää CORS:n, välimuisti 1 h)
+   - /api/reg/:plate – kokeellinen suomalainen rekisteritunnushaku (adapterit alla, EI dokumentoituja rajapintoja)
+   - /api/health
+   Käynnistys: node server.js [--port 8787] */
+'use strict';
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const args = process.argv.slice(2);
+const PORT = Number(process.env.PORT || (args.includes('--port') ? args[args.indexOf('--port') + 1] : 8787));
+const ROOT = __dirname;
+const CACHE_TTL_MS = 60 * 60 * 1000;
+const cache = new Map();
+const UA = 'Autorontgen/1.0 (+henkilokohtainen autotarkistus; ei massahakuja)';
+
+/* Rekisteritunnusadapterit. Jokainen palauttaa normalisoidun {make, model, year, engine, power_kw, fuel, source} tai null.
+   Huom: nämä ovat kaupallisten varaosakauppojen sivustojen käyttämiä hakuja; rajapinnat ovat dokumentoimattomia ja voivat muuttua.
+   Jos adapteri ei toimi, korjaa URL/kentät tässä – sovellus toimii joka tapauksessa Traficom-linkkien kautta. */
+const REG_ADAPTERS = [
+  {
+    name: 'biltema',
+    url: (plate) => `https://reg.biltema.com/vehicle/api/vehicle/FI/${encodeURIComponent(plate.replace('-', ''))}`,
+    headers: { Accept: 'application/json', Referer: 'https://www.biltema.fi/' },
+    map: (d) => {
+      const v = Array.isArray(d) ? d[0] : (d && (d.vehicle || d.Vehicle || d));
+      if (!v || typeof v !== 'object') return null;
+      const pick = (...ks) => { for (const k of ks) { const val = deepGet(v, k); if (val != null && val !== '') return val; } return null; };
+      const make = pick('brand', 'Brand', 'make', 'Make', 'manufacturer', 'carBrand');
+      if (!make) return null;
+      return { make, model: pick('model', 'Model', 'carModel', 'modelName'), year: pick('modelYear', 'ModelYear', 'year', 'Year', 'registrationYear'),
+        engine: pick('engine', 'Engine', 'engineCode', 'motorCode'), power_kw: pick('powerKw', 'PowerKw', 'kw', 'power'), fuel: pick('fuel', 'Fuel', 'fuelType'),
+        body: pick('body', 'Body', 'bodyType'), raw: v };
+    },
+  },
+];
+function deepGet(o, k) { if (o == null) return undefined; if (k in o) return o[k]; for (const key of Object.keys(o)) if (o[key] && typeof o[key] === 'object') { const r = deepGet(o[key], k); if (r !== undefined) return r; } return undefined; }
+
+async function fetchJSON(url, headers = {}) {
+  const hit = cache.get(url);
+  if (hit && hit.t > Date.now()) return hit.v;
+  const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', ...headers }, signal: ctrl.signal });
+    const text = await r.text();
+    if (!r.ok) throw Object.assign(new Error(`upstream ${r.status}`), { status: r.status, body: text.slice(0, 300) });
+    let v; try { v = JSON.parse(text); } catch { throw Object.assign(new Error('upstream ei palauttanut JSONia'), { status: 502, body: text.slice(0, 300) }); }
+    cache.set(url, { v, t: Date.now() + CACHE_TTL_MS });
+    return v;
+  } finally { clearTimeout(to); }
+}
+
+function send(res, code, body, type = 'application/json; charset=utf-8') {
+  res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' });
+  res.end(typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body));
+}
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.md': 'text/markdown; charset=utf-8' };
+
+const VIN_RE = /^[A-HJ-NPR-Z0-9]{11,17}$/i;
+const PLATE_RE = /^[A-ZÅÄÖ]{1,3}-?\d{1,3}$/i;
+const SAFE_Q = (q) => encodeURIComponent(String(q || '').slice(0, 60));
+
+async function api(req, res, u) {
+  const p = u.pathname;
+  if (p === '/api/health') return send(res, 200, { ok: true, cache: cache.size, adapters: REG_ADAPTERS.map(a => a.name) });
+  if (p.startsWith('/api/vin/')) {
+    const vin = decodeURIComponent(p.slice(9)).toUpperCase();
+    if (!VIN_RE.test(vin)) return send(res, 400, { error: 'virheellinen VIN' });
+    return send(res, 200, await fetchJSON(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${vin}?format=json`));
+  }
+  const make = SAFE_Q(u.searchParams.get('make')), model = SAFE_Q(u.searchParams.get('model')), year = SAFE_Q(u.searchParams.get('modelYear'));
+  if (p === '/api/recalls') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/recalls/recallsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
+  if (p === '/api/complaints') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
+  if (p === '/api/ratings') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${model}`));
+  if (p.startsWith('/api/ratings/')) { const id = p.slice(13); if (!/^\d{1,8}$/.test(id)) return send(res, 400, { error: 'id' }); return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/VehicleId/${id}`)); }
+  if (p.startsWith('/api/reg/')) {
+    const plate = decodeURIComponent(p.slice(9)).toUpperCase().trim();
+    if (!PLATE_RE.test(plate)) return send(res, 400, { ok: false, error: 'virheellinen rekisteritunnus' });
+    const errors = [];
+    for (const a of REG_ADAPTERS) {
+      try {
+        const d = await fetchJSON(a.url(plate), a.headers);
+        const v = a.map(d);
+        if (v) return send(res, 200, { ok: true, vehicle: { ...v, source: a.name } });
+        errors.push(`${a.name}: ei tunnistettavaa ajoneuvoa vastauksessa`);
+      } catch (e) { errors.push(`${a.name}: ${e.message}${e.status ? ' (' + e.status + ')' : ''}`); }
+    }
+    return send(res, 200, { ok: false, error: 'Rekisteritunnushaku ei onnistunut: ' + errors.join('; ') + '. Käytä Traficomin Oma asiointia.' });
+  }
+  send(res, 404, { error: 'ei reittiä' });
+}
+
+function serveStatic(req, res, u) {
+  let rel = decodeURIComponent(u.pathname); if (rel === '/') rel = '/index.html';
+  const file = path.normalize(path.join(ROOT, rel));
+  if (!file.startsWith(ROOT) || file.includes(path.sep + '.') || rel.includes('server.js')) return send(res, 403, 'forbidden', 'text/plain');
+  fs.readFile(file, (err, buf) => {
+    if (err) return send(res, 404, 'not found', 'text/plain');
+    send(res, 200, buf, MIME[path.extname(file).toLowerCase()] || 'application/octet-stream');
+  });
+}
+
+const server = http.createServer(async (req, res) => {
+  const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  try {
+    if (u.pathname.startsWith('/api/')) await api(req, res, u); else serveStatic(req, res, u);
+  } catch (e) {
+    send(res, e.status && e.status >= 400 && e.status < 600 ? 502 : 500, { error: e.message, upstream: e.body });
+  }
+});
+server.listen(PORT, () => console.log(`Autoröntgen → http://localhost:${PORT}  (Ctrl+C lopettaa)`));

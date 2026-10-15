@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Autoröntgen</title>
+<meta name="description" content="Rekisteritunnus- ja VIN-pohjainen autotarkistus: VIN-dekoodaus, takaisinkutsut, omistajavalitukset, vertaisryhmätilasto ja verolaskuri.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2336d1ff'/><text x='50' y='68' font-size='54' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%2306131a'>Rx</text></svg>">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">Rx</div>
+    <div>
+      <h1>Autoröntgen</h1>
+      <p>Rekisteritunnus tai VIN → kaikki mitä autosta saa irti ilmaiseksi. <span id="proxy" class="st">tarkistetaan…</span></p>
+    </div>
+  </div>
+</header>
+<main>
+  <form id="form" class="search" autocomplete="off">
+    <input id="q" name="q" placeholder="ABC-123  tai  5YJSA7E24JF123456" spellcheck="false" aria-label="Rekisteritunnus tai VIN">
+    <button class="btn" type="submit">Röntgenkuvaa</button>
+    <button class="btn secondary" type="button" id="clear">Tyhjennä</button>
+  </form>
+  <p class="hint">Kokeile: <code data-example="5YJSA1E2XJF000001" role="button">Tesla Model S 2018</code> · <code data-example="3C3CFFGE9GT000001" role="button">Fiat 500e 2016 (USA)</code> · <code data-example="ABC-123" role="button">rekisteritunnus</code>. VIN löytyy rekisteriotteesta, tuulilasin vasemmasta alakulmasta tai kuljettajan oven pielestä.</p>
+
+  <div class="tabs">
+    <span class="tab active" data-tab="report">Raportti</span>
+    <span class="tab" data-tab="sources">Lähdekartta – mistä tietoa saa</span>
+    <span class="tab" data-tab="help">Ohje &amp; asennus</span>
+  </div>
+
+  <section data-view="report">
+    <div id="results" hidden>
+      <h2 id="title" style="margin:0;font-size:28px;letter-spacing:-.02em"></h2>
+      <div id="sub" class="num" style="color:var(--muted);margin-bottom:10px"></div>
+      <div class="toolbar">
+        <button class="btn secondary" id="print" type="button">Tulosta / PDF</button>
+        <button class="btn secondary" id="json" type="button">Lataa JSON</button>
+        <button class="btn secondary" id="share" type="button">Kopioi linkki</button>
+      </div>
+      <div class="grid">
+        <div class="card span2" id="risk"></div>
+        <div class="card" id="local"></div>
+        <div class="card" id="nhtsa"></div>
+        <div class="card" id="reg"></div>
+        <div class="card" id="manual"></div>
+        <div class="card" id="recalls"></div>
+        <div class="card" id="complaints"></div>
+        <div class="card" id="peer"></div>
+        <div class="card" id="tax"></div>
+        <div class="card" id="ratings"></div>
+        <div class="card" id="issues"></div>
+        <div class="card span2" id="links"></div>
+      </div>
+    </div>
+    <div id="intro" class="grid" style="margin-top:4px">
+      <div class="card"><h2>Mitä tämä tekee</h2><p style="font-size:14px;margin:0">Yhdistää ilmaiset lähteet yhdeksi raportiksi: paikallinen VIN-tulkki (tarkistusnumero, valmistaja, tehdas, Tesla/Fiat-erikoisdekooderit), NHTSA:n live-rajapinnat (dekoodaus, takaisinkutsut, omistajavalitukset, törmäystestit), Traficomin avoimesta datasta laskettu suomalainen vertaisryhmä (mittarilukemat), ajoneuvoverolaskuri 2026 ja syvälinkit kaikkiin virallisiin ja kaupallisiin lähteisiin.</p></div>
+      <div class="card"><h2>Mitä tämä ei tee</h2><p style="font-size:14px;margin:0">Ei hae omistajaa, mittarilukemahistoriaa tai vahinkohistoriaa rekkarilla – Suomessa niitä ei saa ilman tunnistautumista tai maksua. Sen sijaan sivu kertoo täsmälleen, mistä ne saa ja mitä se maksaa (Lähdekartta).</p></div>
+    </div>
+  </section>
+
+  <section data-view="sources" hidden>
+    <div class="card"><h2>Kaikki kolot</h2>
+      <p style="font-size:14px;color:var(--muted);margin:0 0 10px">Tila "ei testattu" tarkoittaa, että osoite/rajapinta perustuu julkisiin kuvauksiin eikä sitä ajettu tämän työkalun rakennusympäristöstä (verkko rajoitettu). Linkit on silti rakennettu niin, että ne vievät oikeaan palveluun.</p>
+      <div id="sources" style="overflow:auto"></div>
+    </div>
+  </section>
+
+  <section data-view="help" hidden>
+    <div class="grid">
+      <div class="card"><h2>Käyttö ilman asennusta</h2><p style="font-size:14px">Avaa <code>index.html</code> selaimessa. VIN-tulkki, verolaskuri, muistilistat ja linkit toimivat. NHTSA-haut toimivat jos rajapinta sallii selainhaun (CORS); muuten käytä palvelinta.</p></div>
+      <div class="card"><h2>Palvelin (suositus)</h2><pre style="font-size:13px;background:var(--panel2);padding:10px;border-radius:8px;overflow:auto">cd autotarkistus
+node server.js            # http://localhost:8787
+node server.js --port 80  # muu portti</pre><p style="font-size:14px">Ei riippuvuuksia, Node 18+. Proxyttaa NHTSA-haut (ei CORS-ongelmia), välimuistittaa tunniksi ja yrittää rekisteritunnushakua kaupallisista varaosahauista.</p></div>
+      <div class="card"><h2>Vertaisryhmätilasto</h2><pre style="font-size:13px;background:var(--panel2);padding:10px;border-radius:8px;overflow:auto">python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv
+# → data/peer_stats.json</pre><p style="font-size:14px">Lataa Traficomin ajoneuvokannan avoin data (zip, ~1 GB CSV) avoindata.fi:stä. Skripti laskee merkki/malli/vuosi-ryhmittäin mittarilukeman mediaanin ja kvartiilit.</p></div>
+      <div class="card"><h2>Ostajan protokolla</h2><ol style="font-size:14px;padding-left:18px;margin:0"><li>Syötä VIN tänne → punaiset liput, takaisinkutsut, tunnetut viat.</li><li>Traficom Oma asiointi (ilmainen): tekniset tiedot, vero maksettu?, katsastus voimassa?, liikennekäytössä?</li><li>Traficomista maksullinen historia (mittarilukemat katsastuksissa) jos km vaikuttaa vähäiseltä.</li><li>Tuontiauto: autoveropäätös vero.fi + CARFAX/carVertical.</li><li>Tesla: Teslan VIN-takaisinkutsuhaku + huoltohistoria appista; Fiat 500e: akun SOH OBD:llä.</li><li>Koeajo ja katsastusaseman kuntotarkastus (80–150 €).</li></ol></div>
+    </div>
+  </section>
+</main>
+<footer>Autoröntgen · Tiedot koostetaan kolmansien osapuolten lähteistä, eikä mitään taata. NHTSA-tiedot koskevat USA-markkinaa. Tarkista aina Traficomista ennen kauppaa.</footer>
+<script src="js/vin.js"></script>
+<script src="js/sources.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
