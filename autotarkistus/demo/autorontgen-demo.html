@@ -1,0 +1,1303 @@
+<title>Autoröntgen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2336d1ff'/><text x='50' y='68' font-size='54' text-anchor='middle' font-family='sans-serif' font-weight='700' fill='%2306131a'>Rx</text></svg>">
+<style>
+:root{
+  --bg:#0b0f14;--bg2:#111822;--panel:#141d29;--panel2:#1a2534;--line:#223042;--text:#e6edf3;--muted:#8b9bb0;
+  --accent:#36d1ff;--accent2:#7cf7c4;--warn:#ffb547;--bad:#ff5d73;--ok:#4ade80;--chip:#1f2c3d;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:14px;color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f3f6fa;--bg2:#e9eef5;--panel:#ffffff;--panel2:#f3f6fa;--line:#d6dee8;--text:#111a26;--muted:#56657a;--chip:#e9eef5;--accent:#0b86b8;--accent2:#15a36f;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f3f6fa;--bg2:#e9eef5;--panel:#ffffff;--panel2:#f3f6fa;--line:#d6dee8;--text:#111a26;--muted:#56657a;--chip:#e9eef5;--accent:#0b86b8;--accent2:#15a36f;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.45}
+body{background:radial-gradient(1200px 500px at 20% -10%,rgba(54,209,255,.18),transparent 60%),radial-gradient(900px 400px at 100% 0,rgba(124,247,196,.12),transparent 60%),var(--bg);min-height:100vh}
+a{color:var(--accent)}
+header{padding-block:28px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1180px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px}
+.search input{min-width:0}
+.brand .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06131a;font-weight:800;font-size:22px;box-shadow:0 10px 30px rgba(54,209,255,.25)}
+.brand h1{margin:0;font-size:26px;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:14px}
+main{max-width:1180px;margin:0 auto;padding-block:0 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card,.grid>*{min-width:0}
+.search{display:flex;gap:10px;margin:18px 0 8px;flex-wrap:wrap}
+.search input{flex:1 1 320px;font:600 20px var(--mono);letter-spacing:.08em;padding:16px 18px;border-radius:var(--r);border:1px solid var(--line);background:var(--panel);color:var(--text);text-transform:uppercase;outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(54,209,255,.2)}
+.btn{font:600 15px var(--sans);padding:14px 22px;border-radius:var(--r);border:1px solid transparent;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06131a;cursor:pointer}
+.btn.secondary{background:var(--panel);color:var(--text);border-color:var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+.hint code{font-family:var(--mono);background:var(--chip);padding:1px 6px;border-radius:6px}
+.tabs{display:flex;gap:6px;margin:14px 0 18px;flex-wrap:wrap}
+.tab{padding:8px 14px;border-radius:999px;background:var(--chip);color:var(--muted);cursor:pointer;font-size:14px;border:1px solid transparent}
+.tab.active{color:var(--text);border-color:var(--accent);background:var(--panel)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.card.span2{grid-column:1/-1}
+.card h2{margin:0 0 10px;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.card h2 .st{margin-left:auto}
+.kv{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:6px 12px;font-size:14px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;word-break:break-word}
+.kv dd b{font-family:var(--mono);font-weight:600}
+.st{font-size:11px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--muted);text-transform:none;letter-spacing:0;white-space:nowrap}
+.st.ok{background:rgba(74,222,128,.15);color:var(--ok)}.st.warn{background:rgba(255,181,71,.15);color:var(--warn)}
+.st.bad{background:rgba(255,93,115,.15);color:var(--bad)}.st.live{background:rgba(54,209,255,.15);color:var(--accent)}
+.flag{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;margin:6px 0;font-size:14px;background:var(--panel2);border-left:3px solid var(--line)}
+.flag.bad{border-left-color:var(--bad)}.flag.warn{border-left-color:var(--warn)}.flag.ok{border-left-color:var(--ok)}.flag.info{border-left-color:var(--accent)}
+.flag .ic{font-size:16px;line-height:1.2}
+.score{display:flex;align-items:center;gap:18px}
+.gauge{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--g,var(--ok)) calc(var(--p,0)*1%),var(--chip) 0);flex:none}
+.gauge > div{width:84px;height:84px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font:700 26px var(--mono)}
+.list{list-style:none;margin:0;padding:0;font-size:14px}
+.list li{padding:8px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border:0}
+.list small{color:var(--muted);display:block}
+.links a{display:inline-flex;align-items:center;gap:6px;margin:4px 6px 4px 0;padding:7px 11px;border-radius:999px;background:var(--chip);color:var(--text);text-decoration:none;font-size:13px;border:1px solid transparent}
+.links a:hover{border-color:var(--accent)}
+.links a .st{margin-left:2px}
+form.manual{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;font-size:13px}
+form.manual label{display:flex;flex-direction:column;gap:3px;color:var(--muted)}
+form.manual input,form.manual select{padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:14px var(--sans)}
+.empty{color:var(--muted);font-size:14px;padding:6px 0}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+table.src{width:100%;border-collapse:collapse;font-size:13px}
+table.src th,table.src td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.src th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.06em}
+table.src tr.group td{background:var(--panel2);font-weight:700;color:var(--accent)}
+.bar{height:10px;background:var(--chip);border-radius:6px;position:relative;margin:8px 0 2px}
+.bar .rng{position:absolute;top:0;bottom:0;background:rgba(54,209,255,.35);border-radius:6px}
+.bar .med{position:absolute;top:-3px;width:2px;height:16px;background:var(--accent)}
+.bar .you{position:absolute;top:-5px;width:4px;height:20px;background:var(--warn);border-radius:2px}
+.axis{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-family:var(--mono)}
+footer{max-width:1180px;margin:0 auto;padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));color:var(--muted);font-size:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+.toolbar .btn{padding:9px 14px;font-size:13px}
+.num{font-family:var(--mono)}
+details summary{cursor:pointer;color:var(--muted);font-size:13px}
+.taxout{display:grid;grid-template-columns:1fr auto;gap:4px 14px;font-size:14px;margin-top:8px}
+.taxout .num{text-align:right}
+.taxout .total{font-weight:700;border-top:1px solid var(--line);padding-top:6px}
+@media print{body{background:#fff;color:#000}.search,.tabs,.toolbar,.btn,footer{display:none!important}.card{break-inside:avoid;border-color:#ccc}}
+@media (max-width:600px){.brand h1{font-size:20px}.kv{grid-template-columns:1fr}.kv dt{margin-top:6px}}
+
+</style>
+
+<header>
+  <div class="brand">
+    <div class="logo">Rx</div>
+    <div>
+      <h1>Autoröntgen</h1>
+      <p>Rekisteritunnus tai VIN → kaikki mitä autosta saa irti ilmaiseksi. <span id="proxy" class="st">tarkistetaan…</span></p>
+    </div>
+  </div>
+</header>
+<main>
+  <form id="form" class="search" autocomplete="off">
+    <input id="q" name="q" placeholder="ABC-123  tai  5YJSA7E24JF123456" spellcheck="false" aria-label="Rekisteritunnus tai VIN">
+    <button class="btn" type="submit">Röntgenkuvaa</button>
+    <button class="btn secondary" type="button" id="clear">Tyhjennä</button>
+  </form>
+  <div id="demobanner" class="flag warn" hidden></div>
+  <p class="hint">Kokeile: <code data-example="tesla" role="button">Tesla Model S 75D 2018</code> · <code data-example="fiat" role="button">Fiat 500e 2016 (USA-tuonti)</code> · <code data-example="passat" role="button">Passat 2.0 TDI DSG 2012 (Ruotsi)</code> · <code data-example="plate" role="button">rekisteritunnus</code>. VIN löytyy rekisteriotteesta, tuulilasin vasemmasta alakulmasta tai kuljettajan oven pielestä.</p>
+
+  <div class="tabs">
+    <span class="tab active" data-tab="report">Raportti</span>
+    <span class="tab" data-tab="sources">Lähdekartta – mistä tietoa saa</span>
+    <span class="tab" data-tab="help">Ohje &amp; asennus</span>
+  </div>
+
+  <section data-view="report">
+    <div id="results" hidden>
+      <h2 id="title" style="margin:0;font-size:28px;letter-spacing:-.02em"></h2>
+      <div id="sub" class="num" style="color:var(--muted);margin-bottom:10px"></div>
+      <div class="toolbar">
+        <button class="btn secondary" id="print" type="button">Tulosta / PDF</button>
+        <button class="btn secondary" id="json" type="button">Lataa JSON</button>
+        <button class="btn secondary" id="share" type="button">Kopioi linkki</button>
+      </div>
+      <div class="grid">
+        <div class="card span2" id="risk"></div>
+        <div class="card span2" id="profile"></div>
+        <div class="card" id="local"></div>
+        <div class="card" id="nhtsa"></div>
+        <div class="card" id="reg"></div>
+        <div class="card span2" id="manual"></div>
+        <div class="card span2" id="accident"></div>
+        <div class="card" id="inspection"></div>
+        <div class="card" id="fingerprint"></div>
+        <div class="card" id="recalls"></div>
+        <div class="card" id="complaints"></div>
+        <div class="card" id="peer"></div>
+        <div class="card" id="tax"></div>
+        <div class="card" id="ratings"></div>
+        <div class="card span2" id="links"></div>
+      </div>
+    </div>
+    <div id="intro" class="grid" style="margin-top:4px">
+      <div class="card"><h2>Mitä tämä tekee</h2><p style="font-size:14px;margin:0">Yhdistää ilmaiset lähteet yhdeksi raportiksi ja – tässä ero muihin – rakentaa <b>yksilöllisen riskiprofiilin</b>: moottorikoodi, vaihteisto, akku, varusteet ja alkuperä täsmäytetään 115 komponenttitason tyyppivikasääntöön. Lisäksi: paikallinen VIN-tulkki (tarkistusnumero, valmistaja, tehdas, Tesla/Fiat-erikoisdekooderit), NHTSA:n live-rajapinnat (dekoodaus, takaisinkutsut, omistajavalitukset, törmäystestit), Traficomin avoimesta datasta laskettu suomalainen vertaisryhmä (mittarilukemat), ajoneuvoverolaskuri 2026 ja syvälinkit kaikkiin virallisiin ja kaupallisiin lähteisiin.</p></div>
+      <div class="card"><h2>Mitä tämä ei tee</h2><p style="font-size:14px;margin:0">Ei hae omistajaa, mittarilukemahistoriaa tai vahinkohistoriaa rekkarilla – Suomessa niitä ei saa ilman tunnistautumista tai maksua. Sen sijaan sivu kertoo täsmälleen, mistä ne saa ja mitä se maksaa (Lähdekartta).</p></div>
+    </div>
+  </section>
+
+  <section data-view="sources" hidden>
+    <div class="card"><h2>Kaikki kolot</h2>
+      <p style="font-size:14px;color:var(--muted);margin:0 0 10px">Tila "ei testattu" tarkoittaa, että osoite/rajapinta perustuu julkisiin kuvauksiin eikä sitä ajettu tämän työkalun rakennusympäristöstä (verkko rajoitettu). Linkit on silti rakennettu niin, että ne vievät oikeaan palveluun.</p>
+      <div id="sources" style="overflow:auto"></div>
+    </div>
+  </section>
+
+  <section data-view="help" hidden>
+    <div class="grid">
+      <div class="card"><h2>Käyttö ilman asennusta</h2><p style="font-size:14px">Avaa <code>index.html</code> selaimessa. VIN-tulkki, verolaskuri, muistilistat ja linkit toimivat. NHTSA-haut toimivat jos rajapinta sallii selainhaun (CORS); muuten käytä palvelinta.</p></div>
+      <div class="card"><h2>Palvelin (suositus)</h2><pre style="font-size:13px;background:var(--panel2);padding:10px;border-radius:8px;overflow:auto">cd autotarkistus
+node server.js            # http://localhost:8787
+node server.js --port 80  # muu portti</pre><p style="font-size:14px">Ei riippuvuuksia, Node 18+. Proxyttaa NHTSA-haut (ei CORS-ongelmia), välimuistittaa tunniksi ja yrittää rekisteritunnushakua kaupallisista varaosahauista.</p></div>
+      <div class="card"><h2>Vertaisryhmätilasto</h2><pre style="font-size:13px;background:var(--panel2);padding:10px;border-radius:8px;overflow:auto">python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv
+# → data/peer_stats.json</pre><p style="font-size:14px">Lataa Traficomin ajoneuvokannan avoin data (zip, ~1 GB CSV) avoindata.fi:stä. Skripti laskee merkki/malli/vuosi-ryhmittäin mittarilukeman mediaanin ja kvartiilit.</p></div>
+      <div class="card"><h2>Ostajan protokolla</h2><ol style="font-size:14px;padding-left:18px;margin:0"><li>Syötä VIN tänne → punaiset liput, takaisinkutsut, tunnetut viat.</li><li>Traficom Oma asiointi (ilmainen): tekniset tiedot, vero maksettu?, katsastus voimassa?, liikennekäytössä?</li><li>Traficomista maksullinen historia (mittarilukemat katsastuksissa) jos km vaikuttaa vähäiseltä.</li><li>Tuontiauto: autoveropäätös vero.fi + CARFAX/carVertical.</li><li>Tesla: Teslan VIN-takaisinkutsuhaku + huoltohistoria appista; Fiat 500e: akun SOH OBD:llä.</li><li>Koeajo ja katsastusaseman kuntotarkastus (80–150 €).</li></ol></div>
+    </div>
+  </section>
+</main>
+<footer>Autoröntgen · Tiedot koostetaan kolmansien osapuolten lähteistä, eikä mitään taata. NHTSA-tiedot koskevat USA-markkinaa. Tarkista aina Traficomista ennen kauppaa.</footer>
+
+<script>
+/* Autoröntgen – paikallinen VIN/rekkari-tulkki. Ei verkkoa, ei riippuvuuksia.
+   Lähteet: ISO 3779 (tarkistusnumero, WMI-maakoodit), valmistajien NHTSA Part 565 -ilmoitukset (Tesla),
+   yleisesti tunnetut WMI-koodit. Taulukot ovat tarkoituksella suppeat ja merkitty "arvio" siellä,
+   missä valmistaja ei noudata yhdenmukaista koodausta. */
+(function (global) {
+  'use strict';
+
+  const TRANSLIT = { A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,J:1,K:2,L:3,M:4,N:5,P:7,R:9,S:2,T:3,U:4,V:5,W:6,X:7,Y:8,Z:9 };
+  const WEIGHTS = [8,7,6,5,4,3,2,10,0,9,8,7,6,5,4,3,2];
+
+  /** Mallivuosikirjain (pos 10). Kiertää 30 vuoden välein: A=1980/2010, B=1981/2011 ... Y=2000/2030, 1=2001/2031 ... 9=2009/2039 */
+  const YEAR_CODES = 'ABCDEFGHJKLMNPRSTVWXY123456789';
+
+  /** Maaryhmät WMI:n 1. merkin (ja osin 2.) mukaan. Vain yleisimmät. */
+  const REGIONS = [
+    [/^[A-C]/, 'Afrikka'],
+    [/^J/, 'Japani'], [/^K[L-R]/, 'Etelä-Korea'], [/^L/, 'Kiina'],
+    [/^M[A-E]/, 'Intia'], [/^M[F-K]/, 'Indonesia'], [/^M[L-R]/, 'Thaimaa'],
+    [/^N[L-R]/, 'Turkki'], [/^P[L-R]/, 'Malesia'], [/^R[L-R]/, 'Taiwan'],
+    [/^S[A-M]/, 'Iso-Britannia'], [/^S[N-T]/, 'Saksa (ent. DDR)'], [/^S[U-Z]/, 'Puola'],
+    [/^T[A-H]/, 'Sveitsi'], [/^T[J-P]/, 'Tšekki'], [/^T[R-V]/, 'Unkari'], [/^TW/, 'Portugali'],
+    [/^U[5-7]/, 'Slovakia'], [/^UU/, 'Romania'], [/^UH/, 'Tanska'],
+    [/^V[A-E]/, 'Itävalta'], [/^V[F-R]/, 'Ranska'], [/^V[S-W]/, 'Espanja'], [/^V[X-Z0-2]/, 'Serbia/Kroatia'],
+    [/^W/, 'Saksa'],
+    [/^X[L-M]/, 'Alankomaat'], [/^X[S-W]/, 'Venäjä'], [/^X[3-9]/, 'Venäjä'],
+    [/^Y[A-E]/, 'Belgia'], [/^Y[F-K]/, 'Suomi'], [/^Y[S-W]/, 'Ruotsi'],
+    [/^Z[A-R]/, 'Italia'],
+    [/^[1,4,5]/, 'USA'], [/^2/, 'Kanada'], [/^3/, 'Meksiko'], [/^6/, 'Australia'], [/^7[A-E]/, 'Uusi-Seelanti'], [/^7[F-Z]/, 'USA'],
+    [/^8/, 'Argentiina/Chile'], [/^9/, 'Brasilia'],
+  ];
+
+  /** Tunnettuja WMI-koodeja. Avain 3 merkkiä. */
+  const WMI = {
+    // Tesla
+    '5YJ': ['Tesla', 'Fremont, Kalifornia (USA)'], '7SA': ['Tesla', 'USA (Austin/Fremont)'], '7G2': ['Tesla', 'USA (Semi/Cybertruck)'],
+    'LRW': ['Tesla', 'Shanghai (Kiina)'], 'XP7': ['Tesla', 'Grünheide/Berlin (Saksa)'], 'SFZ': ['Tesla (Roadster, Lotus-kori)', 'Iso-Britannia'],
+    // Fiat / Stellantis
+    'ZFA': ['Fiat', 'Italia'], 'ZFF': ['Ferrari', 'Italia'], 'ZAR': ['Alfa Romeo', 'Italia'], 'ZLA': ['Lancia', 'Italia'], 'ZAM': ['Maserati', 'Italia'],
+    '3C3': ['Fiat (Chrysler de México)', 'Toluca, Meksiko'], '3C4': ['Chrysler/Dodge (Meksiko)', 'Meksiko'],
+    '1C3': ['Chrysler', 'USA'], '1C4': ['Chrysler/Jeep', 'USA'], '1C6': ['Ram', 'USA'], '2C3': ['Chrysler', 'Kanada'], '1J4': ['Jeep', 'USA'], '1B3': ['Dodge', 'USA'], '2B3': ['Dodge', 'Kanada'],
+    'VF3': ['Peugeot', 'Ranska'], 'VF7': ['Citroën', 'Ranska'], 'VR3': ['Peugeot', 'Ranska'], 'VR7': ['Citroën/DS', 'Ranska'], 'VR1': ['DS', 'Ranska'],
+    'W0L': ['Opel', 'Saksa'], 'W0V': ['Opel', 'Saksa'], 'VXK': ['Opel (PSA-pohja)', 'Ranska'],
+    // VAG
+    'WVW': ['Volkswagen (henkilöautot)', 'Saksa'], 'WVG': ['Volkswagen (SUV/MPV)', 'Saksa'], 'WV1': ['Volkswagen hyötyajoneuvot', 'Saksa'], 'WV2': ['Volkswagen hyötyajoneuvot (bussi/Multivan)', 'Saksa'],
+    'WAU': ['Audi', 'Saksa'], 'WUA': ['Audi Sport (quattro GmbH)', 'Saksa'], 'TRU': ['Audi', 'Unkari (Győr)'], 'WA1': ['Audi SUV', 'Saksa'],
+    'TMB': ['Škoda', 'Tšekki'], 'VSS': ['SEAT', 'Espanja'], 'VSZ': ['Cupra/SEAT', 'Espanja'], 'WP0': ['Porsche', 'Saksa'], 'WP1': ['Porsche SUV', 'Saksa'],
+    // BMW / Mini
+    'WBA': ['BMW', 'Saksa'], 'WBS': ['BMW M', 'Saksa'], 'WBY': ['BMW i', 'Saksa'], 'WBX': ['BMW SUV', 'Saksa'], 'WMW': ['MINI', 'Iso-Britannia/Saksa'], '5UX': ['BMW SUV', 'USA (Spartanburg)'], '5YM': ['BMW M SUV', 'USA'],
+    // Mercedes
+    'WDB': ['Mercedes-Benz', 'Saksa'], 'WDC': ['Mercedes-Benz SUV', 'Saksa'], 'WDD': ['Mercedes-Benz', 'Saksa'], 'W1K': ['Mercedes-Benz', 'Saksa'], 'W1N': ['Mercedes-Benz SUV', 'Saksa'], 'W1V': ['Mercedes-Benz hyötyajoneuvot', 'Saksa'], 'WMX': ['Mercedes-AMG', 'Saksa'], '4JG': ['Mercedes-Benz SUV', 'USA (Tuscaloosa)'],
+    // Volvo / Polestar
+    'YV1': ['Volvo', 'Ruotsi'], 'YV4': ['Volvo SUV', 'Ruotsi/Belgia'], 'YV2': ['Volvo Trucks', 'Ruotsi'], 'LYV': ['Volvo', 'Kiina'], 'LPS': ['Polestar', 'Kiina'], 'YVV': ['Polestar', 'Ruotsi'], 'YS3': ['Saab', 'Ruotsi'],
+    // Japani
+    'JT': null, 'JTD': ['Toyota', 'Japani'], 'JTE': ['Toyota', 'Japani'], 'JTH': ['Lexus', 'Japani'], 'JTJ': ['Lexus', 'Japani'], 'JTM': ['Toyota', 'Japani'], 'JTN': ['Toyota', 'Japani'], 'SB1': ['Toyota', 'Iso-Britannia (Burnaston)'], 'NMT': ['Toyota', 'Turkki'], 'VNK': ['Toyota', 'Ranska (Valenciennes)'],
+    'JHM': ['Honda', 'Japani'], 'SHH': ['Honda', 'Iso-Britannia'], 'JH4': ['Acura', 'Japani'],
+    'JM0': ['Mazda', 'Japani'], 'JMZ': ['Mazda', 'Japani'], 'JM1': ['Mazda', 'Japani'],
+    'JN1': ['Nissan', 'Japani'], 'SJN': ['Nissan', 'Iso-Britannia (Sunderland)'], 'VSK': ['Nissan', 'Espanja'], 'JN8': ['Nissan SUV', 'Japani'],
+    'JF1': ['Subaru', 'Japani'], 'JF2': ['Subaru SUV', 'Japani'], 'JMB': ['Mitsubishi', 'Japani'], 'JA3': ['Mitsubishi', 'Japani'], 'JA4': ['Mitsubishi SUV', 'Japani'],
+    'JS1': ['Suzuki (MP)', 'Japani'], 'JSA': ['Suzuki', 'Japani'], 'TSM': ['Suzuki', 'Unkari'],
+    // Korea
+    'KMH': ['Hyundai', 'Etelä-Korea'], 'KM8': ['Hyundai SUV', 'Etelä-Korea'], 'TMA': ['Hyundai', 'Tšekki (Nošovice)'], 'KNA': ['Kia', 'Etelä-Korea'], 'KND': ['Kia SUV', 'Etelä-Korea'], 'KNE': ['Kia', 'Etelä-Korea'], 'U5Y': ['Kia', 'Slovakia (Žilina)'], 'U6Y': ['Kia', 'Slovakia'], 'KL1': ['Chevrolet (GM Korea)', 'Etelä-Korea'],
+    // Ranska / muut
+    'VF1': ['Renault', 'Ranska'], 'VF6': ['Renault Trucks', 'Ranska'], 'UU1': ['Dacia', 'Romania'], 'VNE': ['Renault', 'Ranska'],
+    'WF0': ['Ford', 'Saksa'], 'WF1': ['Ford', 'Saksa'], '1FA': ['Ford', 'USA'], '1FM': ['Ford SUV', 'USA'], '1FT': ['Ford pickup', 'USA'], '3FA': ['Ford', 'Meksiko'], 'NM0': ['Ford', 'Turkki'],
+    'SAJ': ['Jaguar', 'Iso-Britannia'], 'SAL': ['Land Rover', 'Iso-Britannia'], 'SAD': ['Jaguar', 'Iso-Britannia'],
+    '1G1': ['Chevrolet', 'USA'], '1GC': ['Chevrolet pickup', 'USA'], '1G6': ['Cadillac', 'USA'], '2G1': ['Chevrolet', 'Kanada'], '1HG': ['Honda', 'USA'], '5FN': ['Honda', 'USA'], '4T1': ['Toyota', 'USA'], '5TD': ['Toyota', 'USA'],
+    'LGX': ['BYD', 'Kiina'], 'LSJ': ['MG (SAIC)', 'Kiina'], 'L6T': ['Lynk & Co', 'Kiina'], 'LVV': ['Chery', 'Kiina'], 'LZW': ['SAIC-GM-Wuling', 'Kiina'], 'LFV': ['FAW-VW', 'Kiina'], 'LSV': ['SAIC-VW', 'Kiina'],
+    'YK1': ['Valmet Automotive (sopimusvalmistus)', 'Uusikaupunki, Suomi'], 'YE4': ['Sisu', 'Suomi'],
+  };
+
+  const TESLA = {
+    model: { S: 'Model S', '3': 'Model 3', X: 'Model X', Y: 'Model Y', R: 'Roadster', C: 'Cybertruck', T: 'Semi' },
+    body: {
+      A: '5-ovinen hatchback, vasen ohjaus (Model S)', B: '5-ovinen hatchback, oikea ohjaus (Model S)',
+      C: 'MPV luokka E, vasen ohjaus (Model X)', D: 'MPV luokka E, oikea ohjaus (Model X)',
+      E: '4-ovinen sedan, vasen ohjaus (Model 3)', F: '4-ovinen sedan, oikea ohjaus (Model 3)',
+      G: 'MPV luokka D, vasen ohjaus (Model Y)', H: 'MPV luokka D, oikea ohjaus (Model Y)',
+      J: 'Cybertruck / Semi -kori',
+    },
+    battery: {
+      E: 'Sähkö, NMC/NCA-kenno (yleinen koodi 2014→)', F: 'Sähkö, LFP-kenno (litiumrautafosfaatti)',
+      H: 'Korkea kapasiteetti (Model S 2012–2013: 85 kWh)', S: 'Standard-kapasiteetti (Model S 2012–2013: 60 kWh)',
+      V: 'Ultra-kapasiteetti', R: 'Sähkö (Cybertruck/uudemmat)',
+    },
+    motor: {
+      '1': 'Yksi moottori, standard (Model S/X)', '2': 'Kaksi moottoria, standard – "D" (Model S/X)',
+      '3': 'Yksi moottori, performance (Model S/X)', '4': 'Kaksi moottoria, performance – "P…D" (Model S/X)',
+      '5': 'Kaksi moottoria, P2 (Raven/Plaid-aikakausi)', '6': 'Kolme moottoria (Plaid)',
+      A: 'Yksi moottori, standard (Model 3/Y)', B: 'Kaksi moottoria, standard (Model 3/Y)', C: 'Kaksi moottoria, performance (Model 3/Y)',
+      D: 'Yksi moottori, standard (Model 3/Y, uudempi koodi)', E: 'Kaksi moottoria (Model 3/Y, uudempi koodi)', F: 'Kaksi moottoria, performance (uudempi koodi)',
+    },
+    plant: { F: 'Fremont, Kalifornia', P: 'Palo Alto (protot/varhainen tuotanto)', A: 'Austin, Texas', B: 'Grünheide (Berlin)', C: 'Shanghai', N: 'Reno, Nevada (Gigafactory 1)', T: 'Tilburg, Alankomaat (EU-loppukokoonpano Model S/X)', R: 'Research/Prototype' },
+  };
+
+  function clean(v) { return String(v || '').toUpperCase().replace(/[\s\-\.]/g, ''); }
+
+  function detectType(raw) {
+    const s = clean(raw);
+    if (/^[A-HJ-NPR-Z0-9]{17}$/.test(s)) return 'vin';
+    if (/^[A-ZÅÄÖ]{1,3}\d{1,3}$/.test(s)) return 'plate';
+    if (s.length >= 11 && /^[A-Z0-9]+$/.test(s)) return 'vin-partial';
+    return 'unknown';
+  }
+
+  function checkDigit(vin) {
+    let sum = 0;
+    for (let i = 0; i < 17; i++) {
+      const ch = vin[i];
+      const v = /\d/.test(ch) ? Number(ch) : TRANSLIT[ch];
+      if (v === undefined) return { valid: false, expected: null, reason: 'kielletty merkki ' + ch };
+      sum += v * WEIGHTS[i];
+    }
+    const r = sum % 11;
+    const expected = r === 10 ? 'X' : String(r);
+    return { valid: vin[8] === expected, expected };
+  }
+
+  function regionFor(wmi) {
+    for (const [re, name] of REGIONS) if (re.test(wmi)) return name;
+    return 'tuntematon alue';
+  }
+
+  function modelYears(code) {
+    const idx = YEAR_CODES.indexOf(code);
+    if (idx < 0) return [];
+    const base = 1980 + idx; // 1980..2009
+    return [base, base + 30, base + 60].filter(y => y <= new Date().getFullYear() + 1);
+  }
+
+  function decodeTesla(vin) {
+    const out = [];
+    const m = TESLA.model[vin[3]]; if (m) out.push(['Malli', m]);
+    const b = TESLA.body[vin[4]]; if (b) out.push(['Kori / ohjaus', b]);
+    out.push(['Turvavarusteet (koodi)', vin[5] + ' – Teslan Part 565 -taulukon mukainen turvatyyny/-vyökoodi']);
+    const bat = TESLA.battery[vin[6]]; if (bat) out.push(['Akku / käyttövoima', bat]);
+    const mot = TESLA.motor[vin[7]]; if (mot) out.push(['Moottorit / voimansiirto', mot]);
+    const pl = TESLA.plant[vin[10]]; if (pl) out.push(['Tehdas (pos 11)', pl]);
+    out.push(['Sarjanumero', vin.slice(11)]);
+    return out;
+  }
+
+  /** Fiat 500e (2013–2019, Toluca). Tunnettu VDS-kuvio 3C3CFFGE. Uusi 500e (2020→) on ZFA-alkuinen. */
+  function decodeFiat(vin) {
+    const out = [];
+    if (vin.startsWith('3C3CFFGE')) {
+      out.push(['Malli', 'Fiat 500e (1. sukupolvi, 24 kWh, 83 kW) – USA-markkinan auto, Meksikossa valmistettu']);
+      out.push(['Huomio', 'Yksilö on todennäköisesti USA-tuontiauto. Tarkista autoveropäätös ja EU-tyyppihyväksynnän puuttuminen (yksittäishyväksyntä).']);
+    } else if (vin.startsWith('3C3CFF')) {
+      out.push(['Malli', 'Fiat 500 (USA-markkina, Toluca). VDS ' + vin.slice(3, 8)]);
+    } else if (vin.startsWith('ZFA')) {
+      out.push(['Malli', 'Fiat (Italia). Tyyppikoodi ' + vin.slice(3, 9) + ' – 2020→ sähkö-500e on tyyppiä 332']);
+    }
+    return out;
+  }
+
+  function decodeVin(raw) {
+    const vin = clean(raw);
+    const res = { vin, ok: vin.length === 17, fields: [], warnings: [], errors: [] };
+    if (!res.ok) { res.errors.push('VIN on ' + vin.length + ' merkkiä, pitää olla 17.'); return res; }
+    if (/[IOQ]/.test(vin)) res.errors.push('Sisältää kirjaimen I, O tai Q – ne eivät kuulu VIN-koodiin. Luku- tai kirjoitusvirhe?');
+
+    const wmi = vin.slice(0, 3);
+    const known = WMI[wmi] || null;
+    const region = regionFor(wmi);
+    res.wmi = wmi; res.region = region; res.manufacturer = known ? known[0] : null; res.plantHint = known ? known[1] : null;
+    res.fields.push(['WMI (valmistaja)', wmi + (known ? ' – ' + known[0] : ' – ei paikallisessa taulukossa (NHTSA täydentää)')]);
+    res.fields.push(['Valmistusmaa (WMI)', region + (known && known[1] ? ', ' + known[1] : '')]);
+    if (wmi[2] === '9') res.warnings.push('WMI päättyy 9:ään: pienvalmistaja (<1000 autoa/v), tarkempi tunniste positioissa 12–14.');
+
+    const cd = checkDigit(vin);
+    res.checkDigit = cd;
+    const naMaker = /^[1-5]/.test(vin) || /^(5YJ|7SA|LRW|XP7)/.test(vin);
+    if (cd.valid) res.fields.push(['Tarkistusnumero (pos 9)', vin[8] + ' – täsmää']);
+    else if (naMaker) res.errors.push('Tarkistusnumero ei täsmää (on ' + vin[8] + ', pitäisi olla ' + cd.expected + '). Pohjois-Amerikan valmistajilla (ja Teslalla) tämän pitää täsmätä → kirjoitusvirhe tai väärennetty VIN.');
+    else res.warnings.push('Tarkistusnumero ei täsmää ISO 3779 -laskennalla (odotettu ' + cd.expected + '). Eurooppalaiset ja japanilaiset valmistajat eivät yleensä käytä tarkistusnumeroa, joten tämä ei yksin ole hälytys.');
+
+    const years = modelYears(vin[9]);
+    res.modelYears = years;
+    if (years.length) {
+      const likely = years.filter(y => y >= 2000);
+      res.fields.push(['Mallivuosi (pos 10)', likely.length ? likely.join(' tai ') + ' (30 v kierto)' : years.join(' / ')]);
+      if (!naMaker) res.warnings.push('Mallivuosikirjain on sitova vain Pohjois-Amerikan markkinoilla. Esim. BMW ja Mercedes eivät koodaa vuotta VIN:iin – luota ensirekisteröintipäivään.');
+    }
+    res.fields.push(['VDS (pos 4–8)', vin.slice(3, 8) + ' – malli/kori/moottori valmistajan omalla koodauksella']);
+    res.fields.push(['VIS / sarjanumero (pos 10–17)', vin.slice(9)]);
+
+    res.brandFields = [];
+    if (/^(5YJ|7SA|LRW|XP7|7G2)/.test(vin)) { res.brand = 'tesla'; res.brandFields = decodeTesla(vin); }
+    else if (/^(3C3|ZFA)/.test(vin)) { res.brand = 'fiat'; res.brandFields = decodeFiat(vin); }
+    return res;
+  }
+
+  function parsePlate(raw) {
+    const s = String(raw || '').toUpperCase().replace(/\s/g, '');
+    const m = s.match(/^([A-ZÅÄÖ]{1,3})-?(\d{1,3})$/);
+    if (!m) return { ok: false, plate: s, errors: ['Ei näytä suomalaiselta rekisteritunnukselta (muoto ABC-123).'] };
+    const letters = m[1], digits = m[2];
+    const notes = [];
+    if (letters.length === 3 && digits.length === 3) notes.push('Normaali henkilö-/pakettiauton tunnus (1972→ sarja).');
+    if (letters.length === 2) notes.push('2 kirjainta: usein moottoripyörä, mopo, traktori tai vanha sarja.');
+    if (letters === 'CD') notes.push('CD = diplomaattikilpi.');
+    if (/^[0-9]/.test(letters)) notes.push('Numero edessä: ei suomalainen muoto.');
+    return { ok: true, plate: letters + '-' + digits, letters, digits, notes };
+  }
+
+  global.VINLIB = { detectType, decodeVin, parsePlate, clean, checkDigit, modelYears, WMI, TESLA };
+})(window);
+
+/* Lähderekisteri: kaikki "kolot", joista autosta saa tietoa. Käytetään sekä lähdekarttaan että linkkien generointiin.
+   access: live = selain hakee suoraan (CORS ok) | proxy = vaatii server.js | link = syvälinkki, käyttäjä hakee itse
+           login = vaatii tunnistautumisen | paid = maksullinen | file = ladattava aineisto
+   verified: true = rajapinta/URL varmistettu tämän työkalun teossa; false = tieto perustuu julkisiin kuvauksiin, ei testattu */
+window.SOURCES = [
+  // --- Suomi: viralliset ---
+  { id: 'traficom-oma', group: 'Suomi – viralliset', name: 'Traficom Oma asiointi: ajoneuvon tiedot', access: ['login'],
+    gives: 'Tekniset tiedot, verotiedot, katsastusajankohta, liikennekäyttötila, mahdollinen rekisteröinti-/käyttökielto. Ilmaista tunnistautuneelle. Omistaja-/haltijahistoria ja mittarilukemahistoria maksullisia.',
+    by: ['rekkari', 'vin'], url: () => 'https://asiointi.traficom.fi/omatraficom/', verified: false,
+    note: 'Ei julkista rajapintaa. Tämä on silti paras yksittäinen lähde – avaa ja syötä tunnus.' },
+  { id: 'traficom-avoin', group: 'Suomi – viralliset', name: 'Traficom: ajoneuvokannan avoin data (CSV)', access: ['file'],
+    gives: 'Koko liikennekäytössä oleva kanta (~5 M riviä): merkki, kaupallinen nimi, ensirekisteröinti, käyttöönotto, CO2, massat, käyttövoima, kunta ja viimeisin katsastuksen mittarilukema. EI rekisteritunnusta eikä VIN:iä (anonymisoitu).',
+    by: ['tilasto'], url: () => 'https://avoindata.suomi.fi/data/fi/dataset/ajoneuvojen-avoin-data', verified: true,
+    note: 'Tämä työkalu käyttää sitä vertaisryhmätilastoon: tools/build_peer_stats.py → data/peer_stats.json.' },
+  { id: 'traficom-recall', group: 'Suomi – viralliset', name: 'Traficom: takaisinkutsukampanjat', access: ['link'],
+    gives: 'Suomessa voimassa olevat takaisinkutsut merkeittäin. Ei VIN-hakua – valmistaja/maahantuoja kohdistaa kirjeet rekisteristä.',
+    by: ['merkki'], url: () => 'https://www.traficom.fi/fi/liikenne/tieliikenne/takaisinkutsut', verified: false },
+  { id: 'traficom-katsastus', group: 'Suomi – viralliset', name: 'Traficom: katsastuksen vikatilastot (mallikohtaiset)', access: ['file'],
+    gives: 'Hylkäysprosentit ja yleisimmät viat merkki/malli/ikäluokittain, keskimääräiset ajokilometrit. Esim. 2023: Tesla Model 3 hylkäys-% poikkeuksellisen korkea.',
+    by: ['merkki'], url: () => 'https://www.traficom.fi/fi/tilastot/katsastustilastot', verified: false },
+  { id: 'vero-autovero', group: 'Suomi – viralliset', name: 'Verohallinto: autovero & käytettyjen hintatietopalvelu', access: ['link'],
+    gives: 'Tuontiauton autoveron suuruusluokka, sovelletut veropäätökset (Excel-taulukot kuukausittain). Tuontiauton (esim. USA-Tesla, USA-500e) kohdalla tarkista että autovero on maksettu – muuten se lankeaa sinulle.',
+    by: ['merkki'], url: () => 'https://www.vero.fi/henkiloasiakkaat/omaisuus/autovero/', verified: true },
+  { id: 'traficom-vero', group: 'Suomi – viralliset', name: 'Traficom: ajoneuvoveron laskuri & verotaulukot', access: ['link'],
+    gives: 'Virallinen perusvero + käyttövoimavero. Tämän sivun laskuri tekee sähköautolle saman laskun paikallisesti (2026-taulukko).',
+    by: ['co2', 'massa'], url: () => 'https://www.traficom.fi/fi/liikenne/tieliikenne/ajoneuvoveron-maara', verified: false },
+  { id: 'lvk', group: 'Suomi – viralliset', name: 'Liikennevakuutuskeskus (vakuutustieto)', access: ['link'],
+    gives: 'Vakuutusyhtiö rekisteritunnuksella vahinkotilanteessa. Ostotilanteessa vakuutuksen voimassaolo näkyy Traficomin asioinnissa.',
+    by: ['rekkari'], url: () => 'https://www.lvk.fi/', verified: false },
+
+  // --- USA: ilmaiset rajapinnat ---
+  { id: 'nhtsa-vpic', group: 'USA – ilmaiset rajapinnat', name: 'NHTSA vPIC VIN-dekooderi', access: ['live'],
+    gives: 'Valmistaja, malli, mallivuosi, kori, moottori/akku, tehdas, ohjauspuoli, GVWR – kaikille maailman valmistajille WMI-tasolla, tarkasti USA-markkinan autoille (Tesla, Fiat 500e USA).',
+    by: ['vin'], url: (c) => 'https://vpic.nhtsa.dot.gov/decoder/Decoder?VIN=' + (c.vin || ''), verified: true,
+    api: (c) => 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/' + c.vin + '?format=json' },
+  { id: 'nhtsa-recalls', group: 'USA – ilmaiset rajapinnat', name: 'NHTSA takaisinkutsut', access: ['live'],
+    gives: 'Kaikki USA:n takaisinkutsut merkki/malli/vuosi-tasolla: komponentti, syy, korjaus. Teslalle ja USA-tuonnille suoraan relevantti; EU-autoilla vain suuntaa-antava.',
+    by: ['merkki', 'malli', 'vuosi'], url: (c) => 'https://www.nhtsa.gov/recalls?vin=' + (c.vin || ''), verified: true,
+    api: (c) => 'https://api.nhtsa.gov/recalls/recallsByVehicle?make=' + enc(c.make) + '&model=' + enc(c.model) + '&modelYear=' + enc(c.year) },
+  { id: 'nhtsa-complaints', group: 'USA – ilmaiset rajapinnat', name: 'NHTSA omistajavalitukset', access: ['live'],
+    gives: 'Omistajien viralliset valitukset komponenteittain – paljastaa mallin krooniset viat (esim. Model S MCU, ovenkahvat, ilmajousitus).',
+    by: ['merkki', 'malli', 'vuosi'], url: (c) => 'https://www.nhtsa.gov/vehicle/' + enc(c.year) + '/' + enc(c.make) + '/' + enc(c.model), verified: true,
+    api: (c) => 'https://api.nhtsa.gov/complaints/complaintsByVehicle?make=' + enc(c.make) + '&model=' + enc(c.model) + '&modelYear=' + enc(c.year) },
+  { id: 'nhtsa-ratings', group: 'USA – ilmaiset rajapinnat', name: 'NHTSA törmäysturvallisuus (tähdet)', access: ['live'],
+    gives: 'Kokonais-, etu-, sivu- ja kaatumistestien tähdet.', by: ['merkki', 'malli', 'vuosi'],
+    url: (c) => 'https://www.nhtsa.gov/ratings', verified: true,
+    api: (c) => 'https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(c.model) },
+
+  // --- Valmistajat ---
+  { id: 'tesla-recall', group: 'Valmistajat', name: 'Tesla: VIN-kohtainen takaisinkutsuhaku', access: ['link'],
+    gives: 'Juuri tämän yksilön avoimet takaisinkutsut (myös OTA-korjatut).', by: ['vin'], only: 'tesla',
+    url: (c) => 'https://www.tesla.com/vin-recall-search', verified: false },
+  { id: 'tesla-info', group: 'Valmistajat', name: 'tesla-info.com VIN-haku (yhteisö)', access: ['link'],
+    gives: 'Optiokoodit, akkuversio, aiemmat EU-myynti-ilmoitukset ja mittarilukemat jos auto on ollut myynnissä aiemmin.', by: ['vin'], only: 'tesla',
+    url: (c) => 'https://tesla-info.com/tesla-vin-decoder.php?vin=' + (c.vin || ''), verified: false },
+  { id: 'mopar-recall', group: 'Valmistajat', name: 'Mopar/Stellantis: VIN-takaisinkutsuhaku (USA-Fiat)', access: ['link'],
+    gives: 'USA-markkinan Fiat/Chrysler/Jeep-yksilön avoimet kampanjat.', by: ['vin'], only: 'fiat',
+    url: (c) => 'https://www.mopar.com/en-us/my-vehicle/recalls/search.html', verified: false },
+  { id: 'ev-database', group: 'Valmistajat', name: 'EV Database (tekniset tiedot sähköautoille)', access: ['link'],
+    gives: 'Akun hyötykapasiteetti, latausteho, WLTP-kulutus, todellinen toimintamatka eri lämpötiloissa.', by: ['merkki', 'malli'],
+    url: (c) => 'https://ev-database.org/#sort:path~type~order=.rank~number~desc|range-slider-range:prev~next=0~1200|range-slider-acceleration:prev~next=2~23|range-slider-topspeed:prev~next=110~350|range-slider-battery:prev~next=10~200|range-slider-towweight:prev~next=0~2500|range-slider-fastcharge:prev~next=0~1500|paging:currentPage=0|paging:number=9|textfilter:main=' + enc((c.make || '') + ' ' + (c.model || '')), verified: false },
+
+  // --- EU ---
+  { id: 'safety-gate', group: 'EU', name: 'EU Safety Gate (ent. RAPEX) – vaaralliset tuotteet', access: ['link'],
+    gives: 'EU-maiden ilmoittamat ajoneuvojen takaisinkutsut, osa puuttuu Traficomin listalta.', by: ['merkki'],
+    url: (c) => 'https://ec.europa.eu/safety-gate-alerts/screen/search?resetSearch=true&product=motor+vehicles&freeText=' + enc(c.make || ''), verified: false },
+  { id: 'eucaris', group: 'EU', name: 'EUCARIS / ulkomainen rekisteri (viranomaiskäyttö)', access: ['paid'],
+    gives: 'Tuontiauton aiempi rekisteröintimaa ja -historia. Ei yksityishenkilön saatavilla – maahantuoja/Traficom hakee.', by: ['vin'],
+    url: () => 'https://www.eucaris.net/', verified: false },
+
+  // --- Kaupalliset Suomessa ---
+  { id: 'biltema', group: 'Kaupalliset (Suomi)', name: 'Biltema rekisterinumerohaku', access: ['proxy'],
+    gives: 'Merkki, malli, vuosimalli, moottorikoodi, teho – pohjoismainen rekisteritietokanta, ilmainen varaosahaun yhteydessä.', by: ['rekkari'],
+    url: (c) => 'https://www.biltema.fi/autoilu---mp/', verified: false,
+    note: 'Ei dokumentoitua rajapintaa. server.js sisältää kokeellisen adapterin (katso README). Käyttö omaan tarpeeseen; älä tee massahakuja.' },
+  { id: 'motonet', group: 'Kaupalliset (Suomi)', name: 'Motonet rekisterinumerohaku', access: ['link'],
+    gives: 'Sama idea kuin Biltema: malli ja moottoriversio varaosia varten.', by: ['rekkari'],
+    url: () => 'https://www.motonet.fi/varaosat', verified: false },
+  { id: 'nettiauto', group: 'Kaupalliset (Suomi)', name: 'Nettiauto – hintavertailu', access: ['link'],
+    gives: 'Markkinahinta: samat malli/vuosi myynnissä juuri nyt. Myös "aiemmin myynnissä" -haku Googlella rekkarilla löytää vanhat ilmoitukset.', by: ['merkki', 'malli', 'vuosi'],
+    url: (c) => 'https://www.nettiauto.com/hakutulokset?q=' + enc([c.make, c.model, c.year].filter(Boolean).join(' ')), verified: false },
+  { id: 'tori', group: 'Kaupalliset (Suomi)', name: 'Tori.fi autot', access: ['link'],
+    gives: 'Yksityismyyjien hintataso.', by: ['merkki', 'malli'],
+    url: (c) => 'https://www.tori.fi/recommerce/forsale/search?q=' + enc([c.make, c.model].filter(Boolean).join(' ')), verified: false },
+  { id: 'google-plate', group: 'Kaupalliset (Suomi)', name: 'Hakukone: rekkari / VIN lainausmerkeissä', access: ['link'],
+    gives: 'Vanhat myynti-ilmoitukset, foorumikeskustelut, kolarikuvat, huutokaupat (kolariautot). Yllättävän tehokas.', by: ['rekkari', 'vin'],
+    url: (c) => 'https://www.google.com/search?q=' + enc('"' + (c.plate || c.vin || '') + '"'), verified: true },
+  { id: 'carvertical', group: 'Kaupalliset (Suomi)', name: 'carVertical / Autotieto / rekkari.fi (maksulliset historiaraportit)', access: ['paid'],
+    gives: 'Mittarilukemahistoria eri maista, vahinkomerkinnät, kuvat aiemmista ilmoituksista, omistajamäärä. 2,90–30 €/raportti.', by: ['rekkari', 'vin'],
+    url: (c) => 'https://www.carvertical.com/fi/landing/v3?vin=' + enc(c.vin || ''), verified: false,
+    note: 'KKV varoittaa "ilmaisista hinta-arvioista" – lue hinta ennen kuin syötät tunnuksen.' },
+  { id: 'sms', group: 'Kaupalliset (Suomi)', name: 'Tekstiviestihaut 16100 / 16366 / 020202', access: ['paid'],
+    gives: 'Omistaja-/haltijatiedot ja perustiedot 2,5–6 €/haku laskutettuna puhelinlaskulle.', by: ['rekkari'],
+    url: () => 'https://www.16100.fi/tekstiviestipalvelut/ajoneuvon-tiedot-tekstiviestilla', verified: false },
+];
+function enc(s) { return encodeURIComponent(String(s == null ? '' : s)); }
+
+/* Autoröntgen – komponenttitason tyyppivikatietokanta.
+   Sääntö osuu vain jos KAIKKI annetut ehdot täyttyvät (taulukon sisällä riittää yksi).
+   Kentät: engine = moottorikoodin/perheen alku tai regex ('CAY' osuu CAYC:hen, 'EA189' osuu käsin kirjoitettuun perheeseen)
+           make, model (regex), years [alku, loppu], fuel ('diesel'|'bensiini'|'sahko'|'hybridi'|'kaasu'), disp [min,max] litraa,
+           turbo (true), trans (regex vaihteistotyyppiin), drive ('neli'), ev (true), feat ['panorama', ...], origin ('USA'...),
+           tesla { battery:[...], motor:[...] } (VIN pos 7/8), kwh [min,max], kmPerYear [min,max]
+   sev: 3 = kallis/moottorivaurio-luokka, 2 = merkittävä, 1 = tiedoksi. cost = tyypillinen korjaus €.
+   Sisältö perustuu laajasti dokumentoituihin vikoihin (valmistajien kampanjat, NHTSA-takaisinkutsut, Traficomin
+   katsastustilastot, huoltoliikkeiden ja omistajafoorumien yhdenmukainen kokemus). Ei takuuta yksittäisen auton kunnosta. */
+window.ISSUES_DB = [
+  /* ---------------- VAG ---------------- */
+  { id: 'vag-ea189', comp: 'Moottori', sev: 2, title: 'VW/Audi/Škoda/Seat 1.6 & 2.0 TDI EA189 (2008–2015) – dieselgate-päivityksen jälkiseuraukset',
+    match: { engine: ['CAY', 'CAYC', 'CAYB', 'CFF', 'CFFB', 'CFHC', 'CBAB', 'CBBB', 'CBDB', 'CLCA', 'CJAA', 'CBEA', 'CLJA', 'CFGB', 'CEGA', 'EA189'] },
+    what: 'Päästöpäivityksen (toimenpide 23R7/23Q7) jälkeen yleistyneet EGR-venttiilin ja -jäähdyttimen viat, imusarjan läppien ja ahtimen säätimen ongelmat, osalla lisääntynyt DPF-regenerointi ja kulutus.',
+    check: 'Onko päivitys tehty (merkintä huoltokirjassa / VW:n VIN-haku)? Vikamuisti: P0401/P0402 EGR, P2015 imusarja. Koeajossa tasainen veto 1500–2500 rpm.', cost: 'EGR 800–1 500 €, ahdin 1 200–2 000 €' },
+  { id: 'vag-ea288', comp: 'Moottori', sev: 1, title: 'VW-konserni 2.0 TDI EA288 (2014→) – AdBlue-anturit ja EGR-jäähdytin',
+    match: { engine: ['CRL', 'CRLB', 'DFG', 'DFGA', 'CUN', 'CUNA', 'DBG', 'DCY', 'DET', 'DFB', 'DFC', 'DFH', 'DTS', 'DTR', 'CLH', 'CXX', 'CRK', 'DDY', 'EA288'] },
+    what: 'Perusluotettava, mutta NOx-anturit (2 kpl) ja AdBlue-pumppu/lämmitin vikaantuvat 100–180 tkm, EGR-jäähdyttimen vuoto nesteen hävikkinä.',
+    check: 'Jäähdytysnesteen taso ja haju pakokaasussa, AdBlue-virheet mittaristossa, NOx-anturien vikakoodit P2200/P229F.', cost: 'NOx-anturi 350–600 €/kpl, EGR-jäähdytin 900–1 500 €' },
+  { id: 'vag-ea111-tsi', comp: 'Moottori', sev: 3, title: 'VW 1.2/1.4 TSI EA111 (2007–2014) – jakoketjun venyminen ja kiristin',
+    match: { engine: ['CAX', 'CAXA', 'CAXC', 'CBZ', 'CBZA', 'CBZB', 'CAV', 'CAVD', 'CAVE', 'CTH', 'CTHD', 'CTHA', 'CTJA', 'BMY', 'BLG', 'CDG', 'CFBA', 'CGGB', 'CNWA', 'EA111'] },
+    what: 'Jakoketjun kiristin päästää ketjun löysälle (erityisesti pitkän seisonnan jälkeen) → ketju hyppää → venttiilit mäntiin. 1.4 TSI "twincharger" (CAVD/CAVE/CTHD) lisäksi mäntien halkeilu ja öljynkulutus.',
+    check: 'Rapina 1–2 s käynnistyksessä = kiristin. Onko ketju/kiristin vaihdettu (uusi revisio)? Öljynkulutus 1 l/1 000 km on hälytys.', cost: 'Ketjusarja 900–1 600 €, moottorivaurio 4 000 €+' },
+  { id: 'vag-ea888-g2', comp: 'Moottori', sev: 3, title: 'Audi/VW 1.8 & 2.0 TSI/TFSI EA888 gen 1–2 (2008–2013) – öljynkulutus ja ketjunkiristin',
+    match: { engine: ['CDA', 'CDAA', 'CDAB', 'CDH', 'CDHA', 'CDHB', 'CAB', 'CABB', 'CABD', 'CAE', 'CAEB', 'CAEA', 'CCZ', 'CCZA', 'CCZB', 'CCTA', 'CBFA', 'BZB', 'BYT', 'CDNC', 'CDNB', 'CPMA', 'EA888'], years: [2008, 2013] },
+    what: 'Männänrenkaiden öljynkaavinrenkaat liian ahtaat → öljynkulutus jopa 1 l/1 000 km. Jakoketjun kiristimen vanha revisio pettää → moottorivaurio. Audi ja VW tekivät korjauskampanjoita (männät + renkaat).',
+    check: 'Öljynkulutusmittaus 1 000 km (Audi-ohje: >0,5 l/1 000 km = korjaus). Rapina käynnistyksessä. Onko kiristin vaihdettu uuteen (06K109467K)?', cost: 'Männät + renkaat 3 000–5 000 €, kiristin 500–900 €' },
+  { id: 'vag-ea888-g3', comp: 'Moottori', sev: 1, title: 'EA888 gen 3 (2013→) – vesipumppu/termostaattimoduuli ja hiilikertymät',
+    match: { engine: ['CJS', 'CJSA', 'CJSB', 'CHH', 'CHHB', 'CHHA', 'CZP', 'CZPB', 'CNT', 'CNTA', 'CJX', 'CJXC', 'DKZA', 'DNU', 'DNP', 'DLZ', 'DJH', 'EA888'], years: [2013, 2030] },
+    what: 'Muovinen vesipumppu-termostaattikotelo vuotaa 80–150 tkm. Suorasuihkutuksen vuoksi imuventtiileihin karstaa → nykivä tyhjäkäynti. 2.0 TSI gen3: osalla öljynkulutusta mäntien sauvoista (2013–2015).',
+    check: 'Jäähdytysnesteen jäljet moottorin oikealla puolella, tyhjäkäynnin tasaisuus kylmänä.', cost: 'Pumppu/termostaatti 600–900 €, imukanavien puhdistus 400–700 €' },
+  { id: 'vag-ea211-15', comp: 'Moottori', sev: 1, title: 'VW 1.5 TSI evo (2017–2019) – kylmänykiminen ("kenguru")',
+    match: { engine: ['DAD', 'DADA', 'DPC', 'DPCA', 'DXD', 'DHF'], years: [2017, 2019] },
+    what: 'Kylmänä liikkeellelähdössä nykii/pätkii; VW ohjelmistopäivitys (toimenpide 24GG/24GH) korjasi suurimmalta osalta.', check: 'Koeajo kylmällä moottorilla, kysy onko päivitys tehty.', cost: 'Päivitys ilmainen, kytkin 1 000 €' },
+  { id: 'vag-ea113-tfsi', comp: 'Moottori', sev: 2, title: 'Audi/VW 2.0 TFSI EA113 (2004–2009) – polttoainepumpun nostin ja nokka-akseli',
+    match: { engine: ['BWA', 'BPY', 'AXX', 'BWE', 'BUL', 'BHZ', 'CDL', 'CDLA', 'CDLC', 'EA113'] },
+    what: 'Korkeapainepumpun nostin (cam follower) kuluu puhki → nokka-akselin vaurio. Lisäksi PCV-venttiili, diverter-venttiili ja öljynkulutus.', check: 'Nostimen tarkastus 40 tkm välein (näkyy purkamalla pumppu), vikakoodi P0087 polttoainepaine.', cost: 'Nostin 60 €, nokka-akseli + pumppu 1 500–2 500 €' },
+  { id: 'vag-30tdi', comp: 'Moottori', sev: 2, title: 'Audi/VW/Porsche 3.0 TDI V6 (2004–2018) – imusarjan läpät, ketjut, AdBlue',
+    match: { engine: ['BKS', 'BMK', 'CAPA', 'CCWA', 'CRC', 'CRCA', 'CDUC', 'CDUD', 'CRTC', 'CRTD', 'CLAB', 'CKVC', 'CPNB', 'CZV', 'CZVA', 'DCPC', 'EA897', 'EA896', 'ASB', 'BUG'] },
+    what: 'Vanhemmat (BKS/BMK/ASB/CAPA): imusarjan pyörreläppien irtoaminen, takana olevien jakoketjujen venyminen (moottori ulos). Uudemmat (EA897): AdBlue-järjestelmä, ahtimen säätimet, dieselgate 3.0 -päivitys, termostaatti.',
+    check: 'Vikakoodit P2015 (läpät), ketjun rapina kylmänä takaa, AdBlue-virheet.', cost: 'Läpät 1 000–1 800 €, ketjut 4 000–6 000 €, NOx-anturit 400–600 €/kpl' },
+  { id: 'vag-dq200', comp: 'Vaihteisto', sev: 3, title: 'VW-konserni DSG DQ200 7-vaihteinen kuivakytkin (0AM/0CW, 2008→)',
+    match: { make: ['VOLKSWAGEN', 'VW', 'AUDI', 'SKODA', 'ŠKODA', 'SEAT', 'CUPRA'], trans: 'kaksois|DSG|DCT|automa', disp: [0.9, 1.6], years: [2008, 2020] },
+    what: 'Pieni- ja keskitehoisissa (≤250 Nm: 1.0–1.4 TSI, 1.6 TDI, 2.0 TDI 110 hv) käytetty kuivakytkin-DSG. Mekatroniikan paine-akku/ohjainlaite ja kytkinpaketti pettävät 80–150 tkm. Tunnistat: "Vaihteisto: 7-vaiht. DSG" + pieni moottori. (Isommissa 6-vaiht. DQ250 märkäkytkin on kestävä kun öljy vaihdetaan 60 tkm.)',
+    check: 'Koeajo ruuhkanopeudella: nykiminen 1↔2, tärinä liikkeellelähdössä, vilkkuva vaihdevalo (PRNDS) = mekatroniikka. Vikamuisti P17BF/P189C. Jos DQ250: milloin öljy vaihdettu?', cost: 'Mekatroniikka 1 500–2 500 €, kytkinpaketti 1 200–1 800 €' },
+  { id: 'vag-dq250', comp: 'Vaihteisto', sev: 1, title: 'VW-konserni DSG 6-vaiht. DQ250 / 7-vaiht. DQ381/DQ500 märkäkytkin (2.0 TDI/TSI 2003→)',
+    match: { make: ['VOLKSWAGEN', 'VW', 'AUDI', 'SKODA', 'ŠKODA', 'SEAT', 'CUPRA'], trans: 'kaksois|DSG|DCT|automa', disp: [1.7, 2.6] },
+    what: 'Kestävä kun öljy + suodatin vaihdetaan 60 tkm välein. Laiminlyönti → mekatroniikan solenoidit, kytkinpaketin tärinä. Huom: 2.0 TDI 110 hv (2012→) voi olla kuiva DQ200 – tarkista vaihteistokoodi.',
+    check: 'DSG-öljynvaihdot huoltokirjassa (60 tkm), tärinä liikkeellelähdössä, nykäisy 2→1 pysähtyessä.', cost: 'Öljynvaihto 300–400 €, mekatroniikka 1 500–2 500 €' },
+  { id: 'vag-multitronic', comp: 'Vaihteisto', sev: 3, title: 'Audi Multitronic CVT (01J/0AW, 2000–2011, etuveto)',
+    match: { make: ['AUDI'], trans: 'CVT|multitronic', years: [2000, 2011] },
+    what: 'Ohjainlaite vaihteiston sisällä kuumenee ja kuolee, ketju/variaattori kuluu. Harva kestää 200 tkm ilman korjausta.', check: 'Nykiminen liikkeellelähdössä, PRND vilkkuu, öljy vaihdettu 60 tkm?', cost: '2 000–4 000 €' },
+  { id: 'vag-dl501', comp: 'Vaihteisto', sev: 2, title: 'Audi S tronic DL501 7-vaiht. (pitkittäismoottori A4/A5/A6/Q5 2008–2015)',
+    match: { make: ['AUDI'], trans: 'kaksois|S tronic|DSG|DCT', model: 'A4|A5|A6|A7|Q5|S4|S5|RS', years: [2008, 2015] },
+    what: 'Mekatroniikan anturi- ja venttiilirungon viat, kytkinten kuluminen; Audi pidensi takuuta osalle.', check: 'Nykiminen peruutuksessa, vaihteiston vikailmoitus kuumana. Öljy + suodatin 60 tkm välein.', cost: '2 000–3 500 €' },
+  { id: 'haldex', comp: 'Voimansiirto', sev: 2, title: 'Haldex-neliveto (VW 4Motion, Audi quattro A3/TT/Q3, Volvo AWD, Opel 4x4, Ford, Seat/Škoda 4x4) – pumppu ja huolto',
+    match: { make: ['VOLKSWAGEN', 'VW', 'AUDI', 'SKODA', 'ŠKODA', 'SEAT', 'VOLVO', 'OPEL', 'FORD', 'CUPRA', 'LAND ROVER'], drive: 'neli' },
+    what: 'Haldex-kytkimen öljy ja (gen 2–4) suodatin on vaihdettava 40–60 tkm; laiminlyönti tukkii pumpun sihdin → pumppu/ohjainlaite rikki, neliveto ei kytkeydy. Opel Insignia 4x4: lisäksi takaperän ELSD-vauriot.',
+    check: 'Huoltohistoria Haldex-öljystä, vikakoodit AWD-ohjainlaitteessa, nelivedon toimintatesti (liukas alusta).', cost: 'Huolto 150–300 €, pumppu 500–900 €, Insignia takaperä 2 000 €+' },
+
+  /* ---------------- BMW / MINI ---------------- */
+  { id: 'bmw-n47', comp: 'Moottori', sev: 3, title: 'BMW N47 2.0d (2007–2014) – jakoketju moottorin takana',
+    match: { engine: ['N47'] }, what: 'Jakoketjun ohjaimet ja ketju kuluvat 100–200 tkm; ketju on vauhtipyörän puolella → vaihto vaatii moottorin irrotuksen. Katkeaminen = moottorivaurio. Lisäksi EGR-jäähdyttimen vuoto (palovaara-takaisinkutsu 2018, Euro 5/6 N47/B47/N57).',
+    check: 'Kuuntele moottorin takaosasta kuivaa rapinaa tyhjäkäynnillä ja 1 500 rpm:ssä. Onko ketju vaihdettu? Onko EGR-jäähdytinkampanja tehty (BMW VIN-haku)?', cost: 'Ketjut 2 500–4 000 €' },
+  { id: 'bmw-b47', comp: 'Moottori', sev: 1, title: 'BMW B47 2.0d (2014→) – EGR-jäähdytin ja AdBlue',
+    match: { engine: ['B47'] }, what: 'Luotettavampi kuin N47. EGR-jäähdyttimen vuoto (takaisinkutsu), AdBlue-pumpun/lämmittimen viat, kaksoismassavauhtipyörä manuaaleissa.', check: 'EGR-kampanjan status, AdBlue-virheet, jäähdytysnesteen kulutus.', cost: 'EGR-jäähdytin 900–1 400 €' },
+  { id: 'bmw-n57', comp: 'Moottori', sev: 2, title: 'BMW N57 3.0d (2008–2017) – EGR-jäähdytin, imusarja, ahtimet',
+    match: { engine: ['N57', 'M57'] }, what: 'EGR-jäähdyttimen vuoto → karstan syttyminen imusarjassa (takaisinkutsu). M57: pyörreläpät imusarjassa irtoavat. Kaksi/kolme ahdinta (N57S/D) kallis.', check: 'Takaisinkutsun status, imusarjan läpät poistettu/vaihdettu?, ahtimen vuodot.', cost: 'EGR 1 000–1 500 €, ahdin 2 000–4 000 €' },
+  { id: 'bmw-n20', comp: 'Moottori', sev: 3, title: 'BMW N20/N26 2.0 turbobensiini (2011–2015) – jakoketjun ohjain',
+    match: { engine: ['N20', 'N26'], years: [2011, 2015] }, what: 'Muovinen ketjunohjain murtuu, palat öljypumpun ketjuun → öljynpaine katoaa → moottorivaurio. Riski suurin ennen 1/2015 valmistetuissa.', check: 'Rapina kylmänä käynnistyksessä, ketjun venymän mittaus. Onko ohjaimet vaihdettu (päivitetyt osat)?', cost: 'Ketjusarja 1 800–3 000 €' },
+  { id: 'bmw-n63', comp: 'Moottori', sev: 3, title: 'BMW N63/S63 4.4 V8 turbo (2008→) – öljynkulutus, injektorit, ahtimet',
+    match: { engine: ['N63', 'S63'] }, what: 'Kuuma V8 ahtimet V:n sisällä: öljynkulutus (venttiilinvarsien tiivisteet), injektorit, jäähdytysletkut, akut. BMW "Customer Care Package" USA:ssa.', check: 'Öljynkulutus, savutus käynnistyksessä, huoltohistoria.', cost: 'Varsitiivisteet 3 000–5 000 €' },
+  { id: 'bmw-n43', comp: 'Moottori', sev: 2, title: 'BMW N43/N53 suorasuihkutusbensiinit (2007–2013) – injektorit, NOx-anturi, puolat',
+    match: { engine: ['N43', 'N53'] }, what: 'Piezo-injektorit (kalliit), NOx-anturi ja -katalysaattori, sytytyspuolat → nykivä tyhjäkäynti, vikavalo.', check: 'Tyhjäkäynti kylmänä, vikakoodit 2A..–2B.. sylinterikohtaiset.', cost: 'Injektori 250–400 €/kpl + koodaus, NOx-anturi 400 €' },
+  { id: 'bmw-n52-misc', comp: 'Moottori', sev: 1, title: 'BMW N52/N54/N55 (2005–2016) – öljynsuodatinkotelon tiiviste, sähköinen vesipumppu',
+    match: { engine: ['N52', 'N54', 'N55'] }, what: 'Öljynsuodatinkotelon tiiviste vuotaa öljyä moniurahihnalle (hihna voi imeytyä kampiakselin tiivisteestä sisään!), sähköinen vesipumppu + termostaatti 100–150 tkm, venttiilikopan tiiviste. N54: injektorit, korkeapainepumppu, hukkaporttien kolina.', check: 'Öljyvuodot kotelon alla, hihnan kunto, jäähdytysjärjestelmän historia.', cost: 'Vesipumppu 700–1 000 €, tiivisteet 300–500 €' },
+  { id: 'bmw-xdrive-atc', comp: 'Voimansiirto', sev: 2, title: 'BMW xDrive jakolaatikon (ATC) säätömoottorin hammaspyörä (2006–2013)',
+    match: { make: ['BMW'], drive: 'neli', years: [2006, 2013] }, what: 'Säätömoottorin muovinen hammaspyörä kuluu → "4x4-vika", neliveto pois. Jakolaatikon öljynvaihto 80 tkm pidentää ikää.', check: 'Vikakoodi 54C1/54C6, varoitusvalo. Onko säätömoottori/hammaspyörä vaihdettu?', cost: 'Hammaspyörä 30–100 € + työ, säätömoottori 600 €' },
+  { id: 'zf-6hp', comp: 'Vaihteisto', sev: 1, title: 'ZF 6HP automaatti (BMW, Jaguar, LR, Audi 2002–2012) – mekatroniikan hylsyt ja öljynvaihto',
+    match: { make: ['BMW', 'JAGUAR', 'LAND ROVER', 'AUDI', 'MASERATI'], trans: 'automa', years: [2002, 2012] }, what: '"Täytetty eliniäksi" -öljy ei kestä 200 tkm. Mekatroniikan holkit (vuoto) → kovat vaihdot kuumana.', check: 'Öljynvaihtohistoria (60–100 tkm), vaihtojen pehmeys lämpimänä.', cost: 'Öljy + öljypohja 400–600 €, hylsyt 600–900 €' },
+  { id: 'mini-n14', comp: 'Moottori', sev: 3, title: 'MINI Cooper S / Peugeot / Citroën 1.6 THP "Prince" (N14/EP6DT, 2006–2015)',
+    match: { engine: ['N14', 'N18', 'EP6', 'EP6DT', 'EP6CDT', '5FX', '5FY', '5FV', '5FR', '5FT', '5GZ', 'PRINCE'] },
+    what: 'Jakoketjun kiristin ja ketju kuluvat ("death rattle"), termostaattikotelo + vesipumppu vuotavat, hiilikertymät imuventtiileissä, korkeapainepumppu, öljynkulutus. N14 pahin, N18/EP6CDT parempi.', check: 'Rapina 2 s käynnistyksessä, öljynkulutus, jäähdytysnestevuodot. Onko ketjusarja vaihdettu?', cost: 'Ketjusarja 900–1 600 €, kansi/venttiilit 2 500 €+' },
+
+  /* ---------------- Mercedes-Benz ---------------- */
+  { id: 'mb-om651', comp: 'Moottori', sev: 2, title: 'Mercedes OM651 2.1 diesel (2008→) – injektorit, jakoketju, AdBlue',
+    match: { engine: ['OM651', '651'] }, what: '2008–2011 Delphi-piezoinjektorit vuotivat (vaihtokampanja), jakoketju moottorin takana venyy 150–250 tkm, öljypohjan vuoto, Euro 6: AdBlue-anturit. Öljynerotin → imusarja likaantuu.', check: 'Injektorien päältä dieselinhajuinen "musta kuona", ketjun rapina takaa, huoltokirjan injektorivaihto.', cost: 'Injektorit 400–600 €/kpl, ketju 2 500–3 500 €' },
+  { id: 'mb-om642', comp: 'Moottori', sev: 2, title: 'Mercedes OM642 3.0 V6 diesel (2005–2018) – öljynjäähdyttimen tiivisteet, imusarjan läpät',
+    match: { engine: ['OM642', '642'] }, what: 'Öljynjäähdyttimen tiivisteet V:n pohjalla vuotavat (iso purkutyö), imusarjojen pyörreläpät + säätötanko, ahtimen pohjalevyn murtuma, kampiakselin anturi. Myös Jeep/Chrysler CRD.', check: 'Öljyvuoto moottorin takaa/alta, P2006 läpät, savutus.', cost: 'Öljynjäähdytin 1 500–2 500 €, imusarjat 1 500 €' },
+  { id: 'mb-m271', comp: 'Moottori', sev: 3, title: 'Mercedes M271 1.8 Kompressor/CGI (2002–2012) – jakoketju ja nokka-akselin säätöpyörät',
+    match: { engine: ['M271', '271'] }, what: 'Ketju venyy ja nokka-akselin säätöpyörien hampaat kuluvat teräviksi → ketju hyppää. CGI-turboversioissa myös öljynkulutus, ahtimen hukkaportti. C180/C200/E200 K.', check: 'Rapina käynnistyksessä, ketjun venymä diagnoosilla (nokka-akselin asento), onko säätöpyörät vaihdettu?', cost: 'Ketju + pyörät 1 500–3 000 €' },
+  { id: 'mb-m270', comp: 'Moottori', sev: 1, title: 'Mercedes M270/M274 1.6/2.0 turbo (2012→) – nokka-akselin säätimet, injektorit',
+    match: { engine: ['M270', 'M274', '270', '274'] }, what: 'Nokka-akselin säätimet (kolina käynnistyksessä), injektorien tikitys/vuoto (M274 2.0, Mercedes kampanja), öljyvuodot kannen alta.', check: 'Käynnistysääni kylmänä, vikakoodit P0016/P0017.', cost: 'Säätimet 1 000–1 500 €, injektorit 300 €/kpl' },
+  { id: 'mb-7g', comp: 'Vaihteisto', sev: 2, title: 'Mercedes 7G-Tronic 722.9 (2004–2014) – ohjauslevy (conductor plate)',
+    match: { make: ['MERCEDES-BENZ', 'MERCEDES'], trans: 'automa', years: [2004, 2014] }, what: 'Vaihteiston sisäinen ohjauslevyn pyörintäanturi/ohjainlaite pettää → hätäohjelma (vain 2. vaihde). Öljy vaihdettava 60 tkm (ATF 236.14/15, suodatin).', check: 'Vikakoodit 2767/2783 (Y3/8n1 ja n2 anturit), vaihtojen pehmeys, öljyn vaihtohistoria.', cost: 'Ohjauslevy + koodaus 1 200–2 000 €' },
+  { id: 'mb-7gdct', comp: 'Vaihteisto', sev: 2, title: 'Mercedes 7G-DCT 724.0 (A/B/CLA/GLA 2012–2019)',
+    match: { make: ['MERCEDES-BENZ', 'MERCEDES'], model: 'A ?1|A-|B ?1|B-|CLA|GLA', trans: 'kaksois|DCT|automa', years: [2012, 2019] }, what: 'Kuivakytkinten kuluminen ja mekatroniikan viat → nykiminen ja tärinä liikkeellelähdössä.', check: 'Koeajo ruuhkassa, kytkimen tärinä mäkilähdössä, öljynvaihto 60 tkm?', cost: 'Kytkimet 1 500–2 500 €, mekatroniikka 2 000 €+' },
+  { id: 'mb-esl', comp: 'Sähkö/elektroniikka', sev: 2, title: 'Mercedes sähköinen ohjauslukko ESL/ELV (W204/W207/W212 2007–2014)',
+    match: { make: ['MERCEDES-BENZ', 'MERCEDES'], years: [2007, 2014] }, what: 'Ohjauslukon moottori kuolee → auto ei käynnisty, avain ei käänny. Tulee varoittamatta.', check: 'Käynnistysviive, avaimen tunnistus. Onko ESL vaihdettu/ohitettu (emulaattori)?', cost: '600–1 200 €' },
+  { id: 'mb-sbc', comp: 'Jarrut', sev: 3, title: 'Mercedes SBC-jarrujärjestelmä (W211 E, R230 SL, W219 CLS 2002–2006)',
+    match: { make: ['MERCEDES-BENZ', 'MERCEDES'], model: 'E ?[0-9]|CLS|SL', years: [2002, 2006] }, what: 'Sähköhydraulinen jarruyksikkö laskee jarrutuskertoja ja kuolee → jarrut heikot. Mercedes pidensi takuuta, mutta ei ikuisesti.', check: 'Onko yksikkö vaihdettu / vikakoodit, "Jarrujen huolto" -viesti.', cost: '2 000–3 000 €' },
+
+  /* ---------------- Volvo ---------------- */
+  { id: 'volvo-d4vea', comp: 'Moottori', sev: 1, title: 'Volvo Drive-E 2.0 D2/D3/D4/D5 VEA (2014→) – imusarja, EGR, kaksoisahtimet',
+    match: { engine: ['D4204T', 'D4204', 'VEA'], make: ['VOLVO'] }, what: 'Varhaisissa (2014–2016) injektorien ja männänpohjien ongelmia (Volvo kampanja), imusarjan karstoittuminen, EGR, i-ART-paineanturit. Myöhemmät hyviä.', check: 'Vikakoodit P0300-sarja, savutus kylmänä, kampanjahistoria Volvo VIDA.', cost: 'Imusarjan puhdistus 500 €, injektorit 400 €/kpl' },
+  { id: 'volvo-t5vea', comp: 'Moottori', sev: 1, title: 'Volvo 2.0 T5/T6 VEA bensiini (2014–2017) – öljynkulutus osalla',
+    match: { engine: ['B4204T', 'B4204'], make: ['VOLVO'] }, what: 'Osalla 2014–2016 öljynkulutusta männänrenkaista; Volvo vaihtoi mäntiä takuuseen. T6 (ahdin+kompressori) monimutkainen.', check: 'Öljynkulutusmittaus, huoltohistoria.', cost: 'Männät 3 000 €+' },
+  { id: 'volvo-d5', comp: 'Moottori', sev: 1, title: 'Volvo 5-syl. D5/D3/2.4D (D5244T, 2001–2016) – pyörreläpät, EGR, kulmavaihde AWD',
+    match: { engine: ['D5244', 'D5204', 'D5'], make: ['VOLVO'] }, what: 'Kestävä perusmoottori. Imusarjan pyörreläppien irtoaminen (2005–2010), EGR, ahtimen vuodot. XC90/XC70 AWD: kulmavaihteen (angle gear) holkki ja vuoto.', check: 'Kulmavaihteen öljyvuoto, läppien kiinnitys, DPF.', cost: 'Kulmavaihde 1 500–2 500 €' },
+  { id: 'aisin-tf80', comp: 'Vaihteisto', sev: 1, title: 'Aisin TF-80SC/TF-81SC 6-vaiht. automaatti (Volvo, Peugeot, Citroën, Ford, Opel, Saab, Mazda 2005→)',
+    match: { make: ['VOLVO', 'PEUGEOT', 'CITROEN', 'CITROËN', 'FORD', 'OPEL', 'SAAB', 'MAZDA', 'DS', 'FIAT', 'ALFA ROMEO', 'LANCIA'], trans: 'automa', years: [2005, 2022] }, what: 'Kestävä, mutta öljy on vaihdettava 60–80 tkm vaikka valmistaja sanoo "eliniän". Volvo Geartronic: nykiminen → ohjelmisto, momentinmuuntimen lukituksen tärinä 100 tkm+.', check: 'Öljynvaihtohistoria, tärinä 60–80 km/h kevyellä kaasulla.', cost: 'Öljynvaihto 300–500 €, muunnin 1 500–2 500 €' },
+
+  /* ---------------- PSA / Stellantis / Ford ---------------- */
+  { id: 'psa-puretech', comp: 'Moottori', sev: 3, title: 'PSA/Opel/Toyota 1.2 PureTech EB2 (2012→) – märkä hammashihna öljyssä',
+    match: { engine: ['EB2', 'HN0', 'HNY', 'HNZ', 'HNP', 'HNS', 'HNV', 'HN05', 'PURETECH'] }, what: 'Hammashihna kulkee öljyssä ja hajoaa ennenaikaisesti; palat tukkivat öljypumpun sihdin ja alipainepumpun → öljynpaine katoaa, jarrutehostin heikkenee. Vaihtoväli lyhennetty 100 tkm/6 v. Lisäksi öljynkulutus.', check: 'Hihnan kunto katsotaan öljyntäyttöaukosta endoskoopilla (reunojen rispaantuminen). Onko hihna vaihdettu? Öljyn taso ja laatu.', cost: 'Hihna + pumppu 700–1 200 €, moottorivaurio 4 000 €+' },
+  { id: 'psa-dv6', comp: 'Moottori', sev: 2, title: 'PSA/Ford/Volvo/Mazda/Mini 1.6 HDi/TDCi/D2 DV6 (2004–2018) – ahtimen öljynsyöttö, DPF-lisäaine',
+    match: { engine: ['DV6', '9HZ', '9HY', '9HX', '9HP', '9HR', '9HL', '9HD', 'BHZ', 'BHY', 'BH01', 'BH02', 'D4162T', 'T1DA', 'T1DB', 'T3DA', 'HHDA', 'G8DA', 'G8DB', 'G8DC'] }, what: 'Ahtimen öljynsyöttöputken sihti tukkeutuu (karsta) → ahdin kuolee ja levittää metallia. 8V (DV6D/C) parempi kuin 16V. DPF-lisäainesäiliö (Eolys) täytettävä ~120 tkm. Hammashihna 160 tkm/10 v.', check: 'Öljynvaihtoväli ≤15 tkm, ahtimen vinkuna, DPF-lisäaineen taso, hihnan vaihto.', cost: 'Ahdin + putket + öljypohja 1 500–2 500 €' },
+  { id: 'psa-dw10', comp: 'Moottori', sev: 1, title: 'PSA/Ford/Volvo 2.0 HDi/TDCi/D4 DW10 (2000–2018) – injektorit, DPF, kaksoismassa',
+    match: { engine: ['DW10', 'RHR', 'RHZ', 'RHY', 'RHH', 'RHE', 'AHZ', 'AHX', 'AHW', 'D4204T', 'UFWA', 'TXDA', 'TXBA', 'QXWA', 'KLBA'] }, what: 'Kestävä. Injektorien kuparitiivisteet vuotavat (tikitys), DPF 150 tkm+, kaksoismassavauhtipyörä, EGR.', check: 'Pakokaasun haju moottoritilassa, DPF:n täyttöaste, kytkimen tärinä.', cost: 'Injektoritiivisteet 300 €, DPF 1 000–1 800 €' },
+  { id: 'psa-al4', comp: 'Vaihteisto', sev: 2, title: 'PSA/Renault AL4/DP0 4-vaiht. automaatti (1999–2013)',
+    match: { make: ['PEUGEOT', 'CITROEN', 'CITROËN', 'RENAULT', 'DACIA'], trans: 'automa', years: [1999, 2013] }, what: 'Paineensäätöventtiilit (solenoidit) kuluvat → nykäisevät vaihdot, "vaihteisto viallinen" -viesti, ylikuumeneminen.', check: 'Nykäisy 2→3 lämpimänä, öljynvaihdot 60 tkm.', cost: 'Venttiilit 300–600 €, vaihteisto 2 000 €' },
+  { id: 'ford-ecoboost10', comp: 'Moottori', sev: 3, title: 'Ford 1.0 EcoBoost (2012–2018) – jäähdytysletku, hammashihna öljyssä, sylinterikansi',
+    match: { engine: ['M1DA', 'M1JE', 'M2DA', 'SFJA', 'SFJB', 'SFJC', 'XMJA', 'YYJA', 'M1DD', 'FOX', 'ECOBOOST 1.0'] }, what: 'Jäähdytysnesteen nylonputki sulaa/halkeaa → neste katoaa → ylikuumeneminen → kansi/moottori (takaisinkutsu 2013–2015). Hammashihna kulkee öljyssä, vaihto 10 v/240 tkm – lyhyt ajo ja huono öljy rispaannuttavat hihnan. Öljypumpun hihna sama.', check: 'Jäähdytysnesteen taso/putki vaihdettu metalliseen?, hihnan kunto, öljynvaihdot Ford-öljyllä ≤15 tkm.', cost: 'Hihnat 900–1 400 €, kansi 2 500 €+' },
+  { id: 'ford-ecoboost16', comp: 'Moottori', sev: 3, title: 'Ford 1.6 EcoBoost (2010–2015, Focus/Kuga/Mondeo/C-Max) – ylikuumeneminen ja sylinterikannen halkeama',
+    match: { engine: ['JQDA', 'JQDB', 'JTDA', 'JTDB', 'JTBA', 'JTWA', 'JTWB', 'ECOBOOST 1.6'] }, what: 'Paikallinen ylikuumeneminen halkaisee sylinterikannen → öljyvuoto → moottoripalot (useita takaisinkutsuja). Jäähdytysnesteen häviäminen on hälytysmerkki.', check: 'Takaisinkutsujen status (Ford VIN-haku), jäähdytysnesteen taso, pullon kannen tiiveys, "coolant level sensor" asennettu?', cost: 'Kansi 2 000–3 000 €, moottori 5 000 €+' },
+  { id: 'ford-powershift-dry', comp: 'Vaihteisto', sev: 3, title: 'Ford PowerShift DPS6 kuivakytkin (Fiesta/Focus/B-Max/EcoSport 1.0–1.6 2010–2017)',
+    match: { make: ['FORD'], model: 'FIESTA|FOCUS|B-MAX|ECOSPORT|C-MAX|TRANSIT CONNECT|TOURNEO CONNECT', trans: 'kaksois|PowerShift|DCT|automa', disp: [0.9, 1.7], years: [2010, 2017] }, what: 'Kytkinten tärinä ja nykiminen, TCM-ohjainlaitteen vika (juotokset), tiivistevuodot kytkimiin. Ryhmäkanteita USA:ssa/Australiassa, Ford pidensi takuita.', check: 'Koeajo ruuhkassa, tärinä liikkeellelähdössä, "transmission overheating" -varoitus.', cost: 'Kytkimet 1 200–2 000 €, TCM 800–1 200 €' },
+  { id: 'ford-powershift-wet', comp: 'Vaihteisto', sev: 1, title: 'Ford/Volvo PowerShift 6DCT450 (MPS6) märkäkytkin (Mondeo/S-Max/Kuga/Volvo 2008–2015)',
+    match: { make: ['FORD', 'VOLVO'], trans: 'kaksois|PowerShift|DCT', disp: [1.8, 2.6], years: [2008, 2015] }, what: 'Öljynvaihto 60 tkm pakollinen, kytkinten tärinä ja mekatroniikan paineanturi; vaihteistoöljyn jäähdytin voi sekoittaa öljyt (Volvo).', check: 'Öljynvaihtohistoria, tärinä mäkilähdössä.', cost: 'Öljynvaihto 300 €, kytkinpaketti 1 500–2 500 €' },
+  { id: 'fiat-multiair', comp: 'Moottori', sev: 2, title: 'Fiat/Alfa/Jeep 1.4 MultiAir & 0.9 TwinAir – MultiAir-yksikkö',
+    match: { engine: ['MULTIAIR', 'TWINAIR', '955A', '940A', '312A', '199B', '198A', 'EAM', 'EAF'] }, what: 'Hydraulinen MultiAir-venttiiliyksikkö kuluu/likaantuu väärällä öljyllä → tehon putoaminen, vikavalo. TwinAir lisäksi öljynkulutus.', check: 'Vikakoodit P1xxx MultiAir, öljy täsmälleen oikea (Selenia), tehon tasaisuus.', cost: 'MultiAir-yksikkö 1 200–1 800 €' },
+  { id: 'zf-9hp', comp: 'Vaihteisto', sev: 2, title: 'ZF 9HP 9-vaihteinen automaatti (Jeep Renegade/Cherokee, Fiat 500X, Honda, Range Rover Evoque/Discovery Sport 2014–2019)',
+    match: { make: ['JEEP', 'FIAT', 'HONDA', 'LAND ROVER', 'ACURA', 'CHRYSLER'], trans: 'automa', years: [2014, 2019] }, what: 'Kovat vaihdot, viive, "neutraaliin putoaminen" (ohjelmisto- ja anturipäivityksiä useita), hammaskytkinten viat.', check: 'Ohjelmistoversio päivitetty? Vaihdot kylmänä/kuumana, nykäisyt 1↔2.', cost: 'Päivitykset ilmaisia, vaihteisto 4 000 €+' },
+
+  /* ---------------- Renault / Nissan / Dacia ---------------- */
+  { id: 'ren-tce12', comp: 'Moottori', sev: 3, title: 'Renault/Nissan/Dacia 1.2 TCe H5Ft (2012–2016) – massiivinen öljynkulutus',
+    match: { engine: ['H5F', 'H5FT', 'HRA2', 'TCE 115', 'TCE 120', 'TCE 125'] }, what: 'Männänrenkaat → öljynkulutus 1 l/1 000 km, pahimmillaan moottorivaurio. Renault korjasi kampanjana (männät/moottori) osan.', check: 'Öljynkulutusmittaus, sinertävä savu, huoltokirja: tehty "moteur: consommation d\'huile" -kampanja?', cost: 'Männät 3 000 €, vaihtomoottori 5 000 €+' },
+  { id: 'ren-k9k', comp: 'Moottori', sev: 1, title: 'Renault/Nissan/Dacia/Mercedes 1.5 dCi K9K (2001→) – injektorit, hammashihna, (vanhat) laakerit',
+    match: { engine: ['K9K', 'OM607', '607'] }, what: 'Kestävä kun öljy vaihdetaan. 2003–2008 Delphi-injektorit, 2005–2009 kampiakselin laakerivauriot (öljynpuute); hammashihna 100–120 tkm/6 v; EGR; ahtimen vuoto; Euro 6: AdBlue.', check: 'Hihnan vaihto dokumentoitu, öljynpaineen varoitus, kylmäkäynti.', cost: 'Hihnasarja 500–800 €, injektorit 250 €/kpl' },
+  { id: 'ren-r9m', comp: 'Moottori', sev: 1, title: 'Renault/Nissan/Mercedes 1.6 dCi R9M (2011→) – EGR, AdBlue, ahtimen vuodot',
+    match: { engine: ['R9M', 'OM626', '626'] }, what: 'Perusluotettava. EGR-venttiilin tukkeutuminen, AdBlue (Euro 6), ahtimen öljyvuoto, hammashihna 150 tkm/6 v.', check: 'Hihnan vaihto, AdBlue-virheet, kylmäkäynnin savutus.', cost: 'EGR 600 €, hihna 600–900 €' },
+  { id: 'nis-hr12', comp: 'Moottori', sev: 2, title: 'Nissan 1.2 DIG-S HR12DDR (Micra/Note 2011–2017) – ketjunkiristin, öljynkulutus',
+    match: { engine: ['HR12DDR', 'HR12'] }, what: 'Jakoketjun kiristin ja öljynkulutus; kompressorin kytkin. Kaupunkiajo lisää ongelmia.', check: 'Rapina käynnistyksessä, öljyn taso, kompressorin ääni.', cost: 'Ketju 800–1 200 €' },
+  { id: 'nis-mr16', comp: 'Moottori', sev: 2, title: 'Nissan 1.6 DIG-T MR16DDT (Juke/Pulsar 2010–2018) – öljynkulutus, mäntävauriot',
+    match: { engine: ['MR16DDT', 'MR16'] }, what: 'Öljynkulutus ja männänrenkaiden/mäntien vauriot varsinkin 2010–2014, ahtimen hukkaportti.', check: 'Öljynkulutusmittaus, savutus kaasulla.', cost: 'Männät 2 500–4 000 €' },
+  { id: 'jatco-cvt', comp: 'Vaihteisto', sev: 3, title: 'Nissan/Renault Jatco CVT (Qashqai, X-Trail, Juke, Micra, Note, Pulsar, Mégane/Scénic 2007–2019)',
+    match: { make: ['NISSAN', 'RENAULT', 'MITSUBISHI', 'DACIA', 'INFINITI'], trans: 'CVT|automa', years: [2007, 2019] }, what: 'JF011E/JF015E/JF016E/JF017E: hihnan/ketjun ja variaattorin kuluminen, ylikuumeneminen, ohjainlaitteen vika → nykiminen, "ujellus", hätätila. Nissan pidensi takuun 160 tkm USA:ssa; Euroopassa ei. Öljynvaihto 60 tkm välttämätön.',
+    check: 'Ujeltava ääni kiihdytyksessä, nykiminen 30–50 km/h, öljynvaihtohistoria NS-2/NS-3 öljyllä, vikakoodit P0746/P0868.', cost: '3 000–5 000 € (tehdasvaihto), kunnostus 2 000 €' },
+
+  /* ---------------- Opel / GM ---------------- */
+  { id: 'opel-a14net', comp: 'Moottori', sev: 2, title: 'Opel 1.4 Turbo A14NET/B14NET (Astra J/K, Corsa, Mokka, Insignia 2010–2019) – männät, PCV, hukkaportti',
+    match: { engine: ['A14NET', 'B14NET', 'A14NEL', 'B14NEL', 'A14XFT', 'LUJ', 'LUV'] }, what: 'Öljynkulutus männänrenkaista ja PCV-kalvon vuoto (venttiilikoppa), ahtimen hukkaportin kolina, jäähdytysnesteen vuoto vesipumpusta.', check: 'Öljynkulutus, viheltävä ääni tyhjäkäynnillä (PCV), hukkaportti.', cost: 'Kansi + PCV 300 €, männät 3 000 €' },
+  { id: 'opel-cdti', comp: 'Moottori', sev: 1, title: 'Opel 1.7 CDTI (Isuzu) & 2.0 CDTI A20DTH (2008–2015) – injektorit, EGR, ahdin',
+    match: { engine: ['A17DT', 'Z17DT', 'A20DT', 'B20DT', 'Z19DT', 'A16DT'] }, what: 'Injektorien ja korkeapainepumpun viat (Denso 2.0), EGR karsta, ahtimen säätimen vika, pyörreläpät (1.9 CDTI Z19DTH).', check: 'Kylmäkäynnin tasaisuus, vikakoodit P0087/P0401.', cost: 'Injektorit 300–500 €/kpl' },
+
+  /* ---------------- Toyota / Lexus / Honda / Mazda / Subaru / Mitsubishi / Suzuki ---------------- */
+  { id: 'toy-ad', comp: 'Moottori', sev: 3, title: 'Toyota 2.0/2.2 D-4D 1AD/2AD-FTV (Avensis, Auris, RAV4, Verso 2006–2012) – kannentiiviste, öljynkulutus',
+    match: { engine: ['1AD', '2AD', '1AD-FTV', '2AD-FTV', '2AD-FHV'] }, what: 'Sylinterikannen tiiviste/kansi pettää (jäähdytysneste öljyyn), männänrenkaat → öljynkulutus, DPF (2AD-FHV) ja EGR. Toyota kampanjoi osan.', check: 'Jäähdytysnesteen häviäminen, öljyn vaahto/mutteri, DPF-varoitus, huoltohistoria (kansi vaihdettu?).', cost: 'Kansi + tiiviste 2 000–3 500 €' },
+  { id: 'toy-2zr-hsd', comp: 'Moottori', sev: 2, title: 'Toyota/Lexus 1.8 Hybrid 2ZR-FXE (Prius III, Auris HSD, CT200h 2009–2015) – EGR ja kannentiiviste',
+    match: { engine: ['2ZR-FXE', '2ZRFXE', '2ZR'] }, what: 'EGR-jäähdytin ja -putki tukkeutuvat karstasta → kylmäkäynnissä nykiminen/kolina ("rattle") → lopulta kannentiiviste. Puhdistus 150 tkm välein ehkäisee.', check: 'Käynnistyskolina kylmänä, nykiminen EGR-alueella 1 400 rpm, jäähdytysnesteen taso. Onko EGR puhdistettu?', cost: 'EGR-puhdistus 300–500 €, kannentiiviste 1 500–2 500 €' },
+  { id: 'toy-hv-batt', comp: 'Akku', sev: 1, title: 'Toyota/Lexus hybridiakku (NiMH, 2004–2020)',
+    match: { make: ['TOYOTA', 'LEXUS'], fuel: ['hybridi'] }, what: 'Kestää tyypillisesti 250–400 tkm, mutta yksittäiset kennot pettävät 10–15 v iässä → hybridijärjestelmän vikavalo. Kunnostus (kennojen vaihto) on halpaa, uusi akku kalliimpi.', check: 'Dr. Prius / Hybrid Assistant -sovellus: kennojen jännite-ero ja sisäinen resistanssi. Tuulettimen puhtaus takapenkin alla.', cost: 'Kunnostus 500–900 €, uusi 1 800–2 800 €' },
+  { id: 'honda-15t', comp: 'Moottori', sev: 2, title: 'Honda 1.5 VTEC Turbo L15B7 (Civic X, CR-V, HR-V 2017→) – polttoaineen laimentuminen öljyyn',
+    match: { engine: ['L15B', 'L15B7', 'L15BE', 'L15BG'] }, what: 'Kylmässä ja lyhyellä ajolla polttoainetta pääsee öljyyn → öljyn taso nousee, voitelu heikkenee. Honda päivitti ohjelmiston ja osin ruiskutusta; Suomessa olennaista.', check: 'Öljytikun taso yli MAX ja bensan haju öljyssä = ongelma. Päivitys tehty? Öljynvaihtoväli lyhennetty?', cost: 'Päivitys ilmainen; vauriot harvinaisia mutta kalliita' },
+  { id: 'mazda-skyd', comp: 'Moottori', sev: 2, title: 'Mazda Skyactiv-D 2.2 SH-VPTS (CX-5, 6, 3 2012–2019) – öljyn laimeneminen, imusarjan karsta, injektorit',
+    match: { engine: ['SH', 'SHY1', 'SH-VPTS', 'SKYACTIV-D', 'S8Y'] }, what: 'DPF-regenerointi laimentaa öljyä → öljytaso nousee (tikussa X-merkki). Imusarjan ja venttiilien karstoittuminen (lyhyt ajo), injektorien vuoto 2012–2014, öljynpaine- ja ketjuongelmia yksittäisissä.', check: 'Öljytaso ≤ X-merkki, DPF-regenerointiväli OBD:llä, kylmäkäynnin savu, kampanjat (Mazda VIN).', cost: 'Imusarja/karsta 800–1 500 €, injektorit 400 €/kpl' },
+  { id: 'subaru-ej', comp: 'Moottori', sev: 2, title: 'Subaru EJ25 (2.5 bensiini 1999–2011) – kannentiivisteet; FB20/FB25 (2011–2014) – öljynkulutus',
+    match: { engine: ['EJ25', 'EJ20', 'EJ', 'FB20', 'FB25', 'FB'] }, what: 'EJ25 SOHC: ulkoiset kannentiivistevuodot (öljy/neste) 150 tkm+. FB: männänrenkaat → öljynkulutus, Subaru ryhmäkanne USA:ssa. Boxerin kannentiivistetyö kallis.', check: 'Vuodot kansien alareunassa, jäähdytysnesteen taso, öljynkulutusmittaus.', cost: 'Kannentiivisteet 1 500–2 500 €' },
+  { id: 'subaru-cvt', comp: 'Vaihteisto', sev: 1, title: 'Subaru Lineartronic CVT TR690/TR580 (2010→)',
+    match: { make: ['SUBARU'], trans: 'CVT|automa', years: [2010, 2018] }, what: 'Momentinmuuntimen lukituksen tärinä ja ketjun/variaattorin viat osalla 2010–2015; Subaru pidensi takuita (USA). Öljynvaihto 60–100 tkm suositeltava.', check: 'Tärinä 30–50 km/h, ujellus, vikakoodit.', cost: '3 000–5 000 €' },
+  { id: 'hk-gdi', comp: 'Moottori', sev: 1, title: 'Hyundai/Kia 1.6 GDI Gamma & 2.0 GDI Nu (2011–2018) – hiilikertymät, öljynkulutus',
+    match: { engine: ['G4FD', 'G4NA', 'G4NC', 'GAMMA', 'NU 2.0'] }, what: 'Suorasuihkutus → imuventtiilien karsta (nykivä tyhjäkäynti), osalla öljynkulutus. Nu 2.0 USA:ssa myös kiertokangen laakerivaurioita (kampanja).', check: 'Tyhjäkäynti kylmänä, öljyn taso, kampanjat.', cost: 'Imukanavien puhdistus 400–700 €' },
+  { id: 'hk-theta', comp: 'Moottori', sev: 3, title: 'Hyundai/Kia Theta II 2.0T/2.4 GDI (USA-markkina 2011–2019, Sonata/Optima/Santa Fe/Sorento/Sportage)',
+    match: { engine: ['G4KH', 'G4KJ', 'G4KE', 'THETA'] }, what: 'Kiertokangen laakerivauriot ja moottoripalot → USA:n suurimpia takaisinkutsuja; "knock sensor detection" -ohjelmisto ja elinikäinen moottoritakuu USA:ssa (ei siirry Suomeen).', check: 'Nakutus tyhjäkäynnillä, öljynkulutus, takaisinkutsut NHTSA + onko moottori vaihdettu.', cost: 'Vaihtomoottori 5 000–8 000 €' },
+  { id: 'hk-7dct', comp: 'Vaihteisto', sev: 1, title: 'Hyundai/Kia 7DCT (i30, Tucson, Kona, Ceed, Sportage 2015–2021)',
+    match: { make: ['HYUNDAI', 'KIA'], trans: 'kaksois|DCT|automa', years: [2015, 2021] }, what: 'Kuivakytkin-DCT: nykiminen ja tärinä ryömintänopeuksilla, kytkinten kuluminen kaupunkiajossa. Ohjelmistopäivityksiä useita.', check: 'Koeajo ruuhkassa ja mäessä, TCU-päivitys tehty?', cost: 'Kytkimet 1 200–2 000 €' },
+  { id: 'mit-phev', comp: 'Akku', sev: 1, title: 'Mitsubishi Outlander PHEV (2014–2021) – ajoakun kapasiteetti ja DC-latauksen vaikutus',
+    match: { make: ['MITSUBISHI'], model: 'OUTLANDER', fuel: ['hybridi', 'sahko'] }, what: '12/13,8 kWh akku menettää kapasiteettia erityisesti tiheällä CHAdeMO-pikalatauksella. Sähköinen toimintamatka uutena ~40 km, talvella puolet.', check: 'Mittaristosta täyden latauksen km-arvio, PHEV Watchdog -sovellus (Ah-kapasiteetti ≥ 32 Ah hyvä).', cost: 'Akku 6 000–9 000 €, kennot 1 500 €+' },
+  { id: 'porsche-ims', comp: 'Moottori', sev: 3, title: 'Porsche M96/M97 (Boxster 986/987.1, 911 996/997.1, 1997–2008) – IMS-laakeri, sylinterinaarmut',
+    match: { make: ['PORSCHE'], model: 'BOXSTER|CAYMAN|911|996|997|986|987', years: [1997, 2008], fuel: ['bensiini'] }, what: 'Välilaakerin (IMS) pettäminen tuhoaa moottorin; 3.6/3.8 bore scoring; RMS-vuoto.', check: 'IMS vaihdettu (laskutus)?, öljynsuodattimessa metallia, boroskooppi sylintereihin.', cost: 'IMS-korjaus 2 500–4 000 €, moottori 15 000 €+' },
+  { id: 'jlr-tdv6', comp: 'Moottori', sev: 3, title: 'Land Rover/Jaguar 2.7/3.0 TDV6 (Discovery 3/4, RR Sport, XF 2004–2016) – kampiakseli, ahtimet, DPF',
+    match: { engine: ['276DT', '306DT', '30DDTX', 'TDV6', 'AJD'] }, what: '3.0 TDV6: kampiakselin laakerivauriot (öljynpuute/pitkät vaihtovälit), ahtimen vuodot, EGR, DPF. 2.7: öljypumppu, injektorit, hihnat (takahihna!).', check: 'Öljynvaihtoväli ≤15 tkm, takahihnan (nokka) vaihto, metallia öljyssä, savu.', cost: 'Vaihtomoottori 8 000–15 000 €' },
+  { id: 'jlr-ingenium', comp: 'Moottori', sev: 2, title: 'Jaguar/Land Rover 2.0 Ingenium diesel AJ200D (2015–2020) – ketju, öljyn laimeneminen, DPF',
+    match: { engine: ['204DT', '204DTD', 'AJ200', 'INGENIUM'] }, what: 'Jakoketjun ja ohjainten kuluminen (öljyn laimeneminen DPF-regeneroinneista), DPF tukkeutuminen lyhyellä ajolla, injektorit, kampiakselin anturi.', check: 'Öljytaso nousee?, ketjun rapina, DPF-täyttö OBD:llä.', cost: 'Ketju 2 500–4 000 €, DPF 1 500–2 500 €' },
+
+  /* ---------------- Tesla ---------------- */
+  { id: 'tesla-mcu1', comp: 'Elektroniikka', sev: 3, title: 'Tesla MCU1 (Tegra 3) – eMMC-flashmuistin kuluminen (Model S 2012–3/2018, Model X 2015–3/2018)',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', years: [2012, 2018] }, what: '8 GB eMMC kuluu loppuun lokitietojen kirjoituksesta → keskusnäyttö pimenee, lataus/ilmastointi/peruutuskamera ei toimi. NHTSA-takaisinkutsu 21V-035: Tesla vaihtaa 64 GB eMMC:n (tai omistaja on maksanut MCU2-päivityksen ~2 000 €). 2018 autot: maaliskuusta 2018 alkaen MCU2 tehtaalta – tarkista yksilöstä.',
+    check: 'Onko autossa MCU2 (selain nopea, Netflix/Youtube-teatteri toimii = MCU2)? Jos MCU1: onko eMMC vaihdettu (huoltohistoria Teslan appista)? Näytön keltaiset reunat (2016–2018) = UV-korjaus.', cost: 'eMMC-vaihto 0 € (takaisinkutsu), MCU2 1 800–2 500 €' },
+  { id: 'tesla-handles', comp: 'Kori', sev: 2, title: 'Tesla Model S ovenkahvat (2012–2020)',
+    match: { make: ['TESLA'], model: 'MODEL S', years: [2012, 2020] }, what: 'Gen1 (2012–2014) kahvojen mikrokytkimet ja vaijerit, gen2 (2015→) parempi mutta moottori/vaihteet pettävät. Yksi kahva kerrallaan.', check: 'Kaikki 4 kahvaa ulos/sisään, avaa/sulje useasti. Huoltohistoria kahvoista.', cost: '300–600 €/kahva' },
+  { id: 'tesla-sas', comp: 'Alusta', sev: 2, title: 'Tesla Smart Air Suspension (Model S/X 2012–2020, jos varusteena)',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', feat: ['ilmajousitus'] }, what: 'Ilmajousien ja kompressorin vuodot 100–200 tkm, korkeusanturit; vanhemmat (2012–2016) Continental-jalat huonompia. Auto laskeutuu yön aikana vinoon.', check: 'Pysäköi tasaiselle 12 h – kulmien korkeus. Kompressorin käyntiaika, "Korkeuden säätö ei käytössä" -virheet.', cost: 'Jalka 700–1 200 €/kpl, kompressori 600–900 €' },
+  { id: 'tesla-susp-links', comp: 'Alusta', sev: 2, title: 'Tesla Model S/X etu-/takatukivarret ja pallonivelet (2012–2020)',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', years: [2012, 2020] }, what: 'Etujousituksen "fore link" -tukivarret (NHTSA 20V-723) ja takatukivarret (20V-724) – murtumariski; lisäksi yläpallonivelten ja "sway bar link" -kolinat. Painava auto kuluttaa alustaa.', check: 'Takaisinkutsujen status Teslan VIN-haulla, kolinat töyssyissä, renkaiden sisäreunan kuluminen (aurauskulma!).', cost: 'Tukivarsi 300–600 €/kpl' },
+  { id: 'tesla-12v', comp: 'Sähkö/elektroniikka', sev: 1, title: 'Tesla 12 V lyijyakku (S/X/3/Y ennen 2021–2022)',
+    match: { make: ['TESLA'], years: [2012, 2021] }, what: 'Kestää 3–4 v (S/X kuluttaa sitä kovaa); kun se kuolee, auto ei avaa oviakaan. 2021–2022 lähtien litium 12/16 V.', check: 'Milloin vaihdettu? Varoitus "12 V akku pitää vaihtaa" näytössä.', cost: '150–300 €' },
+  { id: 'tesla-small-du', comp: 'Moottori', sev: 1, title: 'Tesla takamoottori (Drive Unit) – "milling noise" (Model S 2012–2016), tiivisteet ja laakerit',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', years: [2012, 2016] }, what: 'Varhaisten isojen DU:iden laakeri-/jyrsintäääni ja jäähdytysnestevuodot → Tesla vaihtoi takuuseen (monta sukupolvea, Q/R-revisio parempi). Pieni DU (P85D etu, 70D/75D) ja uudet isot ovat kestäviä.', check: 'Ujellus/jyrsintä 30–80 km/h kaasulla ja moottorijarrulla; DU-vaihto huoltohistoriassa? Akku+DU-takuu 8 v (S/X 2012–2019 ilman km-rajaa).', cost: 'DU 4 000–6 000 € takuun ulkopuolella' },
+  { id: 'tesla-85', comp: 'Akku', sev: 2, title: 'Tesla 85 kWh akku (S85/P85/85D/P85D 2012–2016) – lataus- ja kapasiteettirajoitukset, kontaktorit',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', kwh: [84, 86] }, what: 'Ohjelmistopäivitykset 2019 (BMS_u029 "chargegate") pudottivat osalla toimintamatkaa ja Supercharger-nopeutta; Tesla sopi korvauksista (Norja/USA). Akun kontaktorien ja sulakkeen (pyro) viat, jäähdytysnesteen vuodot. Degradaatio 10–15 % normaalia 150 tkm:ssä.',
+    check: 'Täyden latauksen km-arvio (uutena S85 ≈ 426 km EU), Supercharger-huipputeho (≥90 kW ok), BMS-vikakoodit (Scan My Tesla). Takuu: 8 v, ei km-rajaa.', cost: 'Akku 12 000–20 000 €, 3. osapuolen korjaus 3 000–6 000 €' },
+  { id: 'tesla-90', comp: 'Akku', sev: 2, title: 'Tesla 90 kWh akku (90D/P90D 2015–2016) – nopein degradaatio',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', kwh: [89, 91] }, what: 'Uusi kennokemia 2015 degradoi nopeammin kuin 85/100 kWh: 15–20 % 150 tkm:ssä ei harvinaista, lisäksi latausnopeuden rajoitukset.', check: 'Täyden latauksen km-arvio (uutena 90D ≈ 557 km NEDC), Supercharger-käyrä.', cost: 'Akku 15 000–20 000 €' },
+  { id: 'tesla-75', comp: 'Akku', sev: 1, title: 'Tesla 75 kWh akku (75/75D 2016–2019) – hyvä kestävyys, tarkista silti',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', kwh: [74, 76] }, what: 'Kestävimpiä S/X-akkuja: tyypillinen degradaatio 5–10 % 150 tkm:ssä. 75 kWh on ohjelmallisesti rajoitettu 75 (osalla lukittu 60/70 → 75-päivitys ostettavissa). Huomaa: "75" voi olla 60-akku rajoittimella.', check: 'Lataa 100 % ja vertaa: 75D uutena ≈ 490 km NEDC / ~400 km todellinen. <430 km NEDC-arvio = yli 12 % pudotus. Scan My Tesla: nominal full pack ≥ 68 kWh ok.', cost: 'Akku 12 000–18 000 €' },
+  { id: 'tesla-100', comp: 'Akku', sev: 1, title: 'Tesla 100 kWh akku (100D/P100D/Raven/Plaid 2016→)',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', kwh: [98, 102] }, what: 'Hyvä kestävyys; P100D:n kovakäyttö ja Ludicrous lisäävät kontaktorien ja sulakkeen rasitusta. 2021+ Plaid/LR uusi akkuarkkitehtuuri.', check: 'Täyden latauksen km-arvio, Supercharger-huipputeho.', cost: '—' },
+  { id: 'tesla-ap-hw', comp: 'Elektroniikka', sev: 1, title: 'Tesla Autopilot-laitteistoversio ratkaisee ominaisuudet (AP1 2014–10/2016, AP2 2016–2017, AP2.5 2017–2019, HW3 2019→, HW4 2023→)',
+    match: { make: ['TESLA'], years: [2014, 2022] }, what: 'AP1 (Mobileye): ei FSD:tä koskaan, mutta vakaa. AP2/2.5: FSD vaatii HW3-vaihdon (maksullinen jos FSD ei ostettu). Autopilot/FSD-lisenssi on sidottu autoon ja siirtyy ostajalle – paitsi jos Tesla poistaa sen omistajanvaihdon yhteydessä (tapahtunut USA-autoilla).', check: 'Näytöstä Ohjelmisto → Lisätiedot: Autopilot-tietokone (HW2.5/3). Mitkä paketit (EAP/FSD) ovat autossa – ota kuvakaappaus ennen kauppaa.', cost: 'HW3-vaihto 1 500 € ilman FSD:tä' },
+  { id: 'tesla-lfp', comp: 'Akku', sev: 1, title: 'Tesla LFP-akku (VIN pos 7 = F; Model 3/Y SR+ 2021→)',
+    match: { make: ['TESLA'], tesla: { battery: ['F'] } }, what: 'Litiumrautafosfaatti: kestää 100 % lataamisen (Tesla suosittelee viikoittain kalibroinnin vuoksi), mutta talvella toimintamatka ja regenerointi kärsivät enemmän, ja SOC-arvio heittelee jos ei ladata täyteen.', check: 'Kysy latauskäytännöt; lataa 100 % ja katso km-arvio (SR+ ≈ 430–490 km WLTP).', cost: '—' },
+  { id: 'tesla-m3-susp', comp: 'Alusta', sev: 2, title: 'Tesla Model 3 (2017–2023) – alatukivarsien nivelet ja jarrut: Traficom 2023 hylkäys-% 31,6',
+    match: { make: ['TESLA'], model: 'MODEL 3', years: [2017, 2023] }, what: 'Etualatukivarsien pallonivelet/puslat kuluvat 50–100 tkm (kolina), takatukivarret, jarrulevyt ruostuvat ja satulat jumiutuvat vähäisestä käytöstä (regenerointi) → katsastushylkäyksiä.', check: 'Kolinat töyssyissä, jarrujen tasaisuus (jarruta kovaa koeajolla), jarrulevyjen reunan ruoste. Välysten tarkastus nostimella.', cost: 'Tukivarret 250–500 €/kpl, jarrut 600–1 000 €' },
+  { id: 'tesla-heatpump', comp: 'Ilmastointi', sev: 2, title: 'Tesla lämpöpumppu/Octovalve (Model 3/Y 2021→, S/X 2021→)',
+    match: { make: ['TESLA'], years: [2021, 2023] }, what: 'Talvella lämmitys katosi osalla (anturi/venttiili/ohjelmisto, takaisinkutsu 2022 Kanadassa), Octovalven ja kompressorin viat. Suurin osa korjattu päivityksillä.', check: 'Lämmitys täysillä kylmällä koeajolla, ohjelmistoversio uusin, huoltohistoria lämpöpumpusta.', cost: 'Kompressori/Octovalve 1 500–3 000 €' },
+  { id: 'tesla-x-falcon', comp: 'Kori', sev: 2, title: 'Tesla Model X Falcon-ovet ja etuovien automatiikka (2016→)',
+    match: { make: ['TESLA'], model: 'MODEL X' }, what: 'Falcon-ovien anturit, saranat ja tiivisteet; etuovet aukeavat/sulkeutuvat itse (anturit). Talvella jäätyminen. Kalliit ja hitaat korjaukset.', check: 'Avaa/sulje kaikki ovet useasti, kuuntele, tarkista ettei ovi osu. Veden vuoto Falcon-ovista.', cost: 'Anturit/saranat 500–2 000 €' },
+  { id: 'tesla-pano', comp: 'Kori', sev: 1, title: 'Tesla Model S panoraamakatto (2012–2016, jos varusteena)',
+    match: { make: ['TESLA'], model: 'MODEL S', feat: ['panorama'], years: [2012, 2016] }, what: 'Tuulen ääni, kolina, lasin tiivisteiden vuoto, moottorin jumiutuminen. Uudemmissa kiinteä lasikatto.', check: 'Avaa/sulje, vesitesti, tiivisteiden kunto.', cost: 'Tiivisteet 300–600 €, moottori 800 €' },
+  { id: 'tesla-wheels21', comp: 'Renkaat', sev: 1, title: 'Tesla 21" vanteet (Model S/X) – renkaat kuluvat sisäreunasta',
+    match: { make: ['TESLA'], model: 'MODEL (S|X)', feat: ['isot-vanteet'] }, what: 'Tehtaan aurauskulmat + 2,2 t paino → takarenkaiden sisäreunat loppu 15–25 tkm; 21" rengas 350–450 €/kpl, ei kitkarenkaita juuri saatavilla. Monet vaihtavat 19":iin talveksi.', check: 'Renkaiden sisäreunat, vanteiden reunavauriot (21" vanne herkkä), onko talvirenkaat/vanteet mukana.', cost: 'Rengassarja 1 400–1 800 €' },
+  { id: 'tesla-salvage', comp: 'Historia', sev: 3, title: 'USA/Kanada-tuonti-Tesla: lunastettu (salvage) auto menettää Supercharger-oikeuden ja takuun',
+    match: { make: ['TESLA'], origin: ['USA', 'Kanada'], anyOf: ['importFlag'] }, what: 'Tesla merkitsee lunastetut/"salvage title" autot: Supercharging ja osa etätoiminnoista estetään, takuu mitätöityy, huolto voi vaatia maksullisen tarkastuksen ennen palvelua. Tällaisia tuodaan Suomeen halvalla.', check: 'NMVTIS-raportti (~5 $) title-merkinnästä, Carfax/AutoCheck, Copart/IAAI-huutokauppa-arkistot VIN:llä (kuvat!), kysy Teslan huollosta "onko auto Supercharger-rajoitettu".', cost: 'Supercharger-palautus ei mahdollinen' },
+  { id: 'tesla-warranty', comp: 'Historia', sev: 1, title: 'Tesla akku- ja moottoritakuu 8 vuotta – päättymispäivä',
+    match: { make: ['TESLA'], years: [2012, 2030] }, what: 'S/X 2012–2019: 8 v ilman km-rajaa (85/90/100: 8 v; 60/70/75: 8 v / ei km-rajaa 2014→). 2020→: 8 v / 240 tkm (S/X), 160–192 tkm (3/Y) ja min 70 % kapasiteetti. Takuu seuraa autoa, ei omistajaa – paitsi salvage.', check: 'Takuu päättyy ensirekisteröinti + 8 v: laske tarkka päivä ja osta vain jos marginaali riittää tai hinta vastaa riskiä.', cost: '—' },
+
+  /* ---------------- Muut sähköautot ---------------- */
+  { id: 'fiat500e-us', comp: 'Sähkö/elektroniikka', sev: 2, title: 'Fiat 500e 1. sukupolvi (USA 2013–2019) – sisäinen laturi (OBC), "Service Electric", akun lämmönhallinta',
+    match: { make: ['FIAT'], model: '500E', years: [2013, 2019] }, what: 'Sisäinen 6,6 kW laturi (OBC) vikaantuu → ei lataa / latautuu hitaasti; akun jäähdytys-/lämmityspiirin pumput ja lämmitin (Bosch) vikaantuvat; 12 V akku; "Service Electric Vehicle System" -virheet. Varaosat vain USA:sta/Meksikosta – toimitusajat viikkoja. Tyyppi 1 -latausportti → Suomessa adapteri tai portin vaihto.',
+    check: 'Lataa koeajolla sekä 230 V että 11/22 kW asemalla (max 6,6 kW), tarkista lämpenevätkö/jäähtyvätkö akut (puhaltimen ääni), vikamuisti OBD:llä (AlfaOBD/MultiECUScan).', cost: 'OBC 1 500–2 500 €, lämmitin 800 €, pumput 300 €/kpl' },
+  { id: 'fiat500e-batt', comp: 'Akku', sev: 2, title: 'Fiat 500e 24 kWh akku (Bosch/Samsung-kennot) – kapasiteetti ja talvi',
+    match: { make: ['FIAT'], model: '500E', years: [2013, 2019] }, what: 'Uutena 135 km todellinen (EPA 140 km), 10 v iässä tyypillisesti 80–90 % → talvella Seinäjoella 70–90 km. Yksittäisten moduulien kennoviat → "Service" ja tehon rajoitus. Kennot vaikea saada.', check: 'SOH OBD:llä (Car Scanner + 500e-profiili tai AlfaOBD): kapasiteetti ≥ 20 kWh hyvä. Täyden latauksen km-arvio lämpimänä.', cost: 'Moduulin vaihto 1 000–2 000 €, akku 8 000 €+' },
+  { id: 'fiat500e-import', comp: 'Historia', sev: 2, title: 'Fiat 500e USA-tuonti – autovero, yksittäishyväksyntä, mittaristo',
+    match: { make: ['FIAT'], model: '500E', years: [2013, 2019], anyOf: ['importFlag'] }, what: 'Ei EU-tyyppihyväksyntää → rekisteröity yksittäishyväksynnällä (mittaristo km/h, ajovalot, takasumuvalo). Autoveropäätös on tehty yksilölle; jos vero rästissä, vastuu voi siirtyä. USA-historia (title, kolarit) saa vain Carfaxista/NMVTIS:stä.', check: 'Rekisteröintitodistus: hyväksyntätapa. Vero.fi autoveropäätös. Carfax VIN:llä (~40 $).', cost: '—' },
+  { id: 'fiat500e-new', comp: 'Elektroniikka', sev: 1, title: 'Fiat 500e 2. sukupolvi (332, 2020→, 24/42 kWh) – ohjelmisto, latausportin kansi',
+    match: { make: ['FIAT'], model: '500E|500 ELECTRIC|NUOVA 500', years: [2020, 2030] }, what: 'Uconnect-ohjelmistovikoja, latausportin kannen lukitus, 12 V akku; takaisinkutsu latausportin/akun ohjelmistosta 2022. Kokonaisuutena luotettava.', check: 'Ohjelmistoversio, kannen toiminta, 12 V.', cost: '—' },
+  { id: 'leaf-24-30', comp: 'Akku', sev: 3, title: 'Nissan Leaf 24/30 kWh (2011–2017) – akun degradaatio ilman nestejäähdytystä',
+    match: { make: ['NISSAN'], model: 'LEAF', years: [2010, 2017] }, what: '24 kWh: tyypillisesti 60–75 % SOH 10 v iässä (12 palkkia → 8–9), toimintamatka talvella 60–80 km. 30 kWh (2016–2017): BMS-ohjelmistovirhe näytti liian huonoa SOH:ta (päivitys korjaa), mutta oikeaakin degradaatiota.', check: 'LeafSpy Pro: SOH % ja Hx. Palkkien määrä mittaristossa. Pikalatauskertojen määrä.', cost: 'Akku 24 kWh 6 000–9 000 € (käytetty 40 kWh -swap 8 000 €)' },
+  { id: 'leaf-40', comp: 'Akku', sev: 1, title: 'Nissan Leaf 40/62 kWh (2018→) – "Rapidgate" ja passiivinen jäähdytys',
+    match: { make: ['NISSAN'], model: 'LEAF', years: [2018, 2030] }, what: 'Ilmajäähdytteinen akku kuumenee peräkkäisillä pikalatauksilla → latausteho romahtaa (matkalla hidas). Degradaatio kohtuullinen.', check: 'LeafSpy SOH, pikalataushistoria (QC-laskuri).', cost: '—' },
+  { id: 'zoe-lease', comp: 'Akku', sev: 2, title: 'Renault Zoe (2012–2019) – akun vuokrasopimus ja latausstandardi',
+    match: { make: ['RENAULT'], model: 'ZOE' }, what: 'Suurin osa Euroopan Zoeista myytiin akkuvuokralla (Renault/RCI omistaa akun): tuontiautossa vuokra voi jatkua tai akku on lunastettava (1 000–3 000 €). Q210/Q90 lataa 43 kW AC, R240/R90/R110 vain 22 kW AC (ei DC ennen 2019 lisävarustetta). 22 kWh -akut degradoituneet.', check: 'Akun omistus (Renault vahvistaa VIN:llä), latausversio (Q vai R), SOH CanZE-sovelluksella.', cost: 'Lunastus 1 000–3 000 €' },
+  { id: 'i3', comp: 'Akku', sev: 1, title: 'BMW i3 (2013–2022) – 60 Ah akun degradaatio, REx, KLE-laturi',
+    match: { make: ['BMW'], model: 'I3' }, what: '60 Ah (22 kWh, 2013–2016): 15–25 % degradaatio, talvella 80–100 km. REx: polttoainepumppu/tankin venttiili, pitää käyttää säännöllisesti. KLE (AC-laturi) viat 2014–2016, 12 V. 94/120 Ah hyviä.', check: 'Akun kapasiteetti (Bimmercode/ISTA: Kapa max), REx käynnistystesti, latausteho 11 kW.', cost: 'KLE 1 500–2 500 €, akku 60→94 Ah ei virallisesti' },
+  { id: 'kona-ev', comp: 'Akku', sev: 2, title: 'Hyundai Kona Electric / Kia e-Niro & e-Soul (2018–2020, LG Chem -kennot) – akun palovaara-takaisinkutsu',
+    match: { make: ['HYUNDAI', 'KIA'], model: 'KONA|NIRO|SOUL|IONIQ', ev: true, years: [2018, 2021] }, what: 'Hyundai vaihtoi 82 000 Konan akun (NHTSA 21V-127) kennovian vuoksi; Kia e-Niro/e-Soul vastaava BMS-päivitys + osalle akun vaihto. Vaihdettu akku = käytännössä uusi.', check: 'Onko akku vaihdettu (huoltohistoria) vai vain BMS-päivitys? SOH OBD:llä (EVNotify/Car Scanner).', cost: '—' },
+  { id: 'vw-id', comp: 'Elektroniikka', sev: 1, title: 'VW ID.3/ID.4/Škoda Enyaq/Cupra Born (2020–2022) – ohjelmistoversio ja 12 V',
+    match: { make: ['VOLKSWAGEN', 'VW', 'SKODA', 'ŠKODA', 'CUPRA', 'AUDI'], model: 'ID\\.|ENYAQ|BORN|Q4', ev: true, years: [2020, 2022] }, what: 'ME 2.x -ohjelmisto hidas/virheellinen; 3.0+ päivitys vaatii huoltokäynnin (ei OTA) vanhoille. 12 V akku, latausviat (ohjelmisto), lämpöpumppu lisävaruste.', check: 'Ohjelmistoversio näytöstä (≥3.0), latauskäyttäytyminen, lämpöpumppu?', cost: 'Päivitys ilmainen' },
+
+  /* ---------------- Yleiset: käyttövoima, varusteet, alkuperä ---------------- */
+  { id: 'gen-dpf', comp: 'Päästöjärjestelmä', sev: 2, title: 'Hiukkassuodatin (DPF) – lyhyt ajo tukkii, regenerointi laimentaa öljyä',
+    match: { fuel: ['diesel'], years: [2007, 2030] }, what: 'Jos auto on ajanut lyhyitä matkoja (kaupunki, kylmä), DPF ei regeneroidu → tukkeutuu ja öljy laimenee. Poisto on Suomessa laitonta ja hylkää katsastuksessa (OBD-/savutustesti).', check: 'OBD: DPF:n tuhkamäärä ja täyttöaste, viimeisin regenerointi, öljytaso. Lyhyt matkamittari + vanha auto = riski.', cost: 'Puhdistus 300–500 €, uusi 1 000–2 500 €' },
+  { id: 'gen-adblue', comp: 'Päästöjärjestelmä', sev: 2, title: 'AdBlue/SCR (diesel Euro 6, 2014→) – NOx-anturit, pumppu, kiteytyminen, "ei käynnisty X km"',
+    match: { fuel: ['diesel'], years: [2014, 2030] }, what: 'NOx-anturit (2 kpl, 300–600 €/kpl), AdBlue-pumppu/lämmitin ja säiliön anturit, injektorin kiteytyminen. Virhe tuo laskurin "ei käynnistystä 1 000 km kuluttua".', check: 'AdBlue-virheet vikamuistissa, säiliön lämmittimen toiminta pakkasella, anturien ikä.', cost: '400–1 500 €' },
+  { id: 'gen-egr', comp: 'Päästöjärjestelmä', sev: 1, title: 'EGR-venttiili ja -jäähdytin (diesel)', match: { fuel: ['diesel'] }, what: 'Karstoittuminen → nykiminen, tehon puute, vikavalo; jäähdyttimen vuoto → jäähdytysneste häviää ilman näkyvää vuotoa.', check: 'Jäähdytysnesteen kulutus, P0401/P0402, valkea savu kylmänä.', cost: '400–1 200 €' },
+  { id: 'gen-dmf', comp: 'Voimansiirto', sev: 1, title: 'Kaksoismassavauhtipyörä (diesel/turbo manuaali)', match: { fuel: ['diesel'], trans: 'manu' }, what: 'Kuluu 150–250 tkm: tärinä tyhjäkäynnillä, kolina sammutettaessa, kytkin lähtee samalla.', check: 'Kolina sammutuksessa, tärinä 1 000 rpm kuormalla.', cost: '1 000–1 800 € kytkimen kanssa' },
+  { id: 'gen-cng', comp: 'Käyttövoima', sev: 2, title: 'Kaasuauto (CNG) – säiliöiden määräaikaistarkastus ja elinikä', match: { fuel: ['kaasu'] }, what: 'Kaasusäiliöillä on 20 v elinikä ja osalla (VW EcoFuel 2009–2017) ruostumistakaisinkutsu; venttiilien ja paineenalentimen viat. Tankkausverkko Pohjanmaalla harva.', check: 'Säiliöiden valmistusvuosi ja tarkastustarrat, takaisinkutsut, kaasulla ajon toimivuus (kytkeytyykö bensalle?).', cost: 'Säiliöt 2 000 €+' },
+  { id: 'gen-ev-brakes', comp: 'Jarrut', sev: 1, title: 'Sähköauton jarrut ruostuvat ja satulat jumiutuvat vähäisestä käytöstä', match: { ev: true }, what: 'Regenerointi hoitaa jarrutuksen → levyt ruostuvat, satulat jumiutuvat, käsijarru kiinni. Yleisin EV-hylkäyssyy katsastuksessa (Traficom 2023).', check: 'Levyjen reunan ruoste, jarrutus kovaa koeajolla (vetääkö sivulle?), lämpö pyörissä seisonnan jälkeen.', cost: 'Levyt + palat 500–1 000 €, satula 200–400 €' },
+  { id: 'gen-ev-nohp', comp: 'Ilmastointi', sev: 1, title: 'Sähköauto ilman lämpöpumppua – talvikulutus +30–50 %', match: { ev: true, years: [2010, 2020] }, what: 'Tesla S/X ennen 2021 ja useimmat vanhat EV:t lämmittävät vastuksella: Seinäjoen talvessa toimintamatka putoaa 30–50 %. Laske talven matkat tämän mukaan.', check: 'Lämpöpumppu varusteena? (Leaf 2013+ Tekna/Acenta, i3 lisävaruste, Kona vakio).', cost: '—' },
+  { id: 'gen-ev-cable', comp: 'Lataus', sev: 1, title: 'Latausvarusteet ja -portti (Type 1 vs Type 2, CCS/CHAdeMO)', match: { ev: true }, what: 'USA/Japani-tuonti: Type 1 -portti → tarvitset adapterin tai portin vaihdon; CHAdeMO-pikalataus (Leaf, Outlander PHEV) katoaa Suomesta. Mukana oleva latauskaapeli/UMC (Tesla UMC 300–500 €) on osa kauppaa.', check: 'Portin tyyppi, mitkä kaapelit/adapterit kuuluvat kauppaan, kotilataus 16 A sulakkeella.', cost: 'Adapteri 150–300 €' },
+  { id: 'gen-import-us', comp: 'Historia', sev: 2, title: 'USA/Kanada-tuontiauto – title-merkinnät, mittari, varusteet, varaosat', match: { origin: ['USA', 'Kanada', 'Meksiko'], anyOf: ['importFlag'] }, what: 'Lunastetut (salvage/rebuilt/flood) autot tuodaan Suomeen korjattuina. Mailimittari voi olla muunnettu väärin. Mittaristo/valot muutettu yksittäishyväksynnässä. Takuut eivät yleensä siirry.', check: 'NMVTIS (vehiclehistory.bja.ojp.gov, ~5 $), Carfax/AutoCheck, Copart/IAAI-arkistohaku VIN:llä (kuvat ennen korjausta), autoveropäätös vero.fi.', cost: '—' },
+  { id: 'gen-import-eu', comp: 'Historia', sev: 1, title: 'Tuontiauto Euroopasta – aiempi rekisteri kertoo mittarilukemat ja katsastukset ilmaiseksi', match: { anyOf: ['foreignReg'] }, what: 'Ruotsi (Transportstyrelsen/biluppgifter.se), Norja (vegvesen.no), Tanska (tjekbil.dk), UK (check-mot.service.gov.uk), Viro (eteenindus.mnt.ee) näyttävät katsastushistorian mittarilukemineen vanhalla rekisterinumerolla. Saksassa ei julkista rekisteriä – TÜV-raportti pyydettävä myyjältä.', check: 'Pyydä myyjältä vanha rekisterinumero/rekisteriote ja tarkista itse. Vertaa lukemia Suomen ensimmäiseen katsastukseen.', cost: '0 €' },
+  { id: 'gen-panorama', comp: 'Kori', sev: 1, title: 'Panoraama-/kattoluukku – tyhjennyskanavat ja mekanismi', match: { feat: ['panorama'] }, what: 'Tukkeutuneet tyhjennysletkut valuttavat veden sisätiloihin (A-pilarit, lattia → ohjainlaitteet!), mekanismin kiskot ja verho jumiutuvat, lasin halkeilu (VW/Audi/Hyundai).', check: 'Kaada vesi lasin reunaan – valuuko pyörän taakse? Matot kosteat? Avaa/sulje koko matka.', cost: 'Kanavien puhdistus 100 €, mekanismi 1 000–2 500 €' },
+  { id: 'gen-airsusp', comp: 'Alusta', sev: 2, title: 'Ilmajousitus (Audi/Mercedes Airmatic/BMW/Land Rover/Porsche/Volvo)', match: { feat: ['ilmajousitus'] }, what: 'Jousipalkeet halkeilevat 8–12 v, kompressori kuolee vuotavaa paikatessaan, venttiililohko ja korkeusanturit. Auto makaa aamulla.', check: 'Seisonta 12 h → kulmien korkeus; kompressorin käyntiaika; vikakoodit. Mercedes W220/W211/W164 ja Audi A6/A8/Q7 tyypillisiä.', cost: 'Jalka 500–1 200 €/kpl, kompressori 500–900 €' },
+  { id: 'gen-matrix', comp: 'Valot', sev: 1, title: 'Matrix-/adaptiiviset LED- tai xenon-ajovalot', match: { feat: ['matrix'] }, what: 'Yksi umpio 1 000–3 000 €; kosteus sisällä, LED-moduulin osittainen pimeneminen = koko umpio. Xenon: polttimot 100–200 €/kpl, kääntömoottori. Pesurit vaaditaan katsastuksessa.', check: 'Kosteus/huurre umpioissa, kaikki segmentit palavat, kääntötoiminto, pesurit toimivat.', cost: 'Umpio 1 000–3 000 €' },
+  { id: 'gen-webasto', comp: 'Lämmitys', sev: 1, title: 'Polttoainekäyttöinen lisälämmitin (Webasto/Eberspächer)', match: { feat: ['webasto'] }, what: 'Hehkutulppa, polttoainepumppu ja ohjainlaite vikaantuvat; lukittuu vikatilaan jos käynnistetty monta kertaa epäonnistuneesti. Vaihto 1 500–2 500 €.', check: 'Käynnistä lämmitin ja odota 10 min: lämmintä ilmaa, ei savua. Vikamuisti.', cost: 'Huolto 300 €, laite 1 500–2 500 €' },
+  { id: 'gen-towbar', comp: 'Voimansiirto', sev: 1, title: 'Vetokoukku – mahdollinen raskas vetokäyttö', match: { feat: ['vetokoukku'] }, what: 'Vaunun/veneen veto kuormittaa vaihteistoa (automaatin öljyn lämpö), kytkintä ja jäähdytystä. Sähköautolla pudottaa toimintamatkaa 40–50 %.', check: 'Koukun kulumat/naarmut (paljon käytetty?), vaihteistoöljyn vaihtohistoria, jäähdyttimen kunto.', cost: '—' },
+  { id: 'gen-bigwheels', comp: 'Renkaat', sev: 1, title: 'Isot vanteet (≥19") – renkaat, vanteet ja alusta', match: { feat: ['isot-vanteet'] }, what: 'Matalaprofiilirenkaat 250–450 €/kpl, vanteet vääntyvät kuopista, alustan puslat kuluvat nopeammin. Kitkarenkaita isoissa koissa huonosti.', check: 'Renkaiden ikä (DOT) ja epätasainen kuluminen, vanteiden reunat, tärinä 100 km/h.', cost: 'Rengassarja 1 000–1 800 €' },
+  { id: 'gen-startstop', comp: 'Sähkö/elektroniikka', sev: 1, title: 'Start-stop → AGM/EFB-akku ja akunhallinta', match: { fuel: ['bensiini', 'diesel', 'hybridi'], years: [2010, 2030] }, what: 'AGM-akku 250–400 € ja se pitää koodata (BMW, VAG, Mercedes) – väärä/koodaamaton akku aiheuttaa sähkövikoja ja start-stop ei toimi.', check: 'Toimiiko start-stop koeajolla? Akun ikä (tarra), latausjännite.', cost: '250–450 €' },
+  { id: 'gen-rust', comp: 'Kori', sev: 2, title: 'Pohjaruoste suomalaisessa käytössä (≥ 8 v)', match: { ageMin: 8 }, what: 'Suola syö helmat, takapyöränkaaret, apurungot, jarruputket ja jousien istukat. Erityisen herkkiä: Mazda 3/6/5 (2003–2012), Mercedes W203/W210/W211 (1996–2008), Nissan Qashqai J10 takakaaret, Ford Focus/Mondeo takapyöränkaaret, Toyota Avensis/Hilux apurunko, Tesla Model S/X alumiinikori ok mutta teräksiset apurungot ja jarruputket ruostuvat.', check: 'Nostimella: helmojen saumat, takapyöränkaarten sisäreunat, apurungon kiinnitykset, jarruputket. Pohjamassaus tehty?', cost: 'Helmat 500–1 500 €/puoli, apurunko 800–2 000 €' },
+  { id: 'gen-lowkm', comp: 'Historia', sev: 1, title: 'Vähäinen vuosittainen ajo (< 8 000 km/v)', match: { kmPerYear: [0, 8000] }, what: 'Vähän ajettu ei ole automaattisesti hyvä: lyhyet matkat (DPF, öljyn laimeneminen, akun sulfatoituminen, jarrut), pitkät seisonnat (tiivisteet, renkaat), tai mittari on pysähtynyt/manipuloitu.', check: 'Katsastushistorian mittarilukemat (Traficom), kulumat polkimissa/ratissa/penkissä vs. km, huoltokirjan km-merkinnät.', cost: '—' },
+  { id: 'gen-highkm', comp: 'Historia', sev: 1, title: 'Runsas vuosittainen ajo (> 35 000 km/v)', match: { kmPerYear: [35000, 999999] }, what: 'Taksi-, edustus- tai leasingkäyttö: moottoritiekilometrit ovat helppoja, mutta kuluvat osat (alusta, penkit, vaihteisto) ja huoltovälit ratkaisevat.', check: 'Huoltohistoria aukoton?, alustan puslat, penkkien kulumat, onko ollut taksina (Traficom: käyttötarkoitus "luvanvarainen").', cost: '—' },
+];
+
+/* Autoröntgen DEMO-DATA. Käytetään kun sivu ajetaan ympäristössä ilman verkkoa/palvelinta (esim. julkaistu demo).
+   Kaikki tämän tiedoston luvut ovat ESIMERKKEJÄ: NHTSA-dekoodaus ja takaisinkutsut on kirjoitettu oikeiden rajapintojen
+   muotoon, mutta valitusmäärät, vertaisryhmätilasto, sormenjäljet ja luotaintulokset ovat keksittyjä havainnollistuksia. */
+window.DEMO = {
+  label: 'DEMO – esimerkkiautoille valmis data, live-haut eivät toimi tässä ympäristössä',
+  vins: {
+    '5YJSA1E2XJF000001': {
+      nhtsa: { VIN: '5YJSA1E2XJF000001', ErrorCode: '0', ErrorText: '0 - VIN decoded clean. Check Digit (9th position) is correct', Make: 'TESLA', Model: 'Model S', ModelYear: '2018', Manufacturer: 'TESLA, INC.', BodyClass: 'Hatchback/Liftback/Notchback', Doors: '5', DriveType: '4WD/4-Wheel Drive/4x4', ElectrificationLevel: 'BEV (Battery Electric Vehicle)', FuelTypePrimary: 'Electric', EVDriveUnit: 'Dual Motor - Standard', PlantCity: 'FREMONT', PlantCountry: 'UNITED STATES (USA)', PlantState: 'CALIFORNIA', SteeringLocation: 'Left-Hand Drive (LHD)', VehicleType: 'PASSENGER CAR', GVWR: 'Class 2E: 6,001 - 7,000 lb (2,722 - 3,175 kg)', Seats: '5', ABS: 'Standard', ESC: 'Standard', AdaptiveCruiseControl: 'Optional', ForwardCollisionWarning: 'Standard', LaneDepartureWarning: 'Standard', AirBagLocFront: '1st Row (Driver and Passenger)', AirBagLocSide: '1st Row (Driver and Passenger)', AirBagLocCurtain: '1st and 2nd Rows', AirBagLocKnee: '1st Row (Driver and Passenger)', TPMS: 'Direct', KeylessIgnition: 'Standard', DaytimeRunningLight: 'Standard', RearVisibilitySystem: 'Standard', AutoReverseSystem: 'Standard', BlindSpotMon: 'Standard', DynamicBrakeSupport: 'Standard', PedestrianAutomaticEmergencyBraking: 'Standard', NCSABodyType: 'Hatchback, 5-door', NCSAMake: 'Tesla', NCSAModel: 'Model S' },
+      recalls: [
+        { NHTSACampaignNumber: '21V035000', ReportReceivedDate: '27/01/2021', Component: 'ELECTRICAL SYSTEM:INSTRUMENT CLUSTER/PANEL', Summary: 'Tesla, Inc. (Tesla) is recalling certain 2012-2018 Model S and 2016-2018 Model X vehicles. The 8GB embedded MultiMediaCard (eMMC) in the media control unit (MCU) may fail due to accumulated wear, causing the center display to malfunction.', Consequence: 'A malfunctioning center display can result in the loss of the rearview camera image, defog/defrost controls and turn signal audible chime, increasing the risk of a crash.', Remedy: 'Tesla will replace the 8GB eMMC with an enhanced 64GB eMMC, free of charge.', parkIt: false, overTheAirUpdate: false },
+        { NHTSACampaignNumber: '22V063000', ReportReceivedDate: '04/02/2022', Component: 'ELECTRICAL SYSTEM:SOFTWARE', Summary: 'Tesla, Inc. (Tesla) is recalling certain 2020-2022 Model S, Model X, Model Y, and 2017-2022 Model 3 vehicles. The "Boombox" function allows sounds to be played through an external speaker while the vehicle is in motion, which may obscure the Pedestrian Warning System (PWS) sounds.', Consequence: 'Pedestrians may not hear the vehicle approaching, increasing the risk of a crash.', Remedy: 'Tesla released an over-the-air (OTA) software update that disables the Boombox function when the vehicle is in Drive, Neutral or Reverse.', parkIt: false, overTheAirUpdate: true },
+      ],
+      complaintsByComponent: { 'ELECTRICAL SYSTEM': 88, 'SUSPENSION': 41, 'STRUCTURE:BODY:DOOR': 25, 'VEHICLE SPEED CONTROL': 19, 'POWER TRAIN': 15, 'STEERING': 12, 'VISIBILITY': 8, 'AIR BAGS': 4 }, complaintsMeta: { fire: 3, crash: 11, injuries: 4 },
+      ratings: { OverallRating: '5', OverallFrontCrashRating: '5', OverallSideCrashRating: '5', RolloverRating: '5', VehicleDescription: '2018 Tesla Model S 5 HB AWD' },
+      probe: [{ name: 'Copart (USA)', url: 'https://www.copart.com/lotSearchResults/?free=true&query=5YJSA1E2XJF000001', status: 'none', note: 'DEMO' }, { name: 'IAAI (USA)', url: 'https://www.iaai.com/Search?Keyword=5YJSA1E2XJF000001', status: 'none', note: 'DEMO' }, { name: 'bidfax.info', url: 'https://bidfax.info/?do=search&subaction=search&story=5YJSA1E2XJF000001', status: 'none', note: 'DEMO' }, { name: 'poctra.com', url: 'https://poctra.com/search/ap/5YJSA1E2XJF000001', status: 'unknown', note: 'DEMO: botsuojaus – avaa linkki itse' }, { name: 'stat.vin', url: 'https://stat.vin/cars/5YJSA1E2XJF000001', status: 'none', note: 'DEMO' }],
+    },
+    '3C3CFFGE9GT000001': {
+      nhtsa: { VIN: '3C3CFFGE9GT000001', ErrorCode: '0', ErrorText: '0 - VIN decoded clean. Check Digit (9th position) is correct', Make: 'FIAT', Model: '500', ModelYear: '2016', Series: '500e', Trim: 'Battery Electric', Manufacturer: 'FCA MEXICO, S.A. DE C.V.', BodyClass: 'Hatchback/Liftback/Notchback', Doors: '3', DriveType: 'FWD/Front-Wheel Drive', ElectrificationLevel: 'BEV (Battery Electric Vehicle)', FuelTypePrimary: 'Electric', EVDriveUnit: 'Single Motor', BatteryKWh: '24', BatteryType: 'Lithium-Ion/Li-Ion', ChargerLevel: 'Level 2', PlantCity: 'TOLUCA', PlantCountry: 'MEXICO', SteeringLocation: 'Left-Hand Drive (LHD)', VehicleType: 'PASSENGER CAR', GVWR: 'Class 1C: 4,001 - 5,000 lb (1,814 - 2,268 kg)', Seats: '4', ABS: 'Standard', ESC: 'Standard', TPMS: 'Direct', AirBagLocFront: '1st Row (Driver and Passenger)', AirBagLocCurtain: '1st and 2nd Rows', AirBagLocKnee: '1st Row (Driver)', NCSABodyType: 'Hatchback, 3-door', NCSAMake: 'Fiat', NCSAModel: '500' },
+      recalls: [
+        { NHTSACampaignNumber: 'DEMO-1', ReportReceivedDate: '(esimerkki)', Component: 'ELECTRICAL SYSTEM:PROPULSION SYSTEM', Summary: 'ESIMERKKI demoa varten: sisäisen laturin (OBC) ohjelmisto voi aiheuttaa latauksen keskeytymisen ja "Service Electric Vehicle System" -varoituksen. Oikeat kampanjat haetaan NHTSA:sta kun sivu ajetaan palvelimen kanssa.', Consequence: '', Remedy: 'Ohjelmistopäivitys jälleenmyyjällä.', parkIt: false, overTheAirUpdate: false },
+      ],
+      complaintsByComponent: { 'ELECTRICAL SYSTEM': 37, 'ELECTRICAL SYSTEM:PROPULSION SYSTEM': 22, 'POWER TRAIN': 9, 'SERVICE BRAKES': 5, 'STRUCTURE:BODY': 3 }, complaintsMeta: { fire: 1, crash: 2, injuries: 0 },
+      ratings: { OverallRating: '4', OverallFrontCrashRating: '3', OverallSideCrashRating: '5', RolloverRating: '4', VehicleDescription: '2016 Fiat 500 3 HB FWD' },
+      probe: [{ name: 'Copart (USA)', url: 'https://www.copart.com/lotSearchResults/?free=true&query=3C3CFFGE9GT000001', status: 'hit', note: 'DEMO: VIN esiintyy 4 kertaa – lot "FIAT 500 ELECTRIC, FRONT END, RUN AND DRIVE"' }, { name: 'IAAI (USA)', url: 'https://www.iaai.com/Search?Keyword=3C3CFFGE9GT000001', status: 'none', note: 'DEMO' }, { name: 'bidfax.info', url: 'https://bidfax.info/?do=search&subaction=search&story=3C3CFFGE9GT000001', status: 'hit', note: 'DEMO: arkistosivu 2019, 6 kuvaa' }, { name: 'poctra.com', url: 'https://poctra.com/search/ap/3C3CFFGE9GT000001', status: 'none', note: 'DEMO' }, { name: 'stat.vin', url: 'https://stat.vin/cars/3C3CFFGE9GT000001', status: 'none', note: 'DEMO' }],
+    },
+  },
+  /* Esimerkkiryhmät vertaisryhmätilastoon (keksityt, mutta suuruusluokaltaan uskottavat) */
+  peer: {
+    'TESLA|MODEL S|2018': { n: 318, km_median: 118400, km_p25: 86200, km_p75: 156900, km_p90: 198000, km_mean: 123100, mass_median: 2108, co2_median: 0, top_color: 'Musta', top_kunta: 'Helsinki', top_fuel: 'Sähkö', as_of: 'DEMO – esimerkkiaineisto' },
+    'TESLA|MODEL S|2017': { n: 402, km_median: 141000, km_p25: 104000, km_p75: 182000, km_p90: 226000, km_mean: 146500, mass_median: 2100, co2_median: 0, top_color: 'Valkoinen', top_kunta: 'Espoo', top_fuel: 'Sähkö', as_of: 'DEMO – esimerkkiaineisto' },
+    'FIAT|500E|2016': { n: 61, km_median: 74300, km_p25: 52000, km_p75: 98000, km_p90: 121000, km_mean: 76900, mass_median: 1355, co2_median: 0, top_color: 'Valkoinen', top_kunta: 'Tampere', top_fuel: 'Sähkö', as_of: 'DEMO – esimerkkiaineisto' },
+    'VOLKSWAGEN|PASSAT|2012': { n: 2140, km_median: 268000, km_p25: 214000, km_p75: 322000, km_p90: 378000, km_mean: 270400, mass_median: 1554, co2_median: 119, top_color: 'Harmaa', top_kunta: 'Helsinki', top_fuel: 'Diesel', as_of: 'DEMO – esimerkkiaineisto' },
+  },
+  /* Esimerkkisormenjäljet: [ensirek, käyttöönotto, väri, kunta, km, omamassa, co2, käyttövoima] */
+  fp: {
+    'TESLA|MODEL S': [['2018-03-15', '20180315', 'Musta', 'Seinäjoki', 119318, 2108, 0, 'Sähkö'], ['2018-03-15', '20180315', 'Musta', 'Helsinki', 97550, 2108, 0, 'Sähkö'], ['2018-03-15', '20180315', 'Valkoinen', 'Espoo', 142010, 2108, 0, 'Sähkö'], ['2018-03-16', '20180316', 'Musta', 'Seinäjoki', 88400, 2155, 0, 'Sähkö'], ['2018-03-22', '20180322', 'Sininen', 'Vaasa', 131900, 2108, 0, 'Sähkö'], ['2018-04-05', '20180405', 'Musta', 'Tampere', 160200, 2108, 0, 'Sähkö'], ['2018-04-05', '20180405', 'Harmaa', 'Seinäjoki', 76000, 2108, 0, 'Sähkö'], ['2018-06-28', '20180628', 'Punainen', 'Oulu', 102300, 2108, 0, 'Sähkö'], ['2018-09-14', '20180914', 'Musta', 'Lapua', 95800, 2108, 0, 'Sähkö'], ['2018-12-20', '20181220', 'Valkoinen', 'Seinäjoki', 71200, 2108, 0, 'Sähkö']],
+    'FIAT|500E': [['2019-05-10', '20160212', 'Valkoinen', 'Seinäjoki', 61200, 1355, 0, 'Sähkö'], ['2019-11-02', '20160830', 'Oranssi', 'Tampere', 78900, 1355, 0, 'Sähkö'], ['2020-03-18', '20161104', 'Valkoinen', 'Helsinki', 54100, 1355, 0, 'Sähkö'], ['2021-07-07', '20160505', 'Musta', 'Kurikka', 92400, 1355, 0, 'Sähkö']],
+  },
+  /* Esimerkkiautojen käsin täydennettävät tiedot (napit) */
+  examples: {
+    tesla: { q: '5YJSA1E2XJF000001', manual: { km: '121000', mass: '2600', curb: '2108', kwh: '75', feat: 'ilmajousitus,isot-vanteet', firstReg: '2018-03-15', color: 'Musta', kunta: 'Seinäjoki' } },
+    fiat: { q: '3C3CFFGE9GT000001', manual: { model: '500e', km: '58000', mass: '1690', curb: '1355', kwh: '24', foreignCountry: 'US', firstReg: '2019-05-10', color: 'Valkoinen', kunta: 'Seinäjoki' } },
+    passat: { q: 'WVWZZZ3CZCE000001', manual: { make: 'Volkswagen', model: 'Passat', year: '2012', fuel: 'diesel', engine: 'CFFB', disp: '2.0', cyl: '4', turbo: 'kyllä', trans: 'kaksoiskytkin', transNote: 'DSG 6', drive: 'etu', km: '312000', mass: '2100', curb: '1554', co2: '119', feat: 'panorama,vetokoukku', foreignReg: 'ABC123', foreignCountry: 'SE' } },
+    plate: { q: 'ABC-123', manual: {} },
+  },
+};
+
+/* Autoröntgen – sovelluslogiikka. Toimii myös suoraan file:// -tiedostona; server.js laajentaa (proxy, välimuisti, luotaimet). */
+(function () {
+  'use strict';
+  const $ = (s, el = document) => el.querySelector(s);
+  const h = (tag, attrs = {}, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v === undefined || v === null || v === false) continue;
+      if (k === 'class') el.className = v; else if (k === 'html') el.innerHTML = v; else if (k.startsWith('on')) el.addEventListener(k.slice(2), v); else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+    return el;
+  };
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = (n) => n == null || isNaN(n) ? '–' : Number(n).toLocaleString('fi-FI');
+  const eur = (n) => Number(n).toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' });
+  const up = (s) => String(s || '').toUpperCase().trim();
+  const enc = encodeURIComponent;
+
+  const TAX_2026 = { perusvero_min_eur_year: 106.21, kayttovoima_c_per_day_100kg: { sahko: 1.9, diesel: 5.5, kaasu: 3.1, bensiini: 0, hybridi: 0, phev: 1.95 } };
+  const EU_ETA = ['Suomi', 'Saksa', 'Ruotsi', 'Belgia', 'Alankomaat', 'Ranska', 'Espanja', 'Italia', 'Tšekki', 'Slovakia', 'Unkari', 'Puola', 'Itävalta', 'Portugali', 'Romania', 'Iso-Britannia', 'Turkki', 'Serbia/Kroatia', 'Saksa (ent. DDR)', 'Tanska', 'Sveitsi'];
+  const FEATURES = [['panorama', 'Panoraama-/kattoluukku'], ['ilmajousitus', 'Ilmajousitus'], ['matrix', 'Matrix/adaptiiviset LED tai xenon'], ['webasto', 'Polttoainelämmitin (Webasto)'], ['vetokoukku', 'Vetokoukku'], ['isot-vanteet', 'Vanteet ≥ 19"']];
+  const COLORS = ['Musta', 'Valkoinen', 'Harmaa', 'Hopea', 'Sininen', 'Punainen', 'Ruskea (beige)', 'Vihreä', 'Keltainen', 'Oranssi', 'Violetti', 'Turkoosi', 'Monivärinen'];
+  const COUNTRIES = [['', '–'], ['SE', 'Ruotsi'], ['NO', 'Norja'], ['DE', 'Saksa'], ['DK', 'Tanska'], ['UK', 'Iso-Britannia'], ['EE', 'Viro'], ['NL', 'Alankomaat'], ['BE', 'Belgia'], ['US', 'USA'], ['CA', 'Kanada'], ['JP', 'Japani'], ['XX', 'Muu']];
+
+  /* ---------- Tila ---------- */
+  const state = { q: '', type: null, vin: null, plate: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, manual: {}, proxy: null };
+  const LS_KEY = 'autorontgen.manual.v2';
+  const DEMO = window.DEMO || null;
+  const demoFor = () => DEMO && state.vin && DEMO.vins[state.vin] || null;
+
+  async function hasProxy() {
+    if (state.proxy != null) return state.proxy;
+    if (location.protocol === 'file:' || DEMO) return (state.proxy = false);
+    try { const r = await fetch('/api/health', { cache: 'no-store' }); state.proxy = r.ok; } catch { state.proxy = false; }
+    return state.proxy;
+  }
+  async function getJSON(direct, proxyPath) {
+    const useProxy = await hasProxy();
+    const url = useProxy && proxyPath ? proxyPath : direct;
+    if (!url) throw new Error('ei osoitetta');
+    const r = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+
+  /* ---------- Profiili: VIN + NHTSA + rekkarihaku + käsin syötetty → yksi kuva autosta ---------- */
+  function mapTrans(s) { s = String(s || ''); if (/manual|standard/i.test(s) && !/automated/i.test(s)) return 'manuaali'; if (/CVT|continuously/i.test(s)) return 'cvt'; if (/dual|automated manual|DCT|DSG/i.test(s)) return 'kaksoiskytkin'; if (/automatic/i.test(s)) return 'automaatti'; return ''; }
+  function mapDrive(s) { s = String(s || ''); if (/AWD|4WD|4x4|all/i.test(s)) return 'neli'; if (/FWD|front/i.test(s)) return 'etu'; if (/RWD|rear/i.test(s)) return 'taka'; return ''; }
+  function guessFuel(n, local) {
+    const el = (n.ElectrificationLevel || '').toLowerCase(), ft = (n.FuelTypePrimary || '').toLowerCase();
+    if (/bev|battery electric/.test(el) || (ft.includes('electric') && !ft.includes('hybrid'))) return 'sahko';
+    if (/phev|plug-in/.test(el)) return 'phev';
+    if (/hybrid/.test(el) && !/mild/.test(el)) return 'hybridi';
+    if (ft.includes('diesel')) return 'diesel';
+    if (ft.includes('gasoline') || ft.includes('petrol')) return 'bensiini';
+    if (/natural gas|cng|lpg/.test(ft)) return 'kaasu';
+    if (local && (local.brand === 'tesla' || (state.vin || '').startsWith('3C3CFFGE'))) return 'sahko';
+    return '';
+  }
+  function ctx() {
+    const n = state.nhtsa || {}, m = state.manual || {}, reg = state.reg || {}, L = state.local;
+    const make = m.make || reg.make || n.Make || (L && L.manufacturer && L.manufacturer.split(' ')[0]) || '';
+    let model = m.model || reg.model || n.Model || '';
+    if (!model && L && L.brand === 'tesla') model = (L.brandFields.find(f => f[0] === 'Malli') || [])[1] || '';
+    if (!model && state.vin && state.vin.startsWith('3C3CFFGE')) model = '500e';
+    const year = Number(m.year || reg.year || n.ModelYear || (L && L.modelYears && L.modelYears.filter(y => y >= 2000)[0]) || 0) || null;
+    const fuel = m.fuel || reg.fuel || guessFuel(n, L);
+    const now = new Date().getFullYear();
+    const km = Number(m.km || reg.km || 0) || null;
+    const age = year ? Math.max(0.5, now - year + 0.5) : null;
+    const origin = L ? L.region : (m.foreignCountry === 'US' ? 'USA' : '');
+    const feat = new Set((m.feat || '').split(',').filter(Boolean));
+    const c = {
+      vin: state.vin, plate: state.plate, make: String(make).trim(), model: String(model).trim(), year, fuel,
+      ev: fuel === 'sahko', hybrid: fuel === 'hybridi' || fuel === 'phev',
+      engineCode: up(m.engine || reg.engine || '').replace(/[\s\-]/g, ''), engineText: up((m.engine || '') + ' ' + (n.EngineModel || '') + ' ' + (reg.engine || '')),
+      disp: Number(m.disp || n.DisplacementL || 0) || null, cyl: Number(m.cyl || n.EngineCylinders || 0) || null,
+      turbo: m.turbo ? m.turbo === 'kyllä' : (n.Turbo === 'Yes' ? true : null),
+      trans: m.trans || mapTrans(n.TransmissionStyle), transText: ((m.trans || '') + ' ' + (n.TransmissionStyle || '') + ' ' + (m.transNote || '')).toLowerCase(),
+      drive: m.drive || mapDrive(n.DriveType), kwh: Number(m.kwh || n.BatteryKWh || 0) || null,
+      mass: Number(m.mass || reg.mass || 0) || null, curb: Number(m.curb || reg.curb || 0) || null, co2: m.co2 !== undefined && m.co2 !== '' ? Number(m.co2) : (reg.co2 != null ? Number(reg.co2) : null),
+      km, age, kmPerYear: km && age ? Math.round(km / age) : null, origin, feat,
+      teslaBattery: L && L.brand === 'tesla' ? state.vin[6] : null, teslaMotor: L && L.brand === 'tesla' ? state.vin[7] : null,
+      foreignReg: (m.foreignReg || '').trim(), foreignCountry: m.foreignCountry || '', firstReg: m.firstReg || '', color: m.color || '', kunta: m.kunta || '',
+    };
+    // Tuontiauto-lippu: ilmoitettu tuontimaa, tai valmistettu EU/ETA:n, Japanin ja Korean ulkopuolella – paitsi Tesla, jonka EU-autotkin ovat USA/Kiina-valmisteisia (silloin vain käyttäjän ilmoittama tuontimaa ratkaisee)
+    c.importFlag = !!(c.foreignCountry || (origin && !EU_ETA.includes(origin) && !['Japani', 'Etelä-Korea'].includes(origin) && !(L && L.brand === 'tesla')));
+    if (c.fuel === 'sahko' && !c.trans) c.trans = 'ev';
+    return c;
+  }
+  const normKey = (c) => (up(c.make) + '|' + up(c.model)).replace(/\s+/g, ' ');
+
+  /* ---------- Sääntöjen täsmäytys ---------- */
+  function matchRule(r, c) {
+    const m = r.match, why = [];
+    const inRange = (v, [a, b]) => v != null && v >= a && v <= b;
+    if (m.engine) {
+      if (!c.engineCode && !c.engineText.trim()) return null;
+      const hit = m.engine.find(e => { const E = up(e).replace(/[\s\-]/g, ''); return (c.engineCode && c.engineCode.startsWith(E)) || (E.length >= 3 && c.engineText.replace(/[\s\-]/g, '').includes(E)); });
+      if (!hit) return null; why.push('moottori ' + hit);
+    }
+    if (m.make) { if (!c.make || !m.make.some(x => up(c.make).startsWith(up(x)) || up(x).startsWith(up(c.make)))) return null; why.push('merkki ' + c.make); }
+    if (m.model) { if (!c.model || !new RegExp(m.model, 'i').test(c.model)) return null; why.push('malli ' + c.model); }
+    if (m.years) { if (!inRange(c.year, m.years)) return null; why.push('vuosi ' + c.year); }
+    if (m.fuel) { const f = c.fuel === 'phev' ? 'hybridi' : c.fuel; if (!f || !m.fuel.includes(f) && !(m.fuel.includes('hybridi') && c.fuel === 'phev')) return null; why.push('käyttövoima ' + c.fuel); }
+    if (m.disp) { if (!inRange(c.disp, m.disp)) return null; why.push(c.disp + ' l'); }
+    if (m.cyl) { if (c.cyl !== m.cyl) return null; why.push(c.cyl + ' syl.'); }
+    if (m.turbo != null) { if (c.turbo !== m.turbo) return null; why.push('turbo'); }
+    if (m.trans) { if (!c.transText.trim() && !c.trans) return null; if (!new RegExp(m.trans, 'i').test(c.transText + ' ' + c.trans)) return null; why.push('vaihteisto ' + (c.trans || c.transText.trim())); }
+    if (m.drive) { if (c.drive !== m.drive) return null; why.push('neliveto'); }
+    if (m.ev) { if (!c.ev) return null; why.push('sähköauto'); }
+    if (m.feat) { const f = m.feat.find(x => c.feat.has(x)); if (!f) return null; why.push('varuste: ' + (FEATURES.find(x => x[0] === f) || [f, f])[1]); }
+    if (m.origin) { if (!c.origin || !m.origin.includes(c.origin)) return null; why.push('valmistettu ' + c.origin); }
+    if (m.anyOf) { const f = m.anyOf.find(k => c[k]); if (!f) return null; why.push(f === 'importFlag' ? 'tuontiauto' : 'aiempi ulkomainen rekisteri'); }
+    if (m.tesla && m.tesla.battery) { if (!c.teslaBattery || !m.tesla.battery.includes(c.teslaBattery)) return null; why.push('VIN pos 7 = ' + c.teslaBattery); }
+    if (m.kwh) { if (!inRange(c.kwh, m.kwh)) return null; why.push(c.kwh + ' kWh'); }
+    if (m.kmPerYear) { if (!inRange(c.kmPerYear, m.kmPerYear)) return null; why.push(fmt(c.kmPerYear) + ' km/v'); }
+    if (m.ageMin) { if (c.age == null || c.age < m.ageMin) return null; why.push(Math.round(c.age) + ' v'); }
+    return why;
+  }
+  function profileMatches(c) {
+    const out = [];
+    for (const r of window.ISSUES_DB) { const why = matchRule(r, c); if (why) out.push({ rule: r, why }); }
+    return out.sort((a, b) => b.rule.sev - a.rule.sev);
+  }
+
+  /* ---------- Haku ---------- */
+  async function run(q) {
+    q = (q || '').trim(); if (!q) return;
+    state.q = q; state.type = VINLIB.detectType(q);
+    Object.assign(state, { vin: null, plate: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, nhtsaErr: null, recallsErr: null, complaintsErr: null, ratingsErr: null, regErr: null, peerErr: null, probeErr: null });
+    try { history.replaceState(null, '', '?q=' + enc(q)); } catch { }
+    $('#results').hidden = false; $('#intro').hidden = true;
+    if (state.type === 'vin' || state.type === 'vin-partial') { state.vin = VINLIB.clean(q); state.local = VINLIB.decodeVin(state.vin); }
+    else if (state.type === 'plate') { state.plateInfo = VINLIB.parsePlate(q); state.plate = state.plateInfo.plate; }
+    else state.plateInfo = { ok: false, errors: ['Syöte ei ole VIN (17 merkkiä) eikä rekisteritunnus (ABC-123).'] };
+    renderAll();
+    const jobs = [];
+    if (state.vin) { jobs.push(fetchNhtsaDecode().then(() => { renderAll(); return fetchExtras(); })); jobs.push(fetchProbe()); }
+    if (state.plate) jobs.push(fetchReg().then(() => { renderAll(); return fetchExtras(); }));
+    if (!state.vin && !state.plate) jobs.push(fetchExtras());
+    await Promise.allSettled(jobs);
+    renderAll();
+  }
+  async function fetchNhtsaDecode() {
+    const d0 = demoFor(); if (d0) { state.nhtsa = d0.nhtsa; return; }
+    if (DEMO) { state.nhtsaErr = 'live-haku ei ole käytössä demossa (ei verkkoa). Omalla palvelimella NHTSA dekoodaa minkä tahansa VIN:n.'; return; }
+    try { const d = await getJSON('https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/' + state.vin + '?format=json', '/api/vin/' + state.vin); state.nhtsa = (d.Results && d.Results[0]) || null; }
+    catch (e) { state.nhtsaErr = String(e.message || e); }
+  }
+  async function fetchExtras() {
+    const c = ctx(); if (!c.make || !c.model || !c.year) return;
+    const q = 'make=' + enc(c.make) + '&model=' + enc(c.model) + '&modelYear=' + enc(c.year);
+    const d0 = demoFor();
+    if (DEMO) {
+      if (d0) {
+        state.recalls = d0.recalls; state.ratings = d0.ratings;
+        state.complaints = []; Object.entries(d0.complaintsByComponent).forEach(([k, n]) => { for (let i = 0; i < n; i++) state.complaints.push({ components: k }); });
+        state.complaints.slice(0, d0.complaintsMeta.crash).forEach(x => x.crash = true); state.complaints.slice(0, d0.complaintsMeta.fire).forEach(x => x.fire = true); if (state.complaints[0]) state.complaints[0].numberOfInjuries = d0.complaintsMeta.injuries;
+      } else { state.recallsErr = state.complaintsErr = state.ratingsErr = 'ei käytössä demossa'; }
+      await Promise.allSettled([fetchPeer(c), fetchFingerprints(c)]); return;
+    }
+    await Promise.allSettled([
+      getJSON('https://api.nhtsa.gov/recalls/recallsByVehicle?' + q, '/api/recalls?' + q).then(d => state.recalls = d.results || []).catch(e => state.recallsErr = String(e.message || e)),
+      getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?' + q, '/api/complaints?' + q).then(d => state.complaints = d.results || []).catch(e => state.complaintsErr = String(e.message || e)),
+      (async () => {
+        const l = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(c.model), '/api/ratings?' + q);
+        const id = l.Results && l.Results[0] && l.Results[0].VehicleId; if (!id) return;
+        const r = await getJSON('https://api.nhtsa.gov/SafetyRatings/VehicleId/' + id, '/api/ratings/' + id); state.ratings = r.Results && r.Results[0];
+      })().catch(e => state.ratingsErr = String(e.message || e)),
+      fetchPeer(c), fetchFingerprints(c),
+    ]);
+  }
+  async function fetchReg() {
+    if (!(await hasProxy())) { state.regErr = 'Rekisteritunnushaku tarvitsee server.js:n (Suomessa ei ole CORS-vapaata rajapintaa).'; return; }
+    try { const d = await getJSON(null, '/api/reg/' + enc(state.plate)); if (d && d.ok) state.reg = d.vehicle; else state.regErr = (d && d.error) || 'ei tulosta'; }
+    catch (e) { state.regErr = String(e.message || e); }
+  }
+  async function fetchProbe() {
+    const d0 = demoFor(); if (d0) { state.probe = d0.probe; renderAccident(); return; }
+    if (!(await hasProxy())) return;
+    try { state.probe = await getJSON(null, '/api/probe?vin=' + enc(state.vin)); } catch (e) { state.probeErr = String(e.message || e); }
+    renderAccident();
+  }
+  async function loadData(name, cacheKey) {
+    if (DEMO) return name.startsWith('peer') ? DEMO.peer : DEMO.fp;
+    if (window[cacheKey]) return window[cacheKey];
+    const r = await fetch('data/' + name, { cache: 'no-store' }); if (!r.ok) throw new Error('ei tiedostoa');
+    return (window[cacheKey] = await r.json());
+  }
+  async function fetchPeer(c) {
+    try {
+      const d = await loadData('peer_stats.json', '__peerStats');
+      const key = normKey(c) + '|' + c.year; state.peer = d[key] || null; state.peerKey = key;
+      if (!state.peer) { const alt = Object.keys(d).find(k => k.startsWith(up(c.make) + '|') && k.endsWith('|' + c.year) && normKey(c).includes(k.split('|')[1])); if (alt) { state.peer = d[alt]; state.peerKey = alt; } }
+    } catch { state.peerErr = 'Vertaisryhmätilasto puuttuu (aja tools/build_peer_stats.py).'; }
+  }
+  async function fetchFingerprints(c) {
+    try { const d = await loadData('fingerprints.json', '__fp'); state.fp = d[normKey(c)] || null; state.fpKeys = Object.keys(d); } catch { state.fpErr = 'Sormenjälkiaineisto puuttuu (build_peer_stats.py --fingerprint "MERKKI|MALLI").'; }
+  }
+
+  /* ---------- Riskiliput ---------- */
+  function riskFlags() {
+    const f = []; const c = ctx(); const L = state.local;
+    if (L) {
+      L.errors.forEach(e => f.push(['bad', e])); L.warnings.forEach(w => f.push(['warn', w]));
+      if (L.checkDigit && L.checkDigit.valid) f.push(['ok', 'VIN:n tarkistusnumero täsmää.']);
+      if (!EU_ETA.includes(L.region) && L.region !== 'Japani' && L.region !== 'Etelä-Korea')
+        f.push([L.brand === 'tesla' ? 'info' : 'warn', 'Valmistettu alueella "' + L.region + '"' + (L.brand === 'tesla' ? ' – Teslalla normaalia (EU-autotkin Fremontista/Shanghaista). Varmista silti onko yksilö alun perin EU-myyty vai USA/Norja-tuonti.' : ' – todennäköinen tuontiauto.') + ' Varmista autoveropäätös (vero.fi) ja aiempi rekisteröintihistoria; USA-autoissa NMVTIS/Carfax (salvage title).']);
+    }
+    if (state.nhtsa && state.nhtsa.ErrorCode && !/^0/.test(state.nhtsa.ErrorCode)) f.push(['warn', 'NHTSA ei dekoodannut VIN:iä kokonaan: ' + state.nhtsa.ErrorText]);
+    if (state.nhtsa && state.manual.year && state.nhtsa.ModelYear && String(state.manual.year) !== String(state.nhtsa.ModelYear)) f.push(['bad', 'Ilmoitettu vuosimalli ' + state.manual.year + ' ≠ VIN:n mallivuosi ' + state.nhtsa.ModelYear + '.']);
+    if (state.recalls) f.push(state.recalls.length ? [state.recalls.length > 5 ? 'warn' : 'info', state.recalls.length + ' NHTSA-takaisinkutsua (malli/vuosi). Varmista että kampanjat on tehty tälle yksilölle (valmistajan VIN-haku).'] : ['ok', 'Ei NHTSA-takaisinkutsuja tälle malli/vuosi-yhdistelmälle.']);
+    if (state.complaints && state.complaints.length > 150) f.push(['warn', state.complaints.length + ' NHTSA-omistajavalitusta – mallilla on kroonisia vikoja.']);
+    if (state.peer && c.km) {
+      const ratio = c.km / state.peer.km_median;
+      if (ratio > 1.6) f.push(['warn', 'Mittarilukema ' + fmt(c.km) + ' km on ' + Math.round((ratio - 1) * 100) + ' % yli saman mallin/vuoden mediaanin Suomessa (' + fmt(state.peer.km_median) + ' km).']);
+      else if (ratio < 0.45 && c.year < new Date().getFullYear() - 3) f.push(['warn', 'Mittarilukema on vain ' + Math.round(ratio * 100) + ' % mediaanista. Pyydä katsastushistorian lukemat Traficomista – mittarimanipulaatio on yleistä tuontiautoissa.']);
+      else f.push(['ok', 'Mittarilukema on normaalilla alueella vertaisryhmään nähden.']);
+    }
+    const pm = profileMatches(c); const s3 = pm.filter(x => x.rule.sev === 3).length, s2 = pm.filter(x => x.rule.sev === 2).length;
+    if (s3) f.push(['warn', s3 + ' vakavaa komponenttiriskiä tämän yksilön kokoonpanossa – katso "Yksilöllinen riskiprofiili".']);
+    else if (s2) f.push(['info', s2 + ' merkittävää tarkistuskohdetta riskiprofiilissa.']);
+    if (c.make && !c.engineCode && !c.ev && window.ISSUES_DB.some(r => r.match.engine)) f.push(['info', 'Moottorikoodi puuttuu → ' + window.ISSUES_DB.filter(r => r.match.engine).length + ' moottorikohtaista sääntöä ei voitu tarkistaa. Koodi löytyy moottorin tarrasta/lohkosta, rekisteröintitodistuksesta (osa valmistajista) tai Biltema/Motonet-rekkarihausta.']);
+    if (state.probe && state.probe.some(p => p.status === 'hit')) f.push(['bad', 'VIN löytyy vauriohuutokaupan arkistosta (' + state.probe.filter(p => p.status === 'hit').map(p => p.name).join(', ') + ') – auto on todennäköisesti lunastettu ja korjattu. Katso kuvat.']);
+    if (state.plate && !state.reg) f.push(['info', 'Rekisteritunnuksella kattavin laillinen lähde on Traficomin Oma asiointi. Täydennä merkki/malli/vuosi alla niin loput kortit toimivat.']);
+    return f;
+  }
+  const riskScore = (flags) => Math.min(100, flags.reduce((s, [l]) => s + (l === 'bad' ? 35 : l === 'warn' ? 12 : 0), 0));
+
+  /* ---------- Render ---------- */
+  function renderAll() {
+    const c = ctx();
+    $('#title').textContent = [c.make, c.model, c.year].filter(Boolean).join(' ') || (state.vin ? 'VIN ' + state.vin : state.plate || '');
+    $('#sub').textContent = [state.vin ? 'VIN ' + state.vin : '', state.plate ? 'Rekisteritunnus ' + state.plate : '', c.engineCode ? 'moottori ' + c.engineCode : '', c.kwh ? c.kwh + ' kWh' : ''].filter(Boolean).join(' · ');
+    renderRisk(); renderProfile(); renderLocal(); renderNhtsa(); renderReg(); renderManual(); renderAccident(); renderInspection(); renderFingerprint(); renderRecalls(); renderComplaints(); renderPeer(); renderTax(); renderRatings(); renderLinks();
+  }
+  function card(id) { const el = $('#' + id); el.innerHTML = ''; return el; }
+  function kvList(pairs) { const dl = h('dl', { class: 'kv' }); pairs.forEach(([k, v]) => dl.append(h('dt', {}, k), h('dd', { html: '<b>' + esc(v) + '</b>' }))); return dl; }
+  const flagEl = (lvl, txt) => h('div', { class: 'flag ' + lvl }, h('span', { class: 'ic' }, { bad: '⛔', warn: '⚠️', ok: '✅', info: 'ℹ️' }[lvl]), h('span', {}, txt));
+  const linkChip = (href, label, cls) => h('a', { href, target: '_blank', rel: 'noopener' }, label, cls ? h('span', { class: 'st ' + cls }, cls === 'bad' ? '€' : cls === 'ok' ? 'ilmainen' : cls) : null);
+
+  function renderRisk() {
+    const el = card('risk'); const flags = riskFlags(); const score = riskScore(flags);
+    const g = score >= 50 ? 'var(--bad)' : score >= 20 ? 'var(--warn)' : 'var(--ok)';
+    el.append(h('h2', {}, 'Punaiset liput', h('span', { class: 'st' }, flags.length + ' havaintoa')));
+    el.append(h('div', { class: 'score' }, h('div', { class: 'gauge', style: '--p:' + score + ';--g:' + g }, h('div', {}, score)), h('div', {}, h('div', { style: 'font-weight:700;font-size:18px' }, score >= 50 ? 'Pysähdy ja selvitä' : score >= 20 ? 'Tarkista ennen kauppaa' : 'Ei hälyttävää'), h('div', { class: 'empty' }, 'Pisteet: virhe 35, varoitus 12. Ei korvaa Traficomin tietoja eikä koeajoa.'))));
+    const box = h('div', { style: 'margin-top:10px' }); flags.forEach(([l, t]) => box.append(flagEl(l, t))); if (!flags.length) box.append(h('div', { class: 'empty' }, 'Syötä VIN tai rekisteritunnus.')); el.append(box);
+  }
+  function renderProfile() {
+    const el = card('profile'); const c = ctx(); const pm = profileMatches(c);
+    el.append(h('h2', {}, 'Yksilöllinen riskiprofiili – tämän auton kokoonpanon tunnetut heikot kohdat', h('span', { class: 'st ' + (pm.some(x => x.rule.sev === 3) ? 'bad' : pm.some(x => x.rule.sev === 2) ? 'warn' : 'ok') }, pm.length + ' osumaa / ' + window.ISSUES_DB.length)));
+    const known = [['Moottori', c.engineCode || (c.engineText.trim() || null)], ['Käyttövoima', c.fuel || null], ['Iskutilavuus', c.disp ? c.disp + ' l' : null], ['Vaihteisto', c.trans || null], ['Veto', c.drive || null], ['Akku', c.kwh ? c.kwh + ' kWh' : null], ['Varusteet', c.feat.size ? [...c.feat].join(', ') : null], ['Alkuperä', c.origin || null], ['Ajo/v', c.kmPerYear ? fmt(c.kmPerYear) + ' km' : null]];
+    el.append(h('div', { class: 'links', style: 'margin-bottom:8px' }, ...known.map(([k, v]) => h('span', { class: 'st ' + (v ? 'ok' : ''), style: 'margin:2px 4px 2px 0' }, k + ': ' + (v || 'puuttuu')))));
+    if (!c.make) return el.append(h('div', { class: 'empty' }, 'Tunnista auto ensin (VIN tai käsin).'));
+    if (!pm.length) el.append(h('div', { class: 'empty' }, 'Ei osumia tällä tiedolla. Täydennä moottorikoodi, vaihteisto ja varusteet "Täydennä käsin" -kortissa – säännöt ovat komponenttikohtaisia.'));
+    const wrap = h('div', { class: 'grid', style: 'grid-template-columns:repeat(auto-fit,minmax(300px,1fr))' });
+    pm.forEach(({ rule: r, why }) => {
+      const sevCls = r.sev === 3 ? 'bad' : r.sev === 2 ? 'warn' : '';
+      wrap.append(h('div', { class: 'card', style: 'background:var(--panel2)' },
+        h('div', { style: 'display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap' }, h('span', { class: 'st ' + sevCls }, r.sev === 3 ? 'vakava' : r.sev === 2 ? 'merkittävä' : 'tiedoksi'), h('span', { class: 'st' }, r.comp)),
+        h('div', { style: 'font-weight:700;margin-bottom:6px' }, r.title),
+        h('div', { style: 'font-size:13px;margin-bottom:6px' }, r.what),
+        h('div', { style: 'font-size:13px;margin-bottom:6px' }, h('b', {}, 'Tarkista: '), r.check),
+        h('div', { style: 'font-size:13px;color:var(--muted)' }, 'Kustannus: ' + r.cost),
+        h('div', { style: 'font-size:12px;color:var(--accent);margin-top:6px' }, 'Osui: ' + why.join(' · '))));
+    });
+    el.append(wrap);
+  }
+  function renderLocal() {
+    const el = card('local'); const L = state.local;
+    el.append(h('h2', {}, 'VIN-tulkinta (paikallinen)', h('span', { class: 'st ok' }, 'ei verkkoa')));
+    if (!L) { if (state.plateInfo) el.append(kvList([['Tunnus', state.plateInfo.plate]]), ...(state.plateInfo.notes || state.plateInfo.errors || []).map(n => flagEl('info', n))); else el.append(h('div', { class: 'empty' }, '–')); return; }
+    el.append(kvList(L.fields));
+    if (L.brandFields.length) { el.append(h('h2', { style: 'margin-top:14px' }, L.brand === 'tesla' ? 'Tesla-dekooderi (Part 565)' : 'Fiat-dekooderi')); el.append(kvList(L.brandFields)); }
+  }
+  function renderNhtsa() {
+    const el = card('nhtsa'); const n = state.nhtsa;
+    el.append(h('h2', {}, 'NHTSA vPIC-dekooderi', h('span', { class: 'st live' }, 'live')));
+    if (!state.vin) return el.append(h('div', { class: 'empty' }, 'Vaatii VIN:n.'));
+    if (!n) return el.append(state.nhtsaErr ? flagEl('warn', 'Haku epäonnistui: ' + state.nhtsaErr + (location.protocol === 'file:' ? ' – avaa sivu server.js:n kautta.' : '')) : h('div', {}, h('span', { class: 'spin' }), ' haetaan…'));
+    const want = [['Make', 'Merkki'], ['Model', 'Malli'], ['ModelYear', 'Mallivuosi'], ['Series', 'Sarja'], ['Trim', 'Varustetaso'], ['BodyClass', 'Kori'], ['Doors', 'Ovet'], ['DriveType', 'Vetotapa'], ['TransmissionStyle', 'Vaihteisto'], ['TransmissionSpeeds', 'Vaihteita'], ['ElectrificationLevel', 'Sähköistys'], ['FuelTypePrimary', 'Käyttövoima'], ['EngineModel', 'Moottorimalli'], ['EngineManufacturer', 'Moottorin valmistaja'], ['EngineCylinders', 'Sylinterit'], ['DisplacementL', 'Iskutilavuus (l)'], ['Turbo', 'Turbo'], ['EngineHP', 'Teho (hv)'], ['EngineKW', 'Teho (kW)'], ['BatteryKWh', 'Akku (kWh)'], ['BatteryType', 'Akkutyyppi'], ['EVDriveUnit', 'Moottorit'], ['ChargerLevel', 'Laturi'], ['PlantCountry', 'Valmistusmaa'], ['PlantCity', 'Tehdas'], ['Manufacturer', 'Valmistaja (oik.)'], ['GVWR', 'Kokonaismassaluokka'], ['Seats', 'Istuimet'], ['SteeringLocation', 'Ohjaus'], ['VehicleType', 'Ajoneuvotyyppi'], ['ABS', 'ABS'], ['ESC', 'ESC'], ['AdaptiveCruiseControl', 'Mukautuva vakionopeus'], ['ForwardCollisionWarning', 'Törmäysvaroitin'], ['LaneDepartureWarning', 'Kaistavahti']];
+    const pairs = want.filter(([k]) => n[k] && String(n[k]).trim()).map(([k, l]) => [l, n[k]]);
+    if (n.ErrorCode && n.ErrorCode !== '0') el.append(flagEl('warn', 'NHTSA: ' + n.ErrorText));
+    el.append(pairs.length ? kvList(pairs) : h('div', { class: 'empty' }, 'NHTSA ei tunnista tätä VIN:iä (EU-auto?). Täydennä merkki/malli/vuosi käsin.'));
+    const extra = Object.entries(n).filter(([k, v]) => v && String(v).trim() && !want.some(w => w[0] === k) && !['ErrorCode', 'ErrorText', 'VIN', 'AdditionalErrorText', 'SuggestedVIN', 'PossibleValues'].includes(k));
+    if (extra.length) { const d = h('details', {}, h('summary', {}, 'Kaikki ' + extra.length + ' lisäkenttää')); d.append(kvList(extra)); el.append(d); }
+  }
+  function renderReg() {
+    const el = card('reg');
+    el.append(h('h2', {}, 'Rekisteritunnushaku (Suomi)', h('span', { class: 'st ' + (state.reg ? 'ok' : 'warn') }, state.reg ? state.reg.source || 'proxy' : 'proxy')));
+    if (!state.plate) return el.append(h('div', { class: 'empty' }, 'Vaatii rekisteritunnuksen. server.js kokeilee kaupallista varaosahakua (merkki, malli, vuosi, moottorikoodi) – muuten Traficom.'));
+    if (state.reg) return el.append(kvList(Object.entries(state.reg).filter(([k, v]) => v != null && v !== '' && k !== 'raw').map(([k, v]) => [k, v])));
+    el.append(flagEl('warn', state.regErr || 'haetaan…'), h('div', { class: 'empty' }, 'Traficomin Oma asiointi näyttää ilmaiseksi tekniset tiedot, veron ja katsastuksen. Kopioi sieltä merkki, malli, ensirekisteröinti, massa ja CO2 alle.'));
+  }
+
+  /* ---------- Onnettomuudet & kuvat ---------- */
+  function renderAccident() {
+    const el = card('accident'); const c = ctx(); const id = c.vin || c.plate;
+    const hits = state.probe ? state.probe.filter(p => p.status === 'hit') : [];
+    el.append(h('h2', {}, 'Onnettomuudet, lunastukset ja kuvat', h('span', { class: 'st ' + (hits.length ? 'bad' : state.probe ? 'ok' : 'warn') }, hits.length ? hits.length + ' arkisto-osumaa' : state.probe ? 'luotaimet: ei osumia' : 'luotaimet vaativat server.js')));
+    if (!id) return el.append(h('div', { class: 'empty' }, 'Vaatii VIN:n tai rekisteritunnuksen.'));
+    if (state.probe) {
+      const ul = h('ul', { class: 'list' });
+      state.probe.forEach(p => ul.append(h('li', {}, h('span', { class: 'st ' + (p.status === 'hit' ? 'bad' : p.status === 'none' ? 'ok' : 'warn'), style: 'margin-right:8px' }, p.status === 'hit' ? 'OSUMA' : p.status === 'none' ? 'ei osumaa' : 'ei tarkistettu'), h('a', { href: p.url, target: '_blank', rel: 'noopener' }, p.name), p.note ? h('small', {}, p.note) : null)));
+      el.append(h('details', { open: hits.length > 0 }, h('summary', {}, 'Automaattiluotaimet (kokeellinen: hakee VIN:n vauriohuutokauppojen julkisista arkistoista)'), ul));
+    } else if (state.probeErr) el.append(flagEl('warn', 'Luotaimet epäonnistuivat: ' + state.probeErr));
+    el.append(h('div', { class: 'flag info' }, h('span', { class: 'ic' }, 'ℹ️'), h('span', {}, 'Suomessa mikään viranomainen ei pidä julkista kolarirekisteriä. Vakuutusyhtiöiden vahinkotiedot eivät ole saatavilla. Parhaat jäljet: (1) huutokauppa-arkistojen kuvat VIN:llä, (2) vanhat myynti-ilmoitukset, (3) Traficomin historiatiedoista "rekisteröintikatsastus" kesken elinkaaren tai pitkä liikennekäytöstäpoisto = lunastettu ja korjattu, (4) oma silmä: maalikerrosmittari, saumat, pulttien jäljet, turvatyynyvalo.')));
+    const sections = [];
+    if (c.vin) {
+      sections.push(['Kuvahaut VIN:llä', [
+        ['https://www.google.com/search?tbm=isch&q=' + enc('"' + c.vin + '"'), 'Google Kuvat', 'ok'], ['https://yandex.com/images/search?text=' + enc(c.vin), 'Yandex Kuvat (löytää huutokauppakuvat parhaiten)', 'ok'], ['https://www.bing.com/images/search?q=' + enc('"' + c.vin + '"'), 'Bing Kuvat', 'ok'], ['https://www.google.com/search?q=' + enc('"' + c.vin + '"'), 'Google (kaikki)', 'ok']]]);
+      sections.push(['Vauriohuutokauppojen arkistot (USA/Kanada/EU – kuvat ennen korjausta)', [
+        ['https://www.copart.com/lotSearchResults/?free=true&query=' + enc(c.vin), 'Copart', 'ok'], ['https://www.iaai.com/Search?Keyword=' + enc(c.vin), 'IAAI', 'ok'],
+        ['https://www.google.com/search?q=' + enc(c.vin + ' site:bidfax.info OR site:poctra.com OR site:stat.vin OR site:bid.cars OR site:autobidmaster.com OR site:carsfromwest.com OR site:plc.auction'), 'Arkistoindeksit (bidfax, poctra, stat.vin, bid.cars…)', 'ok'],
+        ['https://www.google.com/search?q=' + enc(c.vin + ' site:autobid.de OR site:autorola.com OR site:bca.co.uk OR site:copart.co.uk OR site:e-vahinko.fi'), 'EU-huutokaupat (autobid, autorola, BCA, Copart UK)', 'ok']]]);
+      sections.push(['Viralliset historiaraportit', [
+        ['https://vehiclehistory.bja.ojp.gov/nmvtis_vehiclehistory', 'NMVTIS (USA title: salvage/junk/flood, ~5 $)', 'bad'], ['https://www.carfax.com/VehicleHistory/p/Report.cfx?vin=' + enc(c.vin), 'Carfax (USA/Kanada kolarit, mittarit, ~40 $)', 'bad'], ['https://www.autocheck.com/vehiclehistory/search-by-vin?vin=' + enc(c.vin), 'AutoCheck (USA)', 'bad'],
+        ['https://www.carvertical.com/fi/landing/v3?vin=' + enc(c.vin), 'carVertical (EU+USA, kuvat vanhoista ilmoituksista)', 'bad'], ['https://www.autodna.com/vin/' + enc(c.vin), 'autoDNA (EU)', 'bad']]]);
+    }
+    sections.push(['Suomi: lunastetut ja vanhat ilmoitukset', [
+      ['https://www.avk.fi/', 'AVK Autovahinkokeskus (vakuutusyhtiöiden lunastamat)', 'ok'], ['https://www.google.com/search?q=' + enc('site:avk.fi ' + [c.make, c.model].filter(Boolean).join(' ')), 'AVK-arkisto Googlella', 'ok'],
+      c.plate ? ['https://www.google.com/search?tbm=isch&q=' + enc('"' + c.plate + '"'), 'Google Kuvat rekkarilla', 'ok'] : null, c.plate ? ['https://www.google.com/search?q=' + enc('"' + c.plate + '" OR "' + c.plate.replace('-', '') + '" site:nettiauto.com OR site:tori.fi OR site:autotalli.com OR site:kamux.fi'), 'Vanhat myynti-ilmoitukset rekkarilla', 'ok'] : null,
+      ['https://www.google.com/search?q=' + enc([c.make, c.model, c.year, 'kolari OR lunastettu OR vaurioitunut OR "myydään vaurioituneena"'].filter(Boolean).join(' ')), 'Vaurioituneena myydyt (malli)', 'ok']].filter(Boolean)]);
+    sections.forEach(([t, links]) => { el.append(h('div', { style: 'color:var(--muted);font-size:12px;margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t)); el.append(h('div', { class: 'links' }, ...links.map(([u, l, cls]) => linkChip(u, l, cls)))); });
+    el.append(h('details', {}, h('summary', {}, 'Kolarikorjauksen merkit paikan päällä'), h('ul', { style: 'font-size:13px;padding-left:18px' },
+      h('li', {}, 'Maalikerrosmittari: tehdasmaali 90–150 µm; 250+ µm = kitattu/maalattu. Mittaa jokainen pelti ja katto.'),
+      h('li', {}, 'Saumat ja raot: epätasaiset ovien/konepellin raot, vinot puskurit, eri sävyinen maali valossa 45°.'),
+      h('li', {}, 'Pulttien jäljet: lokasuojien, konepellin ja ovien kiinnityspultit – avatut pultit paljastavat vaihdetun osan. Tesla S: alumiinipellit, korjaus vain merkkikorjaamolla.'),
+      h('li', {}, 'Turvatyynyt: valon pitää syttyä ja sammua käynnistyksessä. Vikamuisti SRS. Uudet turvatyynykannet eri sävyllä.'),
+      h('li', {}, 'Alta: vääntyneet apurungon kiinnikkeet, uudet jäähdyttimen tukipalkit, hitsaussaumat ilman tehdasmassaa, uusi alustasuoja vain yhdellä puolella.'),
+      h('li', {}, 'Lasit: kaikkien lasien valmistusvuoden pitää olla sama (merkintä kulmassa) – tuulilasin vaihto ok, sivulasi + takalasi = epäilyttävä.'))));
+  }
+
+  /* ---------- Katsastushistoria ---------- */
+  function renderInspection() {
+    const el = card('inspection'); const c = ctx();
+    el.append(h('h2', {}, 'Katsastushistoria ja mittarilukemat', h('span', { class: 'st warn' }, 'ohjattu')));
+    const steps = h('ol', { style: 'font-size:13px;padding-left:18px;margin:0 0 8px' },
+      h('li', {}, h('b', {}, 'Ilmaiseksi (Traficom Oma asiointi, tunnistautuminen): '), 'edellinen katsastus (pvm, tulos), seuraava katsastus viimeistään, liikennekäyttötila, veron tila, rekisteröintikiellot. Jos "Rekisteröintikatsastus" näkyy ensirekisteröinnin jälkeen → auto on ollut poistettuna (lunastus/tuonti) – kysy miksi.'),
+      h('li', {}, h('b', {}, 'Muutamalla eurolla (Traficomin historiatiedot / rekkari.fi / Autotieto): '), 'kaikki katsastukset mittarilukemineen, omistajien lukumäärä, liikennekäytöstäpoistot. Piirrä lukemat aikajanalle: lasku tai tasainen jakso = manipulaatio tai pitkä seisonta.'),
+      h('li', {}, h('b', {}, 'Tuontiauto: '), 'aiempi ulkomainen rekisteri näyttää katsastukset ja kilometrit yleensä ilmaiseksi (syötä vanha rekisteritunnus "Täydennä käsin" -korttiin → linkit tähän).'),
+      h('li', {}, h('b', {}, 'Mallikohtainen tausta: '), 'Traficomin katsastuksen vikatilasto kertoo mistä tämä malli hylätään tässä ikäluokassa – pyydä katsastusasemalta kuntotarkastus juuri niihin kohtiin.'));
+    el.append(steps);
+    const links = [['https://asiointi.traficom.fi/omatraficom/', 'Traficom Oma asiointi', 'ok'], ['https://www.traficom.fi/fi/liikenne/tieliikenne/ajoneuvon-tiedot-ja-historia', 'Traficom: ajoneuvon historiatiedot (maksullinen raportti)', 'bad'], ['https://rekkari.fi/tarkista-ajoneuvon-tiedot', 'rekkari.fi (2,90 €→)', 'bad'], ['https://www.traficom.fi/fi/tilastot/katsastustilastot', 'Traficom katsastustilastot (malli/ikä)', 'ok']];
+    const fr = c.foreignReg; const fc = c.foreignCountry;
+    const foreign = { SE: ['https://biluppgifter.se/fordon/' + enc(fr), 'Ruotsi: biluppgifter.se (besiktning + mätarställning, ilmainen)'], NO: ['https://www.vegvesen.no/kjoretoy/kjop-og-salg/kjoretoyopplysninger?registreringsnummer=' + enc(fr), 'Norja: Statens vegvesen (EU-kontroll, ilmainen)'], DK: ['https://www.tjekbil.dk/nummerplade/' + enc(fr), 'Tanska: tjekbil.dk (syn + km, ilmainen)'], UK: ['https://www.check-mot.service.gov.uk/results?registration=' + enc(fr), 'UK: MOT history (viat + mailit, ilmainen)'], EE: ['https://eteenindus.mnt.ee/public/soidukTaustakontroll.jsf', 'Viro: Transpordiamet taustakontroll (ilmainen)'], DE: ['https://www.google.com/search?q=' + enc('"' + fr + '" mobile.de OR autoscout24.de'), 'Saksa: ei julkista rekisteriä – etsi vanha ilmoitus, pyydä TÜV-raportti'], US: ['https://www.carfax.com/VehicleHistory/p/Report.cfx?vin=' + enc(c.vin || ''), 'USA: Carfax (inspection/emissions-mittarilukemat osavaltioittain)'], NL: ['https://ovi.rdw.nl/', 'Alankomaat: RDW kentekencheck (APK-historia, ilmainen)'], BE: ['https://www.google.com/search?q=' + enc('"' + fr + '" carpass'), 'Belgia: Car-Pass (mittarihistoria myyjältä)'] };
+    if (fc && foreign[fc]) links.push([foreign[fc][0], foreign[fc][1], 'ok']);
+    else if (c.importFlag) links.push(['#manual', 'Syötä aiempi ulkomainen rekisteritunnus ja maa → suora linkki sen maan katsastusrekisteriin', 'warn']);
+    el.append(h('div', { class: 'links' }, ...links.map(([u, l, cls]) => linkChip(u, l, cls))));
+    if (c.km && c.year) {
+      const t = h('div', { class: 'empty' }, 'Odotettava lukema: Suomen henkilöauto ajaa keskimäärin ~17 000 km/v → ' + fmt(Math.round(17000 * c.age)) + ' km tässä iässä; tämä auto ' + fmt(c.km) + ' km (' + fmt(c.kmPerYear) + ' km/v).' + (state.peer ? ' Saman mallin mediaani Suomessa ' + fmt(state.peer.km_median) + ' km.' : ''));
+      el.append(t);
+    }
+  }
+
+  /* ---------- Avoimen datan sormenjälki ---------- */
+  function renderFingerprint() {
+    const el = card('fingerprint'); const c = ctx();
+    el.append(h('h2', {}, 'Avoimen datan sormenjälki – yksilön viimeisin katsastuskilometri', h('span', { class: 'st ' + (state.fp ? 'ok' : '') }, state.fp ? state.fp.length + ' ehdokasta kannassa' : 'tilasto')));
+    el.append(h('div', { class: 'empty' }, 'Traficomin avoin data ei sisällä rekkaria, mutta merkki + malli + ensirekisteröintipäivä + väri + kunta rajaavat usein yhteen autoon – ja rivillä on viimeisin katsastuksessa todettu mittarilukema. Täysin laillinen (CC BY 4.0), aineisto on päivämäärän tilannekuva.'));
+    if (!c.make) return;
+    if (!state.fp) return el.append(flagEl('info', state.fpErr || 'Ei sormenjälkiaineistoa mallille ' + normKey(c) + '. Aja: python3 tools/build_peer_stats.py data.csv --fingerprint "' + normKey(c) + '"' + (state.fpKeys ? ' (kannassa: ' + state.fpKeys.join(', ') + ')' : '')));
+    let cands = state.fp;
+    const why = [];
+    if (c.firstReg) { cands = cands.filter(r => (r[0] || '').startsWith(c.firstReg)); why.push('ensirek. ' + c.firstReg); }
+    if (c.year && !c.firstReg) { cands = cands.filter(r => (r[0] || '').startsWith(String(c.year))); why.push('vuosi ' + c.year); }
+    if (c.color) { cands = cands.filter(r => r[2] === c.color); why.push('väri ' + c.color); }
+    if (c.kunta) { cands = cands.filter(r => up(r[3]) === up(c.kunta)); why.push('kunta ' + c.kunta); }
+    el.append(h('div', { class: 'empty' }, 'Suodatus: ' + (why.join(' · ') || 'ei suodattimia – syötä ensirekisteröintipäivä, väri ja kunta "Täydennä käsin" -korttiin') + ' → ' + cands.length + ' ehdokasta'));
+    if (cands.length === 1) el.append(flagEl('ok', 'Yksi ehdokas: viimeisin katsastuksessa todettu lukema ' + fmt(cands[0][4]) + ' km' + (c.km ? (c.km < cands[0][4] ? ' – ILMOITETTU ' + fmt(c.km) + ' KM ON PIENEMPI → mittarimanipulaatioepäily' : ' (ilmoitettu nyt ' + fmt(c.km) + ' km, +' + fmt(c.km - cands[0][4]) + ')') : '') + '.'));
+    if (cands.length > 1 && cands.length <= 40) {
+      const t = h('table', { class: 'src' }, h('thead', {}, h('tr', {}, h('th', {}, 'Ensirek.'), h('th', {}, 'Käyttöönotto'), h('th', {}, 'Väri'), h('th', {}, 'Kunta'), h('th', {}, 'Mittari km'), h('th', {}, 'Omamassa'), h('th', {}, 'Käyttövoima'))));
+      const tb = h('tbody'); cands.slice(0, 40).forEach(r => tb.append(h('tr', {}, h('td', {}, r[0]), h('td', {}, r[1]), h('td', {}, r[2]), h('td', {}, r[3]), h('td', { class: 'num' }, fmt(r[4])), h('td', { class: 'num' }, fmt(r[5])), h('td', {}, r[7] || '')))); t.append(tb); el.append(t);
+    } else if (cands.length > 40) el.append(h('div', { class: 'empty' }, 'Liikaa ehdokkaita – lisää suodattimia.'));
+  }
+
+  function renderRecalls() {
+    const el = card('recalls'); const r = state.recalls;
+    el.append(h('h2', {}, 'Takaisinkutsut (NHTSA, USA)', h('span', { class: 'st ' + (r ? (r.length ? 'warn' : 'ok') : 'live') }, r ? r.length + ' kpl' : 'live')));
+    if (!r) return el.append(h('div', { class: 'empty' }, state.recallsErr ? 'Haku epäonnistui: ' + state.recallsErr : ctx().make ? h('span', {}, h('span', { class: 'spin' }), ' haetaan…') : 'Vaatii merkki + malli + vuosi.'));
+    if (!r.length) return el.append(h('div', { class: 'empty' }, 'Ei kampanjoita. EU-takaisinkutsut: Traficom/Safety Gate -linkit.'));
+    const ul = h('ul', { class: 'list' });
+    r.slice(0, 40).forEach(x => ul.append(h('li', {}, h('b', {}, x.Component || '?'), ' – ', (x.Summary || '').slice(0, 220) + ((x.Summary || '').length > 220 ? '…' : ''), h('small', {}, [x.NHTSACampaignNumber, x.ReportReceivedDate, x.parkIt ? '⚠ ÄLÄ AJA' : '', x.overTheAirUpdate ? 'OTA-päivitys' : ''].filter(Boolean).join(' · ')))));
+    el.append(ul);
+  }
+  function renderComplaints() {
+    const el = card('complaints'); const c = state.complaints;
+    el.append(h('h2', {}, 'Omistajavalitukset (NHTSA)', h('span', { class: 'st ' + (c ? '' : 'live') }, c ? c.length + ' kpl' : 'live')));
+    if (!c) return el.append(h('div', { class: 'empty' }, state.complaintsErr ? 'Haku epäonnistui: ' + state.complaintsErr : ctx().make ? '…' : 'Vaatii merkki + malli + vuosi.'));
+    if (!c.length) return el.append(h('div', { class: 'empty' }, 'Ei valituksia rekisterissä.'));
+    const by = {}; c.forEach(x => (x.components || 'MUU').split(',').forEach(k => { k = k.trim(); by[k] = (by[k] || 0) + 1; }));
+    const top = Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, 8); const max = top[0][1];
+    top.forEach(([k, v]) => el.append(h('div', { style: 'font-size:13px;margin:6px 0' }, h('div', { style: 'display:flex;justify-content:space-between' }, h('span', {}, k), h('span', { class: 'num' }, v)), h('div', { class: 'bar' }, h('div', { class: 'rng', style: 'left:0;width:' + (v / max * 100) + '%' })))));
+    const fires = c.filter(x => x.fire).length, crashes = c.filter(x => x.crash).length, inj = c.reduce((s, x) => s + (x.numberOfInjuries || 0), 0);
+    el.append(h('div', { class: 'empty' }, 'Tulipalo ' + fires + ' · kolari ' + crashes + ' · loukkaantumisia ' + inj));
+  }
+  function renderRatings() {
+    const el = card('ratings'); const r = state.ratings;
+    el.append(h('h2', {}, 'Törmäysturvallisuus (NHTSA)', h('span', { class: 'st live' }, 'live')));
+    if (!r) return el.append(h('div', { class: 'empty' }, state.ratingsErr ? 'Ei luokitusta / haku epäonnistui.' : ctx().make ? 'Ei luokitusta tälle mallille tai haku kesken.' : 'Vaatii merkki + malli + vuosi.'));
+    const stars = (v) => /^\d/.test(v) ? '★'.repeat(Number(v)) + '☆'.repeat(5 - Number(v)) : (v || '–');
+    el.append(kvList([['Kokonais', stars(r.OverallRating)], ['Etutörmäys', stars(r.OverallFrontCrashRating)], ['Sivutörmäys', stars(r.OverallSideCrashRating)], ['Kaatuminen', stars(r.RolloverRating)], ['Ajoneuvo', r.VehicleDescription]]));
+  }
+  function renderPeer() {
+    const el = card('peer'); const p = state.peer; const c = ctx();
+    el.append(h('h2', {}, 'Vertaisryhmä Suomessa (Traficom avoin data)', h('span', { class: 'st ' + (p ? 'ok' : '') }, p ? p.n + ' autoa' : 'tilasto')));
+    if (!p) return el.append(h('div', { class: 'empty' }, state.peerErr || (c.make ? 'Ei osumaa avaimella ' + (state.peerKey || '') + '.' : 'Vaatii merkki + malli + vuosi.')));
+    const max = Math.max(p.km_p90 || p.km_p75 * 1.3, c.km || 0) * 1.05; const pct = (v) => (v / max * 100).toFixed(1) + '%';
+    el.append(h('div', { class: 'empty' }, 'Viimeisin katsastuksen mittarilukema samalla merkki/malli/vuosi-yhdistelmällä (' + (p.as_of || 'aineiston pvm') + ').'));
+    const bar = h('div', { class: 'bar' }, h('div', { class: 'rng', style: 'left:' + pct(p.km_p25) + ';width:' + pct(p.km_p75 - p.km_p25) }), h('div', { class: 'med', style: 'left:' + pct(p.km_median) }));
+    if (c.km) bar.append(h('div', { class: 'you', style: 'left:' + pct(c.km), title: 'tämä auto' }));
+    el.append(bar, h('div', { class: 'axis' }, h('span', {}, '0'), h('span', {}, fmt(Math.round(max / 1000)) + ' tkm')));
+    el.append(kvList([['Mediaani', fmt(p.km_median) + ' km'], ['Kvartiilit 25–75 %', fmt(p.km_p25) + ' – ' + fmt(p.km_p75) + ' km'], ['Keskiarvo', fmt(p.km_mean) + ' km'], ['Tämä auto', c.km ? fmt(c.km) + ' km' : 'syötä mittarilukema'], ['Omamassa (mediaani)', p.mass_median ? fmt(p.mass_median) + ' kg' : '–'], ['CO2 (mediaani)', p.co2_median != null ? p.co2_median + ' g/km' : '–'], ['Yleisin väri', p.top_color || '–'], ['Yleisin kunta', p.top_kunta || '–']]));
+  }
+  function renderTax() {
+    const el = card('tax'); const c = ctx();
+    el.append(h('h2', {}, 'Ajoneuvovero 2026 (arvio)', h('span', { class: 'st ok' }, 'laskuri')));
+    const mass = c.mass || c.curb || null; const fuel = c.fuel || 'sahko'; const kv100 = mass ? Math.ceil(mass / 100) : null;
+    const rate = TAX_2026.kayttovoima_c_per_day_100kg[fuel]; const kvv = kv100 != null && rate != null ? kv100 * rate * 365 / 100 : null;
+    const perus = (fuel === 'sahko' || c.co2 === 0) ? TAX_2026.perusvero_min_eur_year : null;
+    const rows = h('div', { class: 'taxout' });
+    rows.append(h('span', {}, 'Perusvero (' + (fuel === 'sahko' ? '0 g/km WLTP' : c.co2 != null ? c.co2 + ' g/km' : 'CO2 puuttuu') + ')'), h('span', { class: 'num' }, perus != null ? eur(perus) : 'Traficomin taulukko'));
+    rows.append(h('span', {}, 'Käyttövoimavero (' + ({ sahko: 'sähkö 1,9 c', diesel: 'diesel 5,5 c', kaasu: 'kaasu 3,1 c', bensiini: 'bensiini 0 c', hybridi: 'hybridi 0 c', phev: 'lataushybridi 1,95 c' }[fuel] || '?') + '/pv per alkava 100 kg' + (mass ? ', ' + fmt(mass) + ' kg → ' + kv100 + ' × 100 kg' : '') + ')'), h('span', { class: 'num' }, kvv != null ? eur(kvv) : 'massa puuttuu'));
+    if (perus != null && kvv != null) rows.append(h('span', { class: 'total' }, 'Yhteensä / vuosi'), h('span', { class: 'num total' }, eur(perus + kvv)));
+    el.append(rows, h('div', { class: 'empty' }, 'Massa: ' + (c.mass ? 'kokonaismassa' : c.curb ? 'omamassa (vero lasketaan kokonaismassasta → syötä se)' : 'ei tiedossa') + '. Polttomoottorin perusvero CO2:n mukaan Traficomin taulukosta. 1.1.2026: sähkö 1,5→1,9 c, perusvero min 53→106 €/v.'));
+  }
+  function renderLinks() {
+    const el = card('links'); const c = ctx();
+    el.append(h('h2', {}, 'Jatka tästä – syvälinkit lähteisiin'));
+    const groups = {};
+    SOURCES.forEach(s => { if (s.only && s.only !== (state.local && state.local.brand) && !up(c.make).startsWith(up(s.only))) return; (groups[s.group] = groups[s.group] || []).push(s); });
+    for (const [g, list] of Object.entries(groups)) {
+      el.append(h('div', { style: 'color:var(--muted);font-size:12px;margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, g));
+      el.append(h('div', { class: 'links' }, ...list.map(s => { let u; try { u = s.url(c); } catch { u = '#'; } return h('a', { href: u, target: '_blank', rel: 'noopener', title: s.gives }, s.name, h('span', { class: 'st ' + accessCls(s.access[0]) }, accessLabel(s.access[0]))); })));
+    }
+  }
+  const accessLabel = (a) => ({ live: 'API', proxy: 'proxy', link: 'linkki', login: 'kirjautuminen', paid: '€', file: 'aineisto' }[a] || a);
+  const accessCls = (a) => ({ live: 'live', proxy: 'warn', paid: 'bad', login: 'warn', link: '', file: 'ok' }[a] || '');
+
+  /* ---------- Käsin täydennys ---------- */
+  function renderManual() {
+    const el = card('manual'); const m = state.manual; const c = ctx();
+    el.append(h('h2', {}, 'Täydennä käsin – mitä enemmän, sitä tarkempi profiili', h('span', { class: 'st' }, 'tallentuu selaimeen')));
+    const f = h('form', { class: 'manual', onsubmit: (e) => { e.preventDefault(); const fd = new FormData(e.target); const o = {}; for (const [k, v] of fd.entries()) { if (k === 'feat') o.feat = (o.feat ? o.feat + ',' : '') + v; else if (v !== '') o[k] = v; } state.manual = o; try { localStorage.setItem(LS_KEY, JSON.stringify(o)); } catch { } renderAll(); fetchExtras().then(renderAll); } });
+    const inp = (name, label, val, type = 'text', ph = '', extra = {}) => h('label', {}, label, h('input', { name, value: val == null ? '' : val, type, placeholder: ph, ...(type === 'number' ? { min: 0, step: 'any' } : {}), ...extra }));
+    const sel = (name, label, opts, val) => { const s = h('select', { name }); opts.forEach(([v, l]) => s.append(h('option', { value: v, selected: (val || '') === v }, l))); return h('label', {}, label, s); };
+    const sec = (title, open, ...kids) => { const d = h('details', { open, style: 'grid-column:1/-1' }, h('summary', {}, title)); d.append(h('div', { class: 'manual', style: 'margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px' }, ...kids)); return d; };
+    f.append(sec('Perustiedot', true,
+      inp('make', 'Merkki', m.make || c.make, 'text', 'Tesla'), inp('model', 'Malli (NHTSA-muoto)', m.model || c.model, 'text', 'Model S'), inp('year', 'Vuosimalli', m.year || c.year, 'number', '2018'), inp('km', 'Mittarilukema km', m.km, 'number', '120000'),
+      sel('fuel', 'Käyttövoima', [['', 'auto'], ['sahko', 'sähkö'], ['bensiini', 'bensiini'], ['diesel', 'diesel'], ['hybridi', 'hybridi'], ['phev', 'lataushybridi'], ['kaasu', 'kaasu']], m.fuel), inp('mass', 'Kokonaismassa kg', m.mass, 'number', '2600'), inp('curb', 'Omamassa kg', m.curb, 'number', '2100'), inp('co2', 'CO2 g/km (WLTP)', m.co2, 'number', '0')));
+    f.append(sec('Tekniikka (riskiprofiili)', true,
+      inp('engine', 'Moottorikoodi / perhe', m.engine, 'text', 'esim. CAYC, N47, EA189, OM651'), inp('disp', 'Iskutilavuus l', m.disp || c.disp, 'number', '2.0'), inp('cyl', 'Sylinterit', m.cyl || c.cyl, 'number', '4'),
+      sel('turbo', 'Turbo', [['', '?'], ['kyllä', 'kyllä'], ['ei', 'ei']], m.turbo), sel('trans', 'Vaihteisto', [['', '?'], ['manuaali', 'manuaali'], ['automaatti', 'automaatti (momentinmuunnin)'], ['kaksoiskytkin', 'kaksoiskytkin (DSG/DCT/PowerShift/S tronic)'], ['cvt', 'CVT / Multitronic / Lineartronic'], ['ev', 'sähköauto (1-vaihteinen)']], m.trans || c.trans),
+      inp('transNote', 'Vaihteiston tyyppi/koodi', m.transNote, 'text', 'esim. DQ200, 7G-Tronic, Jatco'), sel('drive', 'Vetotapa', [['', '?'], ['etu', 'etuveto'], ['taka', 'takaveto'], ['neli', 'neliveto']], m.drive || c.drive), inp('kwh', 'Ajoakku kWh', m.kwh || c.kwh, 'number', '75')));
+    const feats = FEATURES.map(([k, l]) => h('label', { style: 'flex-direction:row;align-items:center;gap:6px' }, h('input', { type: 'checkbox', name: 'feat', value: k, checked: c.feat.has(k) }), l));
+    f.append(sec('Varusteet', true, ...feats));
+    f.append(sec('Sormenjälki & tuonti', true,
+      inp('firstReg', 'Ensirekisteröinti (Traficom)', m.firstReg, 'date'), sel('color', 'Väri (Traficom)', [['', '?'], ...COLORS.map(x => [x, x])], m.color), inp('kunta', 'Kunta (haltijan)', m.kunta, 'text', 'Seinäjoki'),
+      inp('foreignReg', 'Aiempi ulkomainen rekisteritunnus', m.foreignReg, 'text', 'ABC123'), sel('foreignCountry', 'Tuontimaa', COUNTRIES, m.foreignCountry)));
+    f.append(h('div', { style: 'grid-column:1/-1;display:flex;gap:8px' }, h('button', { class: 'btn', type: 'submit' }, 'Päivitä profiili'), h('button', { class: 'btn secondary', type: 'button', onclick: () => { state.manual = {}; try { localStorage.removeItem(LS_KEY); } catch { } renderAll(); } }, 'Tyhjennä käsin syötetyt')));
+    el.append(f);
+  }
+
+  /* ---------- Lähdekartta ---------- */
+  function renderSources() {
+    const t = h('table', { class: 'src' }, h('thead', {}, h('tr', {}, h('th', {}, 'Lähde'), h('th', {}, 'Pääsy'), h('th', {}, 'Hakuavain'), h('th', {}, 'Mitä saat'), h('th', {}, 'Tila'))));
+    const tb = h('tbody'); let g = null;
+    SOURCES.forEach(s => {
+      if (s.group !== g) { g = s.group; tb.append(h('tr', { class: 'group' }, h('td', { colspan: 5 }, g))); }
+      let u; try { u = s.url(ctx()); } catch { u = '#'; }
+      tb.append(h('tr', {}, h('td', {}, h('a', { href: u, target: '_blank', rel: 'noopener' }, s.name), s.note ? h('div', { style: 'color:var(--muted);font-size:12px' }, s.note) : null),
+        h('td', {}, ...s.access.map(a => h('span', { class: 'st ' + accessCls(a) }, accessLabel(a)))), h('td', {}, s.by.join(', ')), h('td', {}, s.gives),
+        h('td', {}, h('span', { class: 'st ' + (s.verified ? 'ok' : 'warn') }, s.verified ? 'varmistettu' : 'ei testattu'))));
+    });
+    t.append(tb); $('#sources').append(t);
+  }
+
+  function exportJSON() {
+    const c = ctx();
+    const blob = new Blob([JSON.stringify({ query: state.q, context: { ...c, feat: [...c.feat] }, flags: riskFlags(), profile: profileMatches(c).map(x => ({ id: x.rule.id, title: x.rule.title, sev: x.rule.sev, why: x.why })), local: state.local, nhtsa: state.nhtsa, recalls: state.recalls, complaints: state.complaints && state.complaints.length, ratings: state.ratings, reg: state.reg, peer: state.peer, probe: state.probe, generated: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+    const a = h('a', { href: URL.createObjectURL(blob), download: 'autorontgen-' + (state.vin || state.plate || 'raportti') + '.json' }); document.body.append(a); a.click(); a.remove();
+  }
+
+  function init() {
+    try { state.manual = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { state.manual = {}; }
+    $('#form').addEventListener('submit', (e) => { e.preventDefault(); run($('#q').value); });
+    $('#clear').addEventListener('click', () => { state.manual = {}; try { localStorage.removeItem(LS_KEY); } catch { } $('#q').value = ''; $('#results').hidden = true; $('#intro').hidden = false; history.replaceState(null, '', location.pathname); });
+    $('#print').addEventListener('click', () => window.print());
+    $('#json').addEventListener('click', exportJSON);
+    $('#share').addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href); });
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t)); document.querySelectorAll('[data-view]').forEach(v => v.hidden = v.dataset.view !== t.dataset.tab); }));
+    document.querySelectorAll('[data-example]').forEach(b => b.addEventListener('click', () => {
+      const FALLBACK = { tesla: '5YJSA1E2XJF000001', fiat: '3C3CFFGE9GT000001', passat: 'WVWZZZ3CZCE000001', plate: 'ABC-123' };
+      const ex = DEMO && DEMO.examples && DEMO.examples[b.dataset.example];
+      if (!ex && FALLBACK[b.dataset.example]) { $('#q').value = FALLBACK[b.dataset.example]; run(FALLBACK[b.dataset.example]); return; }
+      if (ex) { state.manual = { ...ex.manual }; try { localStorage.setItem(LS_KEY, JSON.stringify(state.manual)); } catch { } $('#q').value = ex.q; run(ex.q); }
+      else { $('#q').value = b.dataset.example; run(b.dataset.example); }
+    }));
+    if (DEMO) { const bn = $('#demobanner'); if (bn) { bn.hidden = false; bn.textContent = DEMO.label; } ['print', 'json'].forEach(id => { const b = $('#' + id); if (b) b.hidden = true; }); }
+    renderSources();
+    hasProxy().then(p => { $('#proxy').textContent = p ? 'server.js: yhdistetty (proxy, välimuisti, luotaimet)' : DEMO ? 'demotila: esimerkkidata' : 'server.js: ei käytössä – NHTSA suoraan, ei rekkarihakua eikä luotaimia'; $('#proxy').className = 'st ' + (p ? 'ok' : 'warn'); });
+    const q = new URLSearchParams(location.search).get('q'); if (q) { $('#q').value = q; run(q); }
+  }
+  window.AUTORONTGEN = { run, state, ctx, riskFlags, profileMatches };
+  document.addEventListener('DOMContentLoaded', init);
+})();
+
+</script>

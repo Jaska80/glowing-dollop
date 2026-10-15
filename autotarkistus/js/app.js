@@ -26,10 +26,12 @@
   /* ---------- Tila ---------- */
   const state = { q: '', type: null, vin: null, plate: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, manual: {}, proxy: null };
   const LS_KEY = 'autorontgen.manual.v2';
+  const DEMO = window.DEMO || null;
+  const demoFor = () => DEMO && state.vin && DEMO.vins[state.vin] || null;
 
   async function hasProxy() {
     if (state.proxy != null) return state.proxy;
-    if (location.protocol === 'file:') return (state.proxy = false);
+    if (location.protocol === 'file:' || DEMO) return (state.proxy = false);
     try { const r = await fetch('/api/health', { cache: 'no-store' }); state.proxy = r.ok; } catch { state.proxy = false; }
     return state.proxy;
   }
@@ -128,7 +130,7 @@
     q = (q || '').trim(); if (!q) return;
     state.q = q; state.type = VINLIB.detectType(q);
     Object.assign(state, { vin: null, plate: null, local: null, nhtsa: null, recalls: null, complaints: null, ratings: null, reg: null, peer: null, probe: null, nhtsaErr: null, recallsErr: null, complaintsErr: null, ratingsErr: null, regErr: null, peerErr: null, probeErr: null });
-    history.replaceState(null, '', '?q=' + enc(q));
+    try { history.replaceState(null, '', '?q=' + enc(q)); } catch { }
     $('#results').hidden = false; $('#intro').hidden = true;
     if (state.type === 'vin' || state.type === 'vin-partial') { state.vin = VINLIB.clean(q); state.local = VINLIB.decodeVin(state.vin); }
     else if (state.type === 'plate') { state.plateInfo = VINLIB.parsePlate(q); state.plate = state.plateInfo.plate; }
@@ -142,12 +144,23 @@
     renderAll();
   }
   async function fetchNhtsaDecode() {
+    const d0 = demoFor(); if (d0) { state.nhtsa = d0.nhtsa; return; }
+    if (DEMO) { state.nhtsaErr = 'live-haku ei ole käytössä demossa (ei verkkoa). Omalla palvelimella NHTSA dekoodaa minkä tahansa VIN:n.'; return; }
     try { const d = await getJSON('https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/' + state.vin + '?format=json', '/api/vin/' + state.vin); state.nhtsa = (d.Results && d.Results[0]) || null; }
     catch (e) { state.nhtsaErr = String(e.message || e); }
   }
   async function fetchExtras() {
     const c = ctx(); if (!c.make || !c.model || !c.year) return;
     const q = 'make=' + enc(c.make) + '&model=' + enc(c.model) + '&modelYear=' + enc(c.year);
+    const d0 = demoFor();
+    if (DEMO) {
+      if (d0) {
+        state.recalls = d0.recalls; state.ratings = d0.ratings;
+        state.complaints = []; Object.entries(d0.complaintsByComponent).forEach(([k, n]) => { for (let i = 0; i < n; i++) state.complaints.push({ components: k }); });
+        state.complaints.slice(0, d0.complaintsMeta.crash).forEach(x => x.crash = true); state.complaints.slice(0, d0.complaintsMeta.fire).forEach(x => x.fire = true); if (state.complaints[0]) state.complaints[0].numberOfInjuries = d0.complaintsMeta.injuries;
+      } else { state.recallsErr = state.complaintsErr = state.ratingsErr = 'ei käytössä demossa'; }
+      await Promise.allSettled([fetchPeer(c), fetchFingerprints(c)]); return;
+    }
     await Promise.allSettled([
       getJSON('https://api.nhtsa.gov/recalls/recallsByVehicle?' + q, '/api/recalls?' + q).then(d => state.recalls = d.results || []).catch(e => state.recallsErr = String(e.message || e)),
       getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?' + q, '/api/complaints?' + q).then(d => state.complaints = d.results || []).catch(e => state.complaintsErr = String(e.message || e)),
@@ -165,11 +178,13 @@
     catch (e) { state.regErr = String(e.message || e); }
   }
   async function fetchProbe() {
+    const d0 = demoFor(); if (d0) { state.probe = d0.probe; renderAccident(); return; }
     if (!(await hasProxy())) return;
     try { state.probe = await getJSON(null, '/api/probe?vin=' + enc(state.vin)); } catch (e) { state.probeErr = String(e.message || e); }
     renderAccident();
   }
   async function loadData(name, cacheKey) {
+    if (DEMO) return name.startsWith('peer') ? DEMO.peer : DEMO.fp;
     if (window[cacheKey]) return window[cacheKey];
     const r = await fetch('data/' + name, { cache: 'no-store' }); if (!r.ok) throw new Error('ei tiedostoa');
     return (window[cacheKey] = await r.json());
@@ -476,9 +491,16 @@
     $('#json').addEventListener('click', exportJSON);
     $('#share').addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href); });
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t)); document.querySelectorAll('[data-view]').forEach(v => v.hidden = v.dataset.view !== t.dataset.tab); }));
-    document.querySelectorAll('[data-example]').forEach(b => b.addEventListener('click', () => { $('#q').value = b.dataset.example; run(b.dataset.example); }));
+    document.querySelectorAll('[data-example]').forEach(b => b.addEventListener('click', () => {
+      const FALLBACK = { tesla: '5YJSA1E2XJF000001', fiat: '3C3CFFGE9GT000001', passat: 'WVWZZZ3CZCE000001', plate: 'ABC-123' };
+      const ex = DEMO && DEMO.examples && DEMO.examples[b.dataset.example];
+      if (!ex && FALLBACK[b.dataset.example]) { $('#q').value = FALLBACK[b.dataset.example]; run(FALLBACK[b.dataset.example]); return; }
+      if (ex) { state.manual = { ...ex.manual }; try { localStorage.setItem(LS_KEY, JSON.stringify(state.manual)); } catch { } $('#q').value = ex.q; run(ex.q); }
+      else { $('#q').value = b.dataset.example; run(b.dataset.example); }
+    }));
+    if (DEMO) { const bn = $('#demobanner'); if (bn) { bn.hidden = false; bn.textContent = DEMO.label; } ['print', 'json'].forEach(id => { const b = $('#' + id); if (b) b.hidden = true; }); }
     renderSources();
-    hasProxy().then(p => { $('#proxy').textContent = p ? 'server.js: yhdistetty (proxy, välimuisti, luotaimet)' : 'server.js: ei käytössä – NHTSA suoraan, ei rekkarihakua eikä luotaimia'; $('#proxy').className = 'st ' + (p ? 'ok' : 'warn'); });
+    hasProxy().then(p => { $('#proxy').textContent = p ? 'server.js: yhdistetty (proxy, välimuisti, luotaimet)' : DEMO ? 'demotila: esimerkkidata' : 'server.js: ei käytössä – NHTSA suoraan, ei rekkarihakua eikä luotaimia'; $('#proxy').className = 'st ' + (p ? 'ok' : 'warn'); });
     const q = new URLSearchParams(location.search).get('q'); if (q) { $('#q').value = q; run(q); }
   }
   window.AUTORONTGEN = { run, state, ctx, riskFlags, profileMatches };

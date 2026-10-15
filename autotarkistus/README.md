@@ -18,6 +18,13 @@ autotarkistus/
 └── data/fingerprints.json     (generoitu, ei repossa)
 ```
 
+## Demo ilman asennusta
+
+`demo/autorontgen-demo.html` on yksi tiedosto, joka sisältää kaiken ja toimii ilman verkkoa: esimerkkiautoille
+(Tesla Model S 75D 2018, Fiat 500e 2016 USA-tuonti, Passat 2.0 TDI DSG 2012 Ruotsi) on valmis esimerkkidata.
+Live-haut eivät toimi demossa; muille VIN-koodeille toimivat VIN-tulkki, riskiprofiili, verolaskuri ja linkit.
+Rakennetaan uudelleen komennolla `python3 tools/build_demo.py`.
+
 ## Käyttö
 
 ```bash
