@@ -21,26 +21,11 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 const cache = new Map();
 const UA = 'Autorontgen/1.0 (+henkilokohtainen autotarkistus; ei massahakuja)';
 
-/* Rekisteritunnusadapterit. Jokainen palauttaa normalisoidun {make, model, year, engine, power_kw, fuel, source} tai null.
-   Huom: nämä ovat kaupallisten varaosakauppojen sivustojen käyttämiä hakuja; rajapinnat ovat dokumentoimattomia ja voivat muuttua.
-   Jos adapteri ei toimi, korjaa URL/kentät tässä – sovellus toimii joka tapauksessa Traficom-linkkien kautta. */
-const REG_ADAPTERS = [
-  {
-    name: 'biltema',
-    url: (plate) => `https://reg.biltema.com/vehicle/api/vehicle/FI/${encodeURIComponent(plate.replace('-', ''))}`,
-    headers: { Accept: 'application/json', Referer: 'https://www.biltema.fi/' },
-    map: (d) => {
-      const v = Array.isArray(d) ? d[0] : (d && (d.vehicle || d.Vehicle || d));
-      if (!v || typeof v !== 'object') return null;
-      const pick = (...ks) => { for (const k of ks) { const val = deepGet(v, k); if (val != null && val !== '') return val; } return null; };
-      const make = pick('brand', 'Brand', 'make', 'Make', 'manufacturer', 'carBrand');
-      if (!make) return null;
-      return { make, model: pick('model', 'Model', 'carModel', 'modelName'), year: pick('modelYear', 'ModelYear', 'year', 'Year', 'registrationYear'),
-        engine: pick('engine', 'Engine', 'engineCode', 'motorCode'), power_kw: pick('powerKw', 'PowerKw', 'kw', 'power'), fuel: pick('fuel', 'Fuel', 'fuelType'),
-        body: pick('body', 'Body', 'bodyType'), raw: v };
-    },
-  },
-];
+/* Rekisteritunnusadapterit. Biltema (www.biltema.fi/auton-varaosahaku/<REKKARI>/) on Akamai-botsuojauksen takana:
+   palvelimelta tehty haku saa 403. Sitä ei kierretä. Lista on jätetty tyhjäksi; jos joskus löytyy avoin rajapinta,
+   adapteri on {name, url(plate), headers, map(json) → {make, model, year, engine, ...}}. Sivu näyttää sen sijaan
+   suorat linkit Bilteman ja Traficomin hakuihin, ja käyttäjä täydentää merkin/mallin/vuoden itse. */
+const REG_ADAPTERS = [];
 function deepGet(o, k) { if (o == null) return undefined; if (k in o) return o[k]; for (const key of Object.keys(o)) if (o[key] && typeof o[key] === 'object') { const r = deepGet(o[key], k); if (r !== undefined) return r; } return undefined; }
 
 async function fetchJSON(url, headers = {}) {
@@ -150,7 +135,7 @@ async function api(req, res, u) {
         errors.push(`${a.name}: ei tunnistettavaa ajoneuvoa vastauksessa`);
       } catch (e) { errors.push(`${a.name}: ${e.message}${e.status ? ' (' + e.status + ')' : ''}`); }
     }
-    return send(res, 200, { ok: false, error: 'Rekisteritunnushaku ei onnistunut: ' + errors.join('; ') + '. Käytä Traficomin Oma asiointia.' });
+    return send(res, 200, { ok: false, error: REG_ADAPTERS.length ? 'Rekisteritunnushaku ei onnistunut: ' + errors.join('; ') : 'Suomessa ei ole avointa rekkari→auto-rajapintaa (Biltema on botsuojattu). Avaa alla oleva Biltema- tai Traficom-linkki ja kirjoita merkki, malli ja vuosi hakukenttään.', links: { biltema: 'https://www.biltema.fi/auton-varaosahaku/' + encodeURIComponent(plate) + '/', traficom: 'https://asiointi.traficom.fi/omatraficom/' } });
   }
   send(res, 404, { error: 'ei reittiä' });
 }

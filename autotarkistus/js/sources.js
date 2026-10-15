@@ -69,10 +69,10 @@ window.SOURCES = [
     url: () => 'https://www.eucaris.net/', verified: false },
 
   // --- Kaupalliset Suomessa ---
-  { id: 'biltema', group: 'Kaupalliset (Suomi)', name: 'Biltema rekisterinumerohaku', access: ['proxy'],
-    gives: 'Merkki, malli, vuosimalli, moottorikoodi, teho – pohjoismainen rekisteritietokanta, ilmainen varaosahaun yhteydessä.', by: ['rekkari'],
-    url: (c) => 'https://www.biltema.fi/autoilu---mp/', verified: false,
-    note: 'Ei dokumentoitua rajapintaa. server.js sisältää kokeellisen adapterin (katso README). Käyttö omaan tarpeeseen; älä tee massahakuja.' },
+  { id: 'biltema', group: 'Kaupalliset (Suomi)', name: 'Biltema rekisterinumerohaku', access: ['link'],
+    gives: 'Merkki, malli, vuosimalli, moottorikoodi ja teho – ilmainen, ei kirjautumista. Paras ilmainen lähde moottorikoodille riskiprofiilia varten.', by: ['rekkari'],
+    url: (c) => c.plate ? 'https://www.biltema.fi/auton-varaosahaku/' + encodeURIComponent(c.plate) + '/' : 'https://www.biltema.fi/auton-varaosahaku/', verified: true,
+    note: 'Sivu on botsuojattu (Akamai), joten palvelin ei voi hakea sitä puolestasi – linkki avaa haun valmiiksi rekkarilla, kopioi tiedot "Täydennä käsin" -korttiin.' },
   { id: 'motonet', group: 'Kaupalliset (Suomi)', name: 'Motonet rekisterinumerohaku', access: ['link'],
     gives: 'Sama idea kuin Biltema: malli ja moottoriversio varaosia varten.', by: ['rekkari'],
     url: () => 'https://www.motonet.fi/varaosat', verified: false },

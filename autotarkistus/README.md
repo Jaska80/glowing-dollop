@@ -79,7 +79,7 @@ python3 tools/build_peer_stats.py /polku/TieliikenneAvoinData.csv --fingerprint 
 | VIN-tulkinta | paikallinen: tarkistusnumero, WMI/maa, mallivuosi (30 v kierto), Tesla Part 565 -koodit (malli, kori, akku, moottorit, tehdas), Fiat 500e USA-tunnistus | ei |
 | NHTSA vPIC | 100+ kenttää: malli, akku kWh, moottorit, tehdas, turvavarusteet | live/proxy |
 | Takaisinkutsut, omistajavalitukset, törmäystähdet | NHTSA (USA) – täysin relevantti Teslalle ja USA-tuontiautoille (esim. Fiat 500e 2013–19) | live/proxy |
-| Rekisteritunnushaku | server.js-adapteri (kokeellinen) → muuten Traficom-linkki | proxy |
+| Rekisteritunnushaku | suorat linkit Bilteman (moottorikoodi!) ja Traficomin hakuihin valmiiksi rekkarilla; ei avointa rajapintaa Suomessa | linkit |
 | Vertaisryhmä Suomessa | Traficomin avoin data: mediaani- ja kvartiilikilometrit, massa, CO2, väri, kunta | paikallinen JSON |
 | Ajoneuvovero 2026 | Traficomin taulukko: sähkö perusvero 106,21 €/v (0 g), käyttövoimavero 1,9 c/pv/alkava 100 kg (diesel 5,5, kaasu 3,1) | ei |
 | Syvälinkit | 25 lähdettä, URL täytetään tunnistetulla autolla | – |
@@ -129,9 +129,9 @@ Rakennusympäristön verkko oli rajoitettu, joten **rajapintoja ei ajettu oikeaa
 
 - NHTSA:n osoitteet ja kenttänimet ovat virallisesta dokumentaatiosta ja vastaavat laajasti käytettyjä kirjastoja. Jos selain
   ilmoittaa CORS-virheen, käytä `server.js`:ää – se tekee pyynnöt palvelinpuolella.
-- `server.js`:n Biltema-adapteri on **arvaus** sivuston käyttämästä sisäisestä hausta. Jos se ei vastaa, raportti sanoo sen
-  ääneen ja ohjaa Traficomiin. Oikea osoite ja kentät löytyvät selaimen DevTools → Network -välilehdeltä, kun teet haun
-  biltema.fi:ssä; korjaa `REG_ADAPTERS`-taulukkoon. Tee hakuja vain omaan tarpeeseen.
+- Rekisteritunnushaku: Biltema (`biltema.fi/auton-varaosahaku/<REKKARI>/`) on Akamai-botsuojauksen takana, palvelimelta
+  haku saa 403, eikä sitä kierretä. Sivu näyttää suorat linkit Biltemaan ja Traficomiin valmiiksi rekkarilla, ja käyttäjä
+  täydentää merkin, mallin, vuoden ja moottorikoodin käsin. `REG_ADAPTERS` on tyhjä paikka mahdolliselle avoimelle rajapinnalle.
 - Traficomin avoimen datan sarakenimet (`merkkiSelvakielinen`, `kaupallinenNimi`, `ensirekisterointipvm`, `matkamittarilukema`,
   `omamassa`, `Co2`, `vari`, `kunta`, `kayttovoima`) ovat version 5.x mukaiset; skripti etsii ne otsikkoriviltä ja kertoo jos puuttuvat.
 - Verotaulukon luvut ovat 1.1.2026 voimaan tulleet (sähkö 1,5→1,9 c; perusvero min 53,29→106,21 €/v). Polttomoottoriauton

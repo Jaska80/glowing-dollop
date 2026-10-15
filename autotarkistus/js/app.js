@@ -198,7 +198,7 @@
     ]);
   }
   async function fetchReg() {
-    if (!(await hasProxy())) { state.regErr = 'Rekisteritunnushaku tarvitsee server.js:n (Suomessa ei ole CORS-vapaata rajapintaa).'; return; }
+    if (!(await hasProxy())) return;
     try { const d = await getJSON(null, '/api/reg/' + enc(state.plate)); if (d && d.ok) state.reg = d.vehicle; else state.regErr = (d && d.error) || 'ei tulosta'; }
     catch (e) { state.regErr = String(e.message || e); }
   }
@@ -314,10 +314,15 @@
   }
   function renderReg() {
     const el = card('reg');
-    el.append(h('h2', {}, 'Rekisteritunnushaku (Suomi)', h('span', { class: 'st ' + (state.reg ? 'ok' : 'warn') }, state.reg ? state.reg.source || 'proxy' : 'proxy')));
-    if (!state.plate) return el.append(h('div', { class: 'empty' }, 'Vaatii rekisteritunnuksen. server.js kokeilee kaupallista varaosahakua (merkki, malli, vuosi, moottorikoodi) – muuten Traficom.'));
+    el.append(h('h2', {}, 'Rekisteritunnushaku (Suomi)', h('span', { class: 'st ' + (state.reg ? 'ok' : '') }, state.reg ? state.reg.source || 'proxy' : 'linkit')));
+    if (!state.plate) return el.append(h('div', { class: 'empty' }, 'Vaatii rekisteritunnuksen. Näyttää suorat linkit Bilteman ja Traficomin hakuihin valmiiksi rekkarilla.'));
     if (state.reg) return el.append(kvList(Object.entries(state.reg).filter(([k, v]) => v != null && v !== '' && k !== 'raw').map(([k, v]) => [k, v])));
-    el.append(flagEl('warn', state.regErr || 'haetaan…'), h('div', { class: 'empty' }, 'Traficomin Oma asiointi näyttää ilmaiseksi tekniset tiedot, veron ja katsastuksen. Kopioi sieltä merkki, malli, ensirekisteröinti, massa ja CO2 alle.'));
+    el.append(flagEl('info', state.regErr || 'Suomessa ei ole avointa rekkari→auto-rajapintaa. Avaa linkit, lue tiedot ja täydennä ne käsin – sen jälkeen koko raportti toimii.'));
+    el.append(h('div', { class: 'links' },
+      linkChip('https://www.biltema.fi/auton-varaosahaku/' + enc(state.plate) + '/', 'Biltema: merkki, malli, vuosi, moottorikoodi (ei kirjautumista)', 'ok'),
+      linkChip('https://asiointi.traficom.fi/omatraficom/', 'Traficom Oma asiointi: tekniset tiedot, vero, katsastus, massa, CO2', 'warn'),
+      linkChip('https://www.google.com/search?q=' + enc('"' + state.plate + '"'), 'Google rekkarilla (vanhat ilmoitukset)', 'ok')));
+    el.append(h('div', { class: 'empty' }, 'Vinkki: Biltema näyttää moottorikoodin (esim. CFFB) – se on riskiprofiilin tärkein yksittäinen tieto.'));
   }
 
   /* ---------- Onnettomuudet & kuvat ---------- */
