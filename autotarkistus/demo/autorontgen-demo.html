@@ -833,8 +833,10 @@ window.DEMO = {
     const url = useProxy && proxyPath ? proxyPath : direct;
     if (!url) throw new Error('ei osoitetta');
     const r = await fetch(url, { headers: { Accept: 'application/json' } });
+    const text = await r.text();
+    if (r.status === 400 && /^\s*\{"count":0,/i.test(text)) return JSON.parse(text); // NHTSA complaints: tyhjä tulos tulee 400:lla
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
+    return JSON.parse(text);
   }
 
   /* ---------- Profiili: VIN + NHTSA + rekkarihaku + käsin syötetty → yksi kuva autosta ---------- */
@@ -958,7 +960,12 @@ window.DEMO = {
       getJSON('https://api.nhtsa.gov/recalls/recallsByVehicle?' + q, '/api/recalls?' + q).then(d => state.recalls = d.results || []).catch(e => state.recallsErr = String(e.message || e)),
       getJSON('https://api.nhtsa.gov/complaints/complaintsByVehicle?' + q, '/api/complaints?' + q).then(d => state.complaints = d.results || []).catch(e => state.complaintsErr = String(e.message || e)),
       (async () => {
-        const l = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(c.model), '/api/ratings?' + q);
+        let l = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(c.model), '/api/ratings?' + q);
+        if (!l.Count && !(await hasProxy())) { // NHTSA nimeää mallit versioittain ("MODEL S 75D") → ensimmäinen samalla alkava
+          const all = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make));
+          const m = (all.Results || []).find(x => up(x.Model).startsWith(up(c.model) + ' '));
+          if (m) l = await getJSON('https://api.nhtsa.gov/SafetyRatings/modelyear/' + enc(c.year) + '/make/' + enc(c.make) + '/model/' + enc(m.Model));
+        }
         const id = l.Results && l.Results[0] && l.Results[0].VehicleId; if (!id) return;
         const r = await getJSON('https://api.nhtsa.gov/SafetyRatings/VehicleId/' + id, '/api/ratings/' + id); state.ratings = r.Results && r.Results[0];
       })().catch(e => state.ratingsErr = String(e.message || e)),

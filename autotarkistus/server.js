@@ -46,10 +46,13 @@ function deepGet(o, k) { if (o == null) return undefined; if (k in o) return o[k
 async function fetchJSON(url, headers = {}) {
   const hit = cache.get(url);
   if (hit && hit.t > Date.now()) return hit.v;
-  const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 15000);
+  const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 30000); // NHTSA complaints voi viedä >15 s
   try {
-    const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', ...headers }, signal: ctrl.signal });
+    const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', ...headers }, signal: ctrl.signal })
+      .catch((e) => { throw e.name === 'AbortError' ? Object.assign(new Error('aikakatkaisu: lähde ei vastannut 30 s:ssa'), { status: 504 }) : e; });
     const text = await r.text();
+    // NHTSA complaints palauttaa tyhjälle tulokselle HTTP 400 + {"count":0,"results":[]} → käsitellään tyhjänä, ei virheenä
+    if (r.status === 400 && /^\s*\{"count":0,/i.test(text)) { const v = JSON.parse(text); cache.set(url, { v, t: Date.now() + CACHE_TTL_MS }); return v; }
     if (!r.ok) throw Object.assign(new Error(`upstream ${r.status}`), { status: r.status, body: text.slice(0, 300) });
     let v; try { v = JSON.parse(text); } catch { throw Object.assign(new Error('upstream ei palauttanut JSONia'), { status: 502, body: text.slice(0, 300) }); }
     cache.set(url, { v, t: Date.now() + CACHE_TTL_MS });
@@ -64,7 +67,6 @@ const PROBES = [
   { name: 'Copart (USA)', url: (v) => `https://www.copart.com/lotSearchResults/?free=true&query=${v}`, none: /no (results|lots) found|0 results/i },
   { name: 'IAAI (USA)', url: (v) => `https://www.iaai.com/Search?Keyword=${v}`, none: /no results|0 results|did not match/i },
   { name: 'bidfax.info', url: (v) => `https://bidfax.info/?do=search&subaction=search&story=${v}`, none: /nothing found|no results|ничего не найдено/i },
-  { name: 'poctra.com', url: (v) => `https://poctra.com/search/ap/${v}`, none: /no results|nothing found|0 results/i },
   { name: 'stat.vin', url: (v) => `https://stat.vin/cars/${v}`, none: /not found|no results|404/i },
 ];
 async function probeVin(vin) {
@@ -79,7 +81,10 @@ async function probeVin(vin) {
       const html = await res.text();
       if (!res.ok) r.note = 'HTTP ' + res.status;
       else if (/captcha|access denied|cf-chl|just a moment|are you a human/i.test(html)) r.note = 'botsuojaus – avaa linkki itse';
-      else { const n = (html.toUpperCase().match(new RegExp(vin, 'g')) || []).length; const none = p.none.test(html); r.status = n >= 2 && !none ? 'hit' : 'none'; r.note = n ? 'VIN esiintyy ' + n + ' kertaa' : ''; }
+      else {
+        // Hakusivut toistavat hakusanan (esim. IAAI: "FullSearch":"<VIN>") → poistetaan kaiut ennen laskentaa, muuten jokainen VIN on "hit".
+        const body = html.toUpperCase().replace(new RegExp(`(KEYWORD|QUERY|SEARCH|STORY|TERM|VALUE|Q)[^<>]{0,40}?${vin}`, 'g'), '');
+        const n = (body.match(new RegExp(vin, 'g')) || []).length; const none = p.none.test(html); r.status = n >= 2 && !none ? 'hit' : 'none'; r.note = n ? 'VIN esiintyy ' + n + ' kertaa' : ''; }
     } catch (e) { r.note = e.name === 'AbortError' ? 'aikakatkaisu' : e.message; }
     clearTimeout(to); cache.set(key, { v: r, t: Date.now() + CACHE_TTL_MS }); out.push(r);
   }));
@@ -107,7 +112,15 @@ async function api(req, res, u) {
   const make = SAFE_Q(u.searchParams.get('make')), model = SAFE_Q(u.searchParams.get('model')), year = SAFE_Q(u.searchParams.get('modelYear'));
   if (p === '/api/recalls') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/recalls/recallsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
   if (p === '/api/complaints') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/complaints/complaintsByVehicle?make=${make}&model=${model}&modelYear=${year}`));
-  if (p === '/api/ratings') return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${model}`));
+  if (p === '/api/ratings') {
+    const d = await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${model}`);
+    if (d.Count || !model) return send(res, 200, d);
+    // NHTSA käyttää versioiden nimiä (esim. "MODEL S 75D") → haetaan merkin mallit ja otetaan ensimmäinen samalla alkava
+    const all = await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}`);
+    const want = decodeURIComponent(model).toUpperCase();
+    const m = (all.Results || []).find((x) => String(x.Model || '').toUpperCase().startsWith(want + ' '));
+    return send(res, 200, m ? await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/modelyear/${year}/make/${make}/model/${SAFE_Q(m.Model)}`) : d);
+  }
   if (p.startsWith('/api/ratings/')) { const id = p.slice(13); if (!/^\d{1,8}$/.test(id)) return send(res, 400, { error: 'id' }); return send(res, 200, await fetchJSON(`https://api.nhtsa.gov/SafetyRatings/VehicleId/${id}`)); }
   if (p === '/api/probe') {
     const vin = String(u.searchParams.get('vin') || '').toUpperCase();
